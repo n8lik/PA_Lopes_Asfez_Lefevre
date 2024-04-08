@@ -16,9 +16,6 @@
 			<h2>Home</h2>
 			<p>Welcome to our website!</p>
 		</div>
-		<div class="footer">
-			<p>&copy; 2024 PCS</p>
-		</div>
 	</div>
 
 	<!--aller a prestatire.php pour créer un prestatire-->
