@@ -2,10 +2,8 @@
 <html>
 <head>
 	<title>PA_Lopes_Asfez_Lefevre</title>
-	<link rel="stylesheet" type="text/css" href="base.css">
+	<link rel="stylesheet" type="text/css" href="css\base.css">
 </head>
-
-<body class="body">
 	<header class="header">
 		<img src="assets/logos/darkLogo.png" alt="logo" width="10%">
 	
@@ -40,4 +38,4 @@
 
 	</header>
 
-
+<body class="body">

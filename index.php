@@ -1,5 +1,5 @@
 <?php
-	include 'header.php';
+	include 'includes/header.php';
 	?>
 	<div class="container">
 		<div class="header">
@@ -22,5 +22,6 @@
 	<a href="prestatire.php">Créer un prestatire</a>
 	
 
-	<?php
-	include 'footer.php';
+<?php
+	include 'includes/footer.php';
+?>

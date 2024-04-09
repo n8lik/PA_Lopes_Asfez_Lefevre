@@ -1,11 +1,4 @@
 /*Css pour le header, le footer et le body*/
-
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #D9D9D9;
-}
-
 header {
     background-color: #08152B;
     color: white;
@@ -13,10 +6,36 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
+    font-family: 'Montserrat', sans-serif;
+    color: #08152B;
+    font-size: clamp(0.5rem, 1vw, 1rem);
 }
 
-/*Barre de recherche au centre du header*/
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: #08152B;
+    font-size: clamp(0.5rem, 1vw, 1rem);
+    margin: 0;
+    padding: 0;
+    background-color: #D9D9D9;
+}
+footer {
+    font-family: 'Montserrat', sans-serif;
+    color: #08152B;
+    font-size: clamp(0.5rem, 1vw, 1rem);
+    background-color: #08152B;
+    color: white;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/*###############################################   Barre de recherche au centre du header  ###############################################*/
 .header-search-bar {
     display: flex;
     justify-content: center;
@@ -25,12 +44,13 @@ header {
     border-radius: 10px;
     padding: 0.5em;
     height: 2em!important;
+    width:50%;
 }
 
 .header-search-bar input {
-    width: 50%;
-    border-right: 1px solid #08152B !important; /* Ajoute un séparateur visuel */
-    margin-right: 20px;
+    width: 30%;
+    border-right: 1px solid #08152B !important; 
+    margin-right: 10px;
     border: none;
     background-color: #D9D9D9 !important;
 }
@@ -39,8 +59,8 @@ header {
 }
 
 .header-search-bar input[type="date"] {
-    padding-right: 20px;
-    width: 30% !important;
+    padding-right: 10px;
+    width: 20% !important;
 }
 
 
@@ -61,7 +81,7 @@ header {
 }
 
 
-/*CSS pour les informations en haut à droite du header*/
+/*###############################################    informations en haut à droite du header    ###############################################*/
 .header-right {
     display: flex;
     justify-content: flex-end;
@@ -92,37 +112,18 @@ header {
     margin: 5px;
 }
 
-
-
-
 .header-right {
     display: flex;
     align-items: center;
     justify-content: flex-end; 
 }
 
-.burger-menu,
-.header-login {
-    margin: 0;
-}
 
 
 
-/*CSS pour le footer*/
-footer {
-    background-color: #08152B;
-    color: white;
-    padding: 1em;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-
+/*###############################################   Footer  ###############################################*/
 .footer-content {
+    width: 60%;
     display: flex;
     justify-content: space-around; 
     align-items: start;
@@ -132,24 +133,30 @@ footer {
 .footer-content-column {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    font-size: small;
+    align-items: left;
+    font-size: small !important;
+    padding-left: 5%;
 }
 
 .footer-content-column h3 {
     margin-top: 0; 
+    margin-bottom: 0;
+    font-size: medium;
+    color: white;
+    text-align: center;
 }
 
 .footer-content-column ul {
-    list-style-type: none; 
+    list-style-type: none;
     padding: 0; 
-    margin: 0; 
+    margin: 0;
 }
 
 .footer-content-column ul li a {
     color: white; 
     text-decoration: none; 
     padding: 0.5em; 
+    text-align: center;
 }
 
 .footer-content-column ul li a:hover {
@@ -162,19 +169,47 @@ footer {
     justify-content: center;
     font-size: xx-small;
 }
-/*CSS pour le body*/
+.footer-mentions a {
+    color: white;
+    font-size: xx-small;
+    padding-left: 0.5em;
+}
+/*###############################################   terms and conditions    ###############################################*/
+.terms-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #FFFDF6;
+    margin: 1.5em;
+    padding-right: 5%;
+    padding-left: 5%;
+    border-radius: 1em;
+}
+
+.terms-content h2 {
+    text-align: center !important;
+}
 
 
+/*Foonts*/
+@font-face {
+    font-family: 'Montserrat';
+    /*depuis un ficher local*/
+    src: url('assets/fonts/Montserrat/static/Montserrat-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+} 
+@font-face {
+    font-family: "Poppins";
+    src: url('assets/fonts/Poppins/Poppins-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
 
 
-
-
-
-
-
-/*RESPOSIVE*/
+/*###############################################   RESPONSIVE  ###############################################*/
 @media screen and (max-width: 768px) {
-    /* Barre de recherche en ligne avec moins d'espace en largeur */
     .header-search-bar {
         flex-direction: column;
         align-items: flex-start;
@@ -185,26 +220,25 @@ footer {
         width: 100%;
         margin-right: 0;
     }
-    /* Supprimez le séparateur de bordure sur les inputs pour les écrans plus petits */
+    
     .header-search-bar input {
         border-right: none;
     }
 
     .footer-content-column {
-        margin-bottom: 1em; /* Ajoute de l'espace entre les colonnes */
+        margin-bottom: 1em;
     }
 
 }
 
 /* Styles pour les appareils mobiles */
 @media screen and (max-width: 480px) {
-    /* Rendre le texte et les boutons plus petits pour économiser de l'espace */
     .header-search-bar-text,
     .header-login button,
     .header-search-bar button {
-        font-size: 0.8em; /* Ajustez la taille de la police si nécessaire */
+        font-size: 0.8em; 
     }
-    /* Ajustez l'espacement et le padding pour les éléments de la barre de recherche */
+    
     .header-search-bar {
         padding: 0.3em;
     }
