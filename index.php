@@ -1,5 +1,5 @@
 <?php
-	include 'header.php';
+	include 'includes/header.php';
 	?>
 	<div class="container">
 		<div class="header">
@@ -16,14 +16,12 @@
 			<h2>Home</h2>
 			<p>Welcome to our website!</p>
 		</div>
-		<div class="footer">
-			<p>&copy; 2024 PCS</p>
-		</div>
 	</div>
 
 	<!--aller a prestatire.php pour créer un prestatire-->
 	<a href="prestatire.php">Créer un prestatire</a>
 	
 
-	<?php
-	include 'footer.php';
+<?php
+	include 'includes/footer.php';
+?>

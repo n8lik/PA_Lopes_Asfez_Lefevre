@@ -1,0 +1,245 @@
+/*Css pour le header, le footer et le body*/
+header {
+    background-color: #08152B;
+    color: white;
+    padding: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Montserrat', sans-serif;
+    color: #08152B;
+    font-size: clamp(0.5rem, 1vw, 1rem);
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: #08152B;
+    font-size: clamp(0.5rem, 1vw, 1rem);
+    margin: 0;
+    padding: 0;
+    background-color: #D9D9D9;
+}
+footer {
+    font-family: 'Montserrat', sans-serif;
+    color: #08152B;
+    font-size: clamp(0.5rem, 1vw, 1rem);
+    background-color: #08152B;
+    color: white;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/*###############################################   Barre de recherche au centre du header  ###############################################*/
+.header-search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #D9D9D9 !important;
+    border-radius: 10px;
+    padding: 0.5em;
+    height: 2em!important;
+    width:50%;
+}
+
+.header-search-bar input {
+    width: 30%;
+    border-right: 1px solid #08152B !important; 
+    margin-right: 10px;
+    border: none;
+    background-color: #D9D9D9 !important;
+}
+.header-search-bar input:focus {
+    outline: none;
+}
+
+.header-search-bar input[type="date"] {
+    padding-right: 10px;
+    width: 20% !important;
+}
+
+
+.header-search-bar button {
+    background-color: #D9D9D9 !important;
+    color: white !important;
+    border: none !important;
+    width : 15% !important;
+}
+.header-search-bar button:hover {
+    width : 16% !important;
+}
+
+.header-search-bar-text {
+    margin-right: 1em;
+    margin-left:1em;
+    color: #08152B;
+}
+
+
+/*###############################################    informations en haut à droite du header    ###############################################*/
+.header-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.header-login{
+    display: flex;
+    justify-content:flex-end;
+    align-items: center;
+    background-color: #D9D9D9 !important;
+    border-radius: 10px;
+    padding: 0.5em;
+    height: 1em!important;
+    border: none !important;
+}
+.header-login button {
+    background-color: #D9D9D9 !important;
+    color: #08152B !important;
+    border: none !important;
+}
+.burger-menu {
+    display: block;
+}
+.line {
+    width: 20px;
+    height: 2px;
+    background-color: white;
+    margin: 5px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; 
+}
+
+
+
+
+/*###############################################   Footer  ###############################################*/
+.footer-content {
+    width: 60%;
+    display: flex;
+    justify-content: space-around; 
+    align-items: start;
+    flex-wrap: wrap; /* Permet aux éléments de passer à la ligne en dessous sur les petits écrans */
+}
+
+.footer-content-column {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    font-size: small !important;
+    padding-left: 5%;
+}
+
+.footer-content-column h3 {
+    margin-top: 0; 
+    margin-bottom: 0;
+    font-size: medium;
+    color: white;
+    text-align: center;
+}
+
+.footer-content-column ul {
+    list-style-type: none;
+    padding: 0; 
+    margin: 0;
+}
+
+.footer-content-column ul li a {
+    color: white; 
+    text-decoration: none; 
+    padding: 0.5em; 
+    text-align: center;
+}
+
+.footer-content-column ul li a:hover {
+    text-decoration: underline; 
+}
+
+.footer-copy {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    font-size: xx-small;
+}
+.footer-mentions a {
+    color: white;
+    font-size: xx-small;
+    padding-left: 0.5em;
+}
+/*###############################################   terms and conditions    ###############################################*/
+.terms-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #FFFDF6;
+    margin: 1.5em;
+    padding-right: 5%;
+    padding-left: 5%;
+    border-radius: 1em;
+}
+
+.terms-content h2 {
+    text-align: center !important;
+}
+
+
+/*Foonts*/
+@font-face {
+    font-family: 'Montserrat';
+    /*depuis un ficher local*/
+    src: url('assets/fonts/Montserrat/static/Montserrat-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+} 
+@font-face {
+    font-family: "Poppins";
+    src: url('assets/fonts/Poppins/Poppins-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+/*###############################################   RESPONSIVE  ###############################################*/
+@media screen and (max-width: 768px) {
+    .header-search-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .header-search-bar input,
+    .header-search-bar button,
+    .header-search-bar-text {
+        width: 100%;
+        margin-right: 0;
+    }
+    
+    .header-search-bar input {
+        border-right: none;
+    }
+
+    .footer-content-column {
+        margin-bottom: 1em;
+    }
+
+}
+
+/* Styles pour les appareils mobiles */
+@media screen and (max-width: 480px) {
+    .header-search-bar-text,
+    .header-login button,
+    .header-search-bar button {
+        font-size: 0.8em; 
+    }
+    
+    .header-search-bar {
+        padding: 0.3em;
+    }
+}
