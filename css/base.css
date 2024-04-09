@@ -30,9 +30,10 @@ footer {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    position: fixed;
-    bottom: 0;
     width: 100%;
+    position: relative;
+    bottom: 0;
+
 }
 
 /*###############################################   Barre de recherche au centre du header  ###############################################*/
