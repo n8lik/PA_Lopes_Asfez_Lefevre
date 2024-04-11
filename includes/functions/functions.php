@@ -18,7 +18,7 @@ is_validated
 
 */
 //récupération des DB_HOST, DB_DATABASE, DB_USER, DB_PWD, DB_PORT
-include 'conf.inc.php';
+include '../conf.inc.php';
 
 // fonction connexion base de donnée 
 function connectDB()
@@ -75,3 +75,8 @@ function cleanFirstName($name)
     return $name;
 }
 
+// fonction pour calculer les prix 
+
+function price_calcul($type){
+    
+}

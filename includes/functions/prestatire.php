@@ -1,10 +1,7 @@
 <?php 
-include 'header.php';
 
 include 'functions.php';
 
-//connexion à la base de donnée
-$connection = connectDB();
 
 ?>
 <!-- formulaire de création de prestatire -->
@@ -28,10 +25,17 @@ is_validated-->
     <label for="performance_type">Type de prestation</label>
     <select name="performance_type" id="performance_type">
         <option value="taxi">Taxi</option>
-        <option value="ménage">Ménage</option>
-        <option value="autre">Autre</option>
+        <option value="clean">Ménage</option>
+        <option value="other">Autre</option>
     </select>
 
+    <br>
+    <label for="price_type">Type de rémunération</label>
+    <select name="price_type" id="price_type">
+        <option value="km">km</option>
+        <option value="hour">heure</option>
+        <option value="msquare">m²</option>
+    </select>
     <br>
     <label for="title">Titre</label>
     <input type="text" name="title" id="title" required>
@@ -61,11 +65,13 @@ is_validated-->
     <input type="submit" value="Créer">
     
 </form>
-w
+
 
 
 <?php
 
+//connexion à la base de donnée
+$connection = connectDB();
 //traitement du formulaire
 if (!empty($_POST)) {
     $performance_type = $_POST['performance_type'];
@@ -73,13 +79,14 @@ if (!empty($_POST)) {
     $description = $_POST['description'];
     $disponibility = $_POST['disponibility'];
     $postal_code = $_POST['postal_code'];
+    $type_price = $_POST['price_type'];
     $city = $_POST['city'];
     $address = $_POST['address'];
     $country = $_POST['country'];
     $is_validated = $_POST['is_validated'];
 
     //préparation de la requête
-    $query = $connection->prepare("INSERT INTO prestataire (performance_type, title, description, disponibility, postal_code, city, address, country, is_validated) VALUES (:performance_type, :title, :description, :disponibility, :postal_code, :city, :address, :country, :is_validated)");
+    $query = $connection->prepare("INSERT INTO prestataire (performance_type, title, description, disponibility, postal_code,price_type, city, address, country, is_validated) VALUES (:performance_type, :title, :description, :disponibility, :postal_code, :city, :address, :country, :is_validated)");
 
     //execution de la requête
     $query->execute([
@@ -88,6 +95,7 @@ if (!empty($_POST)) {
         'description' => $description,
         'disponibility' => $disponibility,
         'postal_code' => $postal_code,
+        'price_type' => $type_price,
         'city' => $city,
         'address' => $address,
         'country' => $country,
@@ -97,6 +105,8 @@ if (!empty($_POST)) {
     echo "Prestataire créé";
 
 }
+
+
 
 
 	include 'footer.php';

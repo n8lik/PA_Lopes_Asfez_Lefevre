@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/base.css">
 </head>
 	<header class="header">
-		<img src="../assets/logos/darkLogo.png" alt="logo" width="10%">
+		<img src="assets/logos/darkLogo.png" alt="logo" width="10%">
 	
 		<form action="search.php" method="post" class="header-search-bar">
 			<input type="text" name="destination" placeholder="Destination" >
@@ -17,7 +17,7 @@
 			<p class="header-search-bar-text">Au</p>
 			<input type="date" name="departure_date" placeholder="Date de départ">
 			<input type="number" name="travelers" placeholder="Voyageurs" min="1" style="width :20% !important;">
-			<button type="submit" name="submit-search"><img src="..\assets/img/search.png"alt="rechercher" width="30%"></button>
+			<button type="submit" name="submit-search"><img src="assets/img/search.png"alt="rechercher" width="30%"></button>
 		</form>
 
 		<div class="header-right">
