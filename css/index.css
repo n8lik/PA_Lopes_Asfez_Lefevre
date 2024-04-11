@@ -1,0 +1,29 @@
+/*CSS de l'index*/
+.index-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction:row;
+    background-color: #FFFDF6;
+    margin: 1.5em;
+    padding-right: 5%;
+    padding-left: 5%;
+    border-radius: 1em;
+}
+
+.index-container-name {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #a18c3d;
+    margin: 1.5em;
+    padding-right: 5%;
+    padding-left: 5%;
+    border-radius: 1em;
+    width : 100%;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+}
+
+/*Container pour un service*/

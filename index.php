@@ -1,7 +1,16 @@
-<?php include 'includes/header.php'; ?>
 
-<div class="container my-4">
-    <h1>Bienvenue chez Paris Caretaker</h1>
+<?php
+	include 'includes/header.php';
+?>
+<link rel="stylesheet" type="text/css" href="css\index.css">
+<div class="index-container">
+	<div class="index-container-name">
+		<p>Logement</p>
+	</div>
+	<div class="index-container-name">
+		<p>Activités</p>
+	</div>
+</div>
 
     <nav class="mb-4">
         <ul class="nav nav-pills">

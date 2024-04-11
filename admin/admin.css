@@ -1,0 +1,32 @@
+/*Page d'accueil*/
+.admin-content {
+    padding: 2%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    margin:3%;
+    border-radius: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.admin-content-column{
+    width: 30%;
+    margin: 1%;
+}
+
+.admin-content a {
+    text-decoration: none; /* Supprime le soulignement des liens */
+    color: #333; /* Couleur des liens */
+}
+
+.admin-content a:hover {
+    color: #000; /* Couleur des liens au survol */
+    text-decoration: underline;
+}
+
+.admin-content ul {
+    list-style-type: none; /* Supprime les puces des listes */
+    padding: 0;
+    margin: 0;
+}
