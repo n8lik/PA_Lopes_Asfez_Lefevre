@@ -30,9 +30,14 @@ footer {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    position: fixed;
+    position: relative;
     bottom: 0;
     width: 100%;
+}
+.container {
+    min-height: 100%;
+    position: relative;
+    padding-bottom: 100px; /* Hauteur du footer */
 }
 
 /*###############################################   Barre de recherche au centre du header  ###############################################*/
@@ -243,3 +248,4 @@ footer {
         padding: 0.3em;
     }
 }
+
