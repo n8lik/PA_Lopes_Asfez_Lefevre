@@ -14,16 +14,13 @@ if ($id == 0) {
     echo '</select>';
     echo '<input type="submit" value="Rechercher">';
     echo '</form></div>';
-}
-    /*Si le formulaire est soumis, afficher les résultats de la recherche*/
-    if (isset($_POST['search'])) {
+    }if (isset($_POST['search'])) {
+        /*Si le formulaire est soumis, afficher les résultats de la recherche*/
         $search = $_POST['search'];
-        $role = $_POST['role']
+        $role = $_POST['role'];
         /*Rechercher dans la base de données les utilisateurs correspondant aux critères de recherche*/
         /*Afficher les résultats*/
-        
-
-}
+    }
 
 
 /*Si le paramètre est 1, afficher une liste des utilisateurs en attente de validation*/
