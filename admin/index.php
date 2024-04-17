@@ -14,7 +14,7 @@ include 'admin_header.php';
         <h3>Annonces</h3>
         <ul>
             <li><a href="ad.php?=0">Liste des annonces logements</a></li>
-            <li><a href="ad.php?=1">Liste des annonces prestattions</a></li>
+            <li><a href="ad.php?=1">Liste des annonces prestations</a></li>
         </ul>
     </div>
 </div>

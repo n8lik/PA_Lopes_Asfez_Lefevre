@@ -31,7 +31,7 @@
                                 <li><a class="dropdown-item" href="#">Logements</a></li>
                                 <li><a class="dropdown-item" href="#">Evolution tarifaire</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#">Voir tout</a></li>
+                                <li><a class="dropdown-item" href="users.php?=1">Voir tout</a></li>
                              </ul>
                         </li>
                         
@@ -39,8 +39,8 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Gestion annonces</a>
                             <ul class="dropdown-menu dropdown-menu-dark">
-                                <li><a class="dropdown-item" href="#">Logements</a></li>
-                                <li><a class="dropdown-item" href="#">Prestations</a></li>
+                                <li><a class="dropdown-item" href="ad.php?=0">Logements</a></li>
+                                <li><a class="dropdown-item" href="ad.php?=1">Prestations</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="#">Voir tout</a></li>
                              </ul>
@@ -54,7 +54,7 @@
                                 <li><a class="dropdown-item" href="#">Bailleurs</a></li>
                                 <li><a class="dropdown-item" href="#">Voyageurs</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#">Voir tout</a></li>
+                                <li><a class="dropdown-item" href="users.php?=0">Voir tout</a></li>
                              </ul>
                         </li>
 						<li class="nav-item">
