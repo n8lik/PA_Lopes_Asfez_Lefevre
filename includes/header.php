@@ -10,14 +10,18 @@
 <body class="body bg-light">
     <header class="header">
         <nav class="navbar navbar-expand-lg navbar-dark bg-body-tertiary">
-            <div class="container-fluid justify-content-between">
+            <div class="container-fluid">
                 <a class="navbar-brand" href="index.php">
                     <img src="assets/logos/darkLogo.png" alt="Logo" height="70">
                 </a>
+				<!-- faire en sorte que le burger menu soit tout a droite -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
                 <div class="collapse navbar-collapse" id="navbarText">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Logement</a>
+                            <a class="nav-link active" aria-current="page" href="#">Logements</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Prestations</a>
@@ -68,21 +72,18 @@
 							</li>
 						<?php } ?>
                     </ul>
-				<!-- faire en sorte que le burger menu soit tout a droite -->
-				<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
                 </div>
             </div>
-			
         </nav>
         <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
             <div class="container-fluid justify-content-end">
 				<?php if(isset($_SESSION['role'])) { ?>
 					<span class="navbar-text">
-                    	<a href="login.php" class="btn btn-primary"><img src="assets\img\logout.png" height=""20px"> </a>
+                    	<a href="login.php" class="btn btn-primary"><img src="assets\img\logout.png" </a>
                 	</span>
 				<?php } ?>
+
+
                 <span class="navbar-text">
                     <a href="login.php" class="btn btn-primary"><img src="assets\img\login.png" height="20px"></a>
                 </span>
