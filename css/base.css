@@ -22,7 +22,7 @@ body {
     font-size: clamp(0.5rem, 1vw, 1rem);
     margin: 0;
     padding: 0;
-    background-color: #D9D9D9;
+    background-color: #f8f9fa ;
     display: flex;        /* Utilise flexbox pour gérer les contenus */
     flex-direction: column; /* Stack les éléments verticalement */
     min-height: 100vh;    /* Utilise vh pour la hauteur minimale (viewport height) */
@@ -47,11 +47,10 @@ footer {
 /*###############################################   reecriture bootsrap  ###############################################*/
 
 .nav-link{
-    padding: 0.5em;
-    margin: 0.5em;
     text-decoration: none;
     color: white !important;
     font-family: 'Montserrat', sans-serif   !important;
+    font-size: large !important ;
 }
 .nav-link:hover{
     color: #BEA57D !important;
@@ -64,6 +63,11 @@ footer {
     padding: 0.5em 1em;
     font-family: 'Montserrat', sans-serif   !important;
 }
+
+.navbar-toggler .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255, 255, 255, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
 /*###############################################   Footer  ###############################################*/
 .footer-content {
     width: 60%;
@@ -78,7 +82,6 @@ footer {
     flex-direction: column;
     align-items: left;
     font-size: small !important;
-    padding-left: 5%;
 }
 
 .footer-content-column h3 {
@@ -98,7 +101,6 @@ footer {
 .footer-content-column ul li a {
     color: white; 
     text-decoration: none; 
-    padding: 0.5em; 
     text-align: center;
 }
 
@@ -134,13 +136,13 @@ footer {
 @font-face {
     font-family: 'Montserrat';
     /*depuis un ficher local*/
-    src: url('assets/fonts/Montserrat/static/Montserrat-Regular.ttf');
+    src: url('../assets/fonts/Montserrat/static/Montserrat-Regular.ttf');
     font-weight: normal;
     font-style: normal;
 } 
 @font-face {
     font-family: "Poppins";
-    src: url('assets/fonts/Poppins/Poppins-Regular.ttf');
+    src: url('../assets/fonts/Poppins/Poppins-Regular.ttf');
     font-weight: normal;
     font-style: normal;
 }

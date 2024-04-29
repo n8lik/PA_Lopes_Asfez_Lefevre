@@ -15,7 +15,7 @@ if (isset($_POST['loginsubmit'])) {
     } else {
         try {
             $conn = connectDB();
-            $stmt = $conn->prepare("SELECT * FROM ".DB_PREFIX."user WHERE email = :email");
+            $stmt = $conn->prepare("SELECT * FROM user WHERE email = :email");
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->execute();
             
