@@ -2,9 +2,7 @@
 
 <?php
 	include 'includes/header.php';
-    echo "<pre>";
-    print_r($_SESSION);
-    echo "</pre>";
+    
 ?>
 <link rel="stylesheet" type="text/css" href="css\index.css">
 
@@ -55,4 +53,5 @@
     Lorem ipsum, dolor sit amet consectetur adipisicing elit. Culpa consectetur illum recusandae vitae tempore temporibus tenetur. Nostrum perspiciatis reiciendis veniam nesciunt harum soluta iure, dicta neque architecto voluptas. Itaque, iusto?
     Lorem ipsum dolor sit amet consectetur adipisicing elit
 </p>
+
 <?php include 'includes/footer.php'; ?>
