@@ -63,6 +63,13 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         </div>
         
         <?php
+
+    }else if ($id==5){
+        ?>
+        
+
+
+    <?php
     }else{
         //SI le paramètre id ne correspond à aucune rubrique on affiche un message d'erreur
         ?>
