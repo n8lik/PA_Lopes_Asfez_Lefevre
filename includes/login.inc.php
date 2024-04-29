@@ -3,6 +3,8 @@
 require 'functions/functions.php'; // Assurez-vous que le chemin vers vos fonctions est correct.
 
 if (isset($_POST['loginsubmit'])) {
+    session_start();
+
     $email = $_POST['email'];
     $password = $_POST['password'];
     $_SESSION['email'] = $email;
@@ -20,7 +22,6 @@ if (isset($_POST['loginsubmit'])) {
             if ($stmt->rowCount() == 1) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 if (password_verify($password, $row['pwd'])) {
-                    // Authentification réussie, démarrage de la session
                     $_SESSION['user_id'] = $row['id'];
                     $_SESSION['email'] = $row['email'];
                     $_SESSION['role'] = $row['role'];

@@ -38,11 +38,11 @@ require_once "functions/functions.php";
 						
 						if(isConnected()) {
 							$conn = connectDB();
-							$stmt = $conn->prepare("SELECT user_type FROM ".DB_PREFIX."user WHERE email = :email");
+							$stmt = $conn->prepare("SELECT role FROM ".DB_PREFIX."user WHERE email = :email");
 							$stmt->bindParam(':email', $_SESSION['email'], PDO::PARAM_STR);
 							$stmt->execute();
 							$row = $stmt->fetch(PDO::FETCH_ASSOC);
-							$_SESSION['role'] = $row['user_type'];
+							$_SESSION['role'] = $row['role'];
 						}
 						
 						if(isset($_SESSION['role']) && $_SESSION['role'] == '1') { ?>
@@ -57,6 +57,9 @@ require_once "functions/functions.php";
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="#">Messagerie</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="logout.php">Déconnexion</a>
 							</li>
 						<?php } ?>
 						<?php if(isset($_SESSION['role']) && $_SESSION['role'] == '4') { ?>
@@ -75,6 +78,9 @@ require_once "functions/functions.php";
 							<li class="nav-item">
 								<a class="nav-link" href="#">Messagerie</a>
 							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="logout.php">Déconnexion</a>
+							</li>
 						<?php } ?>
 						<?php if(isset($_SESSION['role']) && $_SESSION['role'] == '5') { ?>
 							<li class="nav-item">
@@ -88,6 +94,9 @@ require_once "functions/functions.php";
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="#">Messagerie</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="logout.php">Déconnexion</a>
 							</li>
 						<?php } ?>
                     </ul>
