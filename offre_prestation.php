@@ -12,16 +12,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $hours = isset($_POST['hours']) ? htmlspecialchars($_POST['hours']) : null;
     $sqm = isset($_POST['sqm']) ? htmlspecialchars($_POST['sqm']) : null;
     $city = htmlspecialchars($_POST['city']);
+    $userId = $_SESSION['user_id'];  
+   
 
-    $query = "INSERT INTO " . DB_PREFIX . "offre_prestation (title, performance_type, description, payment_type, km, hours, sqm, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $query = "INSERT INTO " . DB_PREFIX . "offre_prestation (title, performance_type, description, payment_type, km, hours, sqm, city, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     try {
         $stmt = $conn->prepare($query);
-        $stmt->execute([$title, $performanceType, $description, $paymentType, $km, $hours, $sqm, $city]);
+        $stmt->execute([$title, $performanceType, $description, $paymentType, $km, $hours, $sqm, $city, $userId]);
         echo "<p class='alert alert-success'>Offre de prestation ajoutée avec succès.</p>";
     } catch (Exception $e) {
         echo "<p class='alert alert-danger'>Erreur lors de l'ajout de l'offre de prestation : " . $e->getMessage() . "</p>";
     }
-}
+} 
+
+
 ?>
 <!-- Bootstrap CSS -->
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">

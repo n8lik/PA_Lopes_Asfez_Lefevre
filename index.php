@@ -2,7 +2,9 @@
 
 <?php
 	include 'includes/header.php';
-    
+    echo "<pre>";
+    print_r($_SESSION);
+    echo "</pre>";
 ?>
 <link rel="stylesheet" type="text/css" href="css\index.css">
 

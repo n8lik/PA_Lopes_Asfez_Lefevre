@@ -56,7 +56,7 @@
                         <form id="form-presta" action="includes/user_add.php" method="POST" class="needs-validation d-none" novalidate>
 
 
-                            <input type="hidden" name="user_type" value="5">
+                            <input type="hidden" name="role" value="5">
                             <input type="hidden" value="add" name="action">
                             <h3 class="card-title text-center mb-4">Prestataire</h3>
                             <div class="mb-3">
@@ -100,7 +100,7 @@
 
 
                             <input type="hidden" value="add" name="action">
-                            <input type="hidden" name="user_type" value="1">
+                            <input type="hidden" name="role" value="1">
                             <h3 class="card-title text-center mb-4">Client</h3>
 
                             <div class="mb-3">
@@ -143,7 +143,7 @@
 
 
                             <input type="hidden" value="add" name="action">
-                            <input type="hidden" name="user_type" value="4">
+                            <input type="hidden" name="role" value="4">
                             <h3 class="card-title text-center mb-4">Propriétaire</h3>
 
                             <div class="mb-3">

@@ -4,12 +4,13 @@ include 'includes/header.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conn = connectDB();
 
-    $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null; // Get user ID from session
+    // Vérifiez si l'utilisateur est connecté et récupérez l'ID de l'utilisateur
+    $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
     if (!$userId) {
         echo "<p class='alert alert-danger'>Vous devez être connecté pour effectuer cette action.</p>";
         include 'includes/footer.php';
-        exit; // Stop script execution if user is not logged in
+        exit; // Arrêt du script si l'utilisateur n'est pas connecté
     }
 
     $performanceType = htmlspecialchars($_POST['performance_type']);
@@ -23,9 +24,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $address = htmlspecialchars($_POST['address']);
     $country = htmlspecialchars($_POST['country']);
 
+    // Vérifiez si les dates sont correctes
     if (strtotime($startDate) >= strtotime($endDate)) {
         $error = "La date de début doit être antérieure à la date de fin.";
     } else {
+        // Préparez la requête SQL pour insérer les données dans la base de données
         $query = "INSERT INTO " . DB_PREFIX . "demande_prestation (user_id, performance_type, title, description, date_debut, date_fin, zip_code, price, city, address, country) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             $stmt = $conn->prepare($query);
