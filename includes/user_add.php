@@ -7,7 +7,7 @@ $action = "";
 $id = "";
 $firstname = "";
 $lastname = "";
-$user_type = "";
+$role = "";
 $email = "";
 $pwd = "";
 $pwdConfirm = "";
@@ -23,11 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$phone_mobile = $_POST['phone_mobile'];
 
 	if ($action == "update") {
-		$user_type = $_POST['user_type'];
+		$role = $_POST['role'];
 		$id = $_POST['id'];
 		$consent = "1";
 	} else {
-		$user_type = $_POST['user_type'];
+		$role = $_POST['role'];
 		$pwd = $_POST['pwd'];
 		$pwdConfirm = $_POST['pwdConfirm'];
 		$consent = $_POST['consent'];
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$listOfErrors = [];
 
 	// --> Est-ce que le genre est cohérent
-	if ($user_type != 1 && $user_type != 4 && $user_type != 5) {
+	if ($role != 1 && $role != 4 && $role != 5) {
 		$listOfErrors[] = "Petit chenapan, tu as essayé de tricher !";
 	}
 	
@@ -93,9 +93,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		if ($action == "add") {
 			//Insertion en BDD
 			$queryPrepared = $conn->prepare("INSERT INTO ".DB_PREFIX."user
-														(firstname, lastname, email, pwd, phone_mobile, user_type, created_at, consent)
+														(firstname, lastname, email, pwd, phone_mobile, role, created_at, consent)
 														VALUES 
-														(:firstname, :lastname, :email, :pwd, :phone_mobile, :user_type, NOW(), :consent)");
+														(:firstname, :lastname, :email, :pwd, :phone_mobile, :role, NOW(), :consent)");
 
 			$queryPrepared->execute([
 				"firstname" => $firstname,
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				"email" => $email,
 				"pwd" => password_hash($pwd, PASSWORD_DEFAULT),
 				"phone_mobile" => $phone_mobile,
-				"user_type" => $user_type,
+				"role" => $role,
 				"consent" => $consent,
 			]);
 
@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					lastname=:lastname,
 					email=:email,
 					phone_mobile=:phone_mobile,
-					user_type=:user_type,
+					role=:role,
 					updated_at=NOW()
 					WHERE id=:id"
 			);
@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				"lastname" => $lastname,
 				"email" => $email,
 				"phone_mobile" => $phone_mobile,
-				"user_type" => $user_type
+				"role" => $role
 			]);
 			header('Location: ');
 		}

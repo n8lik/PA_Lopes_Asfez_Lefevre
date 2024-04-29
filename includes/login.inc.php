@@ -23,6 +23,7 @@ if (isset($_POST['loginsubmit'])) {
                     // Authentification réussie, démarrage de la session
                     $_SESSION['user_id'] = $row['id'];
                     $_SESSION['email'] = $row['email'];
+                    $_SESSION['role'] = $row['role'];
                     header("Location: ../index.php");
                     exit();
                 } 
