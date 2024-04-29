@@ -7,6 +7,7 @@ $action = "";
 $id = "";
 $firstname = "";
 $lastname = "";
+$user_type = "";
 $email = "";
 $pwd = "";
 $pwdConfirm = "";
@@ -26,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		$id = $_POST['id'];
 		$consent = "1";
 	} else {
-		$user_type = 7;
+		$user_type = $_POST['user_type'];
 		$pwd = $_POST['pwd'];
 		$pwdConfirm = $_POST['pwdConfirm'];
 		$consent = $_POST['consent'];
@@ -35,6 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$listOfErrors = [];
 
 	// --> Est-ce que le genre est cohérent
+	if ($user_type != 1 && $user_type != 4 && $user_type != 5) {
+		$listOfErrors[] = "Petit chenapan, tu as essayé de tricher !";
+	}
+	
 
 	// --> Nom plus de 2 caractères
 	if (strlen($lastname) < 2) {
@@ -65,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				$listOfErrors[] = "L'email est déjà utilisé";
 			}
 		}
-
+		
 		// --> Complexité du pwd
 
 		if (
@@ -137,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		$_SESSION['data'] = $_POST;
 		//Redirection sur la page d'inscription
 		if ($action == "add") {
-			header('Location: register.php');
+			header('Location: ../register.php');
 		} elseif ($action == "update") {
 			//header('Location: ../pages/admin/user_managment.php');
 		}

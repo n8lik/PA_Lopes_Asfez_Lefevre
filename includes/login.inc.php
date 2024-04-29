@@ -1,13 +1,11 @@
 <?php
-session_start(); // Démarrage de la session
 
-// Inclure le fichier où se trouve la fonction connectDB()
-require 'functions/functions.php'; // Assure-toi de changer le chemin vers ton fichier de connexion.
+require 'functions/functions.php'; // Assurez-vous que le chemin vers vos fonctions est correct.
 
-// Vérification de la soumission du formulaire
 if (isset($_POST['loginsubmit'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
+    $_SESSION['email'] = $email;
 
     if (empty($email) || empty($password)) {
         header("Location: ../login.php?error=emptyfields");
@@ -21,29 +19,27 @@ if (isset($_POST['loginsubmit'])) {
             
             if ($stmt->rowCount() == 1) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                // Vérification du mot de passe
                 if (password_verify($password, $row['pwd'])) {
-                    // Mot de passe correct, démarrage de la session
+                    // Authentification réussie, démarrage de la session
                     $_SESSION['user_id'] = $row['id'];
                     $_SESSION['email'] = $row['email'];
                     header("Location: ../index.php");
                     exit();
-                } else {
-                    header("Location: ../login.php");
-                    exit();
-                }
+                } 
             } else {
+                // Utilisateur non trouvé
+                $_SESSION['ERRORS']['nouser'] = 'Email ou Mot de passe incorrect';
                 header("Location: ../login.php");
-                exit();
+                    exit();
             }
         } catch (Exception $e) {
             // Gérer l'erreur
-            header("Location: ../login.php");
+            header("Location: ../login.php?error=exception");
             exit();
         }
     }
 } else {
-    // Redirection si l'utilisateur accède à ce fichier d'une autre manière que par le formulaire de connexion
+    // Accès non autorisé à ce fichier sans passer par le formulaire
     header("Location: ../login.php");
     exit();
 }
