@@ -20,16 +20,16 @@
             <ul>
                 <li><a href="https://www.facebook.com/">Facebook</a></li>
                 <li><a href="https://www.instagram.com/">Instagram</a></li>
-                <li><a href="https://twitter.com/">Snapchat</a></li>
+                <li><a href="https://twitter.com/">X - Twitter</a></li>
 
             </ul>
         </div>
     </div>
     <div class="footer-mentions">
         <a>© 2024 - PCS Tous droits réservés</a>  
-        <a href="terms.php?id=2">Mentions légales</a>
-        <a href="terms.php?id=3">Conditions générales</a>
-        <a href="terms.php?id=4"> Avis de propriété intellectuelle</a>
+        <a href="terms.php?id=1">Mentions légales</a>
+        <a href="terms.php?id=2">Conditions générales</a>
+        <a href="terms.php?id=3"> Avis de propriété intellectuelle</a>
     </div>
 </footer>
 </html>

@@ -1,4 +1,4 @@
-<?php include 'includes/header.php'; ?>
+<?php require 'includes/header.php'; ?>
 
 <body>
     <div class="container py-5">
@@ -58,9 +58,6 @@
             </div>
         </div>
     </div>
-    <footer>
-        <?php include 'includes/footer.php'; ?>
-    </footer>
-</body>
 
-</html>
+    
+        <?php include 'includes/footer.php'; ?>

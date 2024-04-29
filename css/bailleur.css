@@ -1,0 +1,54 @@
+/* styles.css */
+body {
+    background-color: #f8f9fa; 
+}
+
+h2 {
+    color: #343a40;
+}
+
+.form-control {
+    border-radius: 0.25rem; 
+    border: 1px solid #ced4da; 
+}
+
+.form-check-label {
+    font-weight: normal; 
+}
+
+.btn-primary {
+    background-color: #007bff; 
+    border-color: #007bff; 
+    border-radius: 0.25rem; 
+}
+
+.form-check-inline {
+    margin-right: 1rem; 
+}
+
+.form-group {
+    margin-bottom: 1.5rem; 
+}
+
+.form-row{
+    display: flex;
+    justify-content: space-around;
+}
+
+.border-form{
+    border: 3px solid #08152B;
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    
+}
+@media screen and (max-width: 768px) {
+    .mb-4 {
+        font-size: small !important;
+    
+    }
+    .form-control{
+        font-size: small !important;
+    
+    }
+}
