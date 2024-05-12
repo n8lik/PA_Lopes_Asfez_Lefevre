@@ -1,9 +1,9 @@
 
 <?php require '/var/www/html/admin/includes/admin_header.php'; 
 session_start(); // Démarrer la session au début
+
 ?>
 
-<body>
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">

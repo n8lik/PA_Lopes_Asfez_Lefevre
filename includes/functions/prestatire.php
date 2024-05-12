@@ -4,24 +4,8 @@ include 'functions.php';
 
 
 ?>
-<!-- formulaire de création de prestatire -->
 
 <form>
-    <!--base de donnée prestataire : 
-id
-performance_type
-title
-description
-comment 
-disponibility
-price_type
-price
-postal_code
-city
-address
-country
-is_validated-->
-<!--pour peformance type un choix multiple entre taxi, ménage et autre-->
     <label for="performance_type">Type de prestation</label>
     <select name="performance_type" id="performance_type">
         <option value="taxi">Taxi</option>
@@ -70,9 +54,7 @@ is_validated-->
 
 <?php
 
-//connexion à la base de donnée
 $connection = connectDB();
-//traitement du formulaire
 if (!empty($_POST)) {
     $performance_type = $_POST['performance_type'];
     $title = $_POST['title'];
@@ -84,11 +66,9 @@ if (!empty($_POST)) {
     $address = $_POST['address'];
     $country = $_POST['country'];
     $is_validated = $_POST['is_validated'];
-
-    //préparation de la requête
+    
     $query = $connection->prepare("INSERT INTO prestataire (performance_type, title, description, disponibility, postal_code,price_type, city, address, country, is_validated) VALUES (:performance_type, :title, :description, :disponibility, :postal_code, :city, :address, :country, :is_validated)");
 
-    //execution de la requête
     $query->execute([
         'performance_type' => $performance_type,
         'title' => $title,

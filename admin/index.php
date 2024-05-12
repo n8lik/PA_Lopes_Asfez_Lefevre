@@ -1,8 +1,6 @@
 <?php
 require 'includes/admin_header.php';
 require 'includes/fun_admin.php';
-session_start(); // Démarrer la session au début
-
 //Si pas connecté, redirection vers la page de connexion
 if (!isset($_SESSION['admin'])) {
     header('Location: login.php');
@@ -15,7 +13,7 @@ if (!isset($_SESSION['admin'])) {
         <!--Stat 1: User number -->
         <div class="stat-block">
             <h4><?php echo totalNbUsers(); ?></h4>
-            <h4>Utilisateurs</h4>
+            <a href="users?choice=all"><h4>Utilisateurs</h4></a>
         </div>
         <!--Stat 2: Adds number-->
         <div class="stat-block">
@@ -31,7 +29,7 @@ if (!isset($_SESSION['admin'])) {
         <!--Stat 4:Admin number-->
         <div class="stat-block">
             <h4><?php echo nbUserByGrade(6); ?></h4>
-            <h4>Admininstrateurs</h4>
+            <a href="users?choice=admins"><h4>Admininstrateurs</h4></a>
         </div>
         <!--Stat 5: Graphique nombre de noveaux inscrits par mois-->
         <div class="stat-block">

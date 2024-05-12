@@ -1,8 +1,8 @@
 /*Css pour le header, le footer et le body*/
 html, body {
-    height: 100%;  /* Assure que le html et le body prennent toute la hauteur */
-    margin: 0;     /* Enlève les marges par défaut */
-    padding: 0;    /* Enlève les paddings par défaut */
+    height: 100%; 
+    margin: 0; 
+    padding: 0; 
 }
 header {
     background-color: #08152B;
@@ -23,9 +23,9 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f8f9fa ;
-    display: flex;        /* Utilise flexbox pour gérer les contenus */
-    flex-direction: column; /* Stack les éléments verticalement */
-    min-height: 100vh;    /* Utilise vh pour la hauteur minimale (viewport height) */
+    display: flex;        
+    flex-direction: column;
+    min-height: 100vh;    /* (viewport height) */
     margin: 0;
 }
 footer {
@@ -39,9 +39,9 @@ footer {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: auto;  /* Pousse automatiquement le footer en bas */
-    width: 100%;       /* Assure que le footer s'étend sur toute la largeur */
-    position: relative; /* Changez à 'fixed' si vous voulez que le footer reste visible lors du scrolling */
+    margin-top: auto; 
+    width: 100%;    
+    position: relative; 
     bottom: 0;         /* Pousse le footer en bas de la page */
 }
 /*###############################################   reecriture bootsrap  ###############################################*/
@@ -129,6 +129,113 @@ footer {
 
 .terms-content h2 {
     text-align: center !important;
+}
+
+/*###############################################   support  ###############################################*/
+/*Css de la page tickets*/
+.support-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #FFFDF6;
+    margin: 1.5em;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    border-radius: 1em;
+}
+
+.support-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #FFFDF6;
+    margin: 1.5em;
+    width: 80%;
+    border-radius: 1em;
+}
+/*champ de saisie*/
+.support-form select  {
+    width: 70%;
+    margin: 0.5em;
+    border-radius: 0.5em;
+    border: 1px solid #BEA57D;
+}
+.support-form input {
+    width: 70%;
+    margin: 0.5em;
+    border-radius: 0.5em;
+    border: 1px solid #BEA57D;
+}
+.support-form textarea {
+    width: 70%;
+    margin: 0.5em;
+    border-radius: 0.5em;
+    border: 1px solid #BEA57D;
+    height: 10em;
+    resize: none;
+    
+}
+.support-form label {
+    font-size: larger;
+    color: #08152B;
+    margin-top: 2%;
+}
+/* ##############################PROFILE################################# */
+.p-nav{
+    color:#BEA57D !important;
+}
+.p-nav:hover{
+    color:#08152B !important;
+}
+.p-background {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 1.5em;
+    padding: 1.5em;
+    border-radius: 1em;
+    background-color: #FFFDF6;
+}
+
+
+.ticket-content {
+    width: 60%; 
+    display: flex;
+    flex-direction: column;
+    background-color: #FFFDF6;
+    border-radius: 1em;
+}
+
+.user-answer, .other-answer {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1em;
+    padding : 0.5em;
+    border-radius: 10px;
+    word-wrap: break-word;
+    font-size: medium;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+
+}
+
+.user-answer {
+    align-items: flex-end; 
+    background-color: #BEA57D;
+}
+
+.other-answer {
+    align-items: flex-start; 
+    background-color: #34656D;
+}
+
+.support-form .form-control {
+    display: block;      
+    margin: 0 auto;  
+    width: 90%;
 }
 
 

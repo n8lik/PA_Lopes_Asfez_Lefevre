@@ -1,3 +1,4 @@
+
 <?php
 include "fun_admin.php";
 session_start(); // Démarrer la session au début
@@ -8,30 +9,28 @@ if (isset($_POST['loginsubmit'])) {
 
     if (empty($email)) {
         $errors['email'] = 'Veuillez entrer votre email.';
-        print("on a une erreur email  \n");
     }
 
     if (empty($password)) {
         $errors['password'] = 'Veuillez entrer votre mot de passe.';
-        print("on a une erreur password  \n");
     }
 
     if (empty($errors)) {
-        print("on juste avant connectDB \n");
         $pdo = connectDB();
-        $stmt = $pdo->prepare('SELECT * FROM user WHERE email = :email');
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
-        $admin = $stmt->fetch();
-        print("on juste après connectDB \n");
-        print_r($admin);
+        $queryPrepared = $pdo->prepare('SELECT * FROM user WHERE email = :email');
+        $queryPrepared->bindParam(':email', $email);
+        $queryPrepared->execute();
+        $admin = $queryPrepared->fetch();
 
-        if ($password== $admin['password'] && $admin['is_admin'] == 1 && $admin['grade'] == 6) {
+        if ($admin && password_verify($password, $admin['password']) && $admin['is_admin'] == 1 && $admin['grade'] == 6 && $admin['is_validated'] == 1) {
             //Comparaison des deux morts de passes
             $_SESSION['email'] = $admin['email'];
             $_SESSION['firstname'] = $admin['firstname'];
             $_SESSION['lastname'] = $admin['lastname'];
+            
+            $_SESSION['userId'] = $admin['id'];
             $_SESSION['admin'] = True;
+
             header('Location:/admin/index.php');
             exit();
         } else {

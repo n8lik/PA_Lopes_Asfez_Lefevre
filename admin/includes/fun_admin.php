@@ -1,5 +1,5 @@
 <?php
-require "/var/www/html/includes/conf.inc.php";
+require "conf.inc.php";
 session_start(); // Démarrer la session au début
 
 
@@ -23,7 +23,7 @@ function nbUserByGrade($grade){
     $db = connectDB();
     $req = $db->prepare("SELECT COUNT(*) FROM user WHERE grade = ?");
     $req->execute([$grade]);
-    // Récupérer le nombre d'utilisateurs ayant le grade passé en paramètre
+    //Récupérer le nombre d'utilisateurs ayant le grade passé en paramètre
     $count = $req->fetchColumn();
     return $count;
 }
@@ -88,9 +88,9 @@ function getGrade($grade){
         case 3:
             return "Voyageur VIP2";
         case 4:
-            return "Bailleurs";
+            return "Bailleur";
         case 5:
-            return "Prestataires";
+            return "Prestataire";
         case 6:
             return "Administrateur";
     }
@@ -125,12 +125,107 @@ function updateUser($id, $pseudo, $firstname, $lastname, $email, $grade){
 
 //Insérer un nouvel administrateur$_POST['pseudo'], $_POST['firstname'], $_POST['lastname'], $_POST['email'], $_POST['pwd'], $_POST['pwdConfirm'], $_POST['grade']
 function addNewAdmin($pseudo, $firstname, $lastname, $email, $password, $passwordConfirm){
-    if ($password != $passwordConfirm){
-        return "Les mots de passe ne correspondent pas";
+    $errors=[];
+    if (empty($pseudo) || empty($firstname) || empty($lastname) || empty($email) || empty($password) || empty($passwordConfirm)){
+        $errors[] = "Veuillez remplir tous les champs";
+    }elseif($password != $passwordConfirm){
+        $errors[] = "Les mots de passe ne correspondent pas";
+    }elseif (strlen($password) < 8){
+        $errors[] = "Le mot de passe doit contenir au moins 8 caractères";
+    }elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)){
+        $errors[] = "L'adresse email n'est pas valide";
+    }elseif (emailExists($email)){
+        $errors[] = "L'adresse email est déjà utilisée";
+    }elseif (pseudoExists($pseudo)){
+        $errors[] = "Le pseudo est déjà utilisé";
     }
+    if (count($errors)!= 0){
+        return $errors;
+    }else{
+        $db = connectDB();
+        $req = $db->prepare("INSERT INTO user (pseudo, firstname, lastname, email, password, grade, is_validated, is_admin) VALUES (?, ?, ?, ?, ?, 6, 1,1)");
+        $req->execute([$pseudo, $firstname, $lastname, $email, password_hash($password, PASSWORD_DEFAULT)]);
+    }
+    return $errors;
+}
+//Réactiver un utilisateur
+function reactivateUser($id){
     $db = connectDB();
-    $req = $db->prepare("INSERT INTO user (pseudo, firstname, lastname, email, password, grade, is_validated) VALUES (?, ?, ?, ?, ?, 6, 1)");
-    $req->execute([$pseudo, $firstname, $lastname, $email, $password]);
+    $req = $db->prepare("UPDATE user SET is_deleted = 0 WHERE id = ?");
+    $req->execute([$id]);
+}
+//Validater un utilisateur
+function validateUser($id){
+    $db = connectDB();
+    $req = $db->prepare("UPDATE user SET is_validated = 1 WHERE id = ?");
+    $req->execute([$id]);
+}
+//Rechercher un utilisateur selon n'importe quel champ
+function searchingBar($search,$choice){
+    $db = connectDB();
+    switch($choice){
+        case "all":
+            $req = $db->prepare("SELECT * FROM user WHERE pseudo LIKE ? OR firstname LIKE ? OR lastname LIKE ? OR email LIKE ?");
+            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            return $req->fetchAll();
+        case "travelers":
+            $req = $db->prepare("SELECT * FROM user WHERE (grade = 1 OR grade = 2 OR grade = 3) AND (pseudo LIKE ? OR firstname LIKE ? OR lastname LIKE ? OR email LIKE ?)");
+            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            return $req->fetchAll();
+        case "landlords":
+            $req = $db->prepare("SELECT * FROM user WHERE grade = 4 AND (pseudo LIKE ? OR firstname LIKE ? OR lastname LIKE ? OR email LIKE ?)");
+            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            return $req->fetchAll();
+        case "providers":
+            $req = $db->prepare("SELECT * FROM user WHERE grade = 5 AND (pseudo LIKE ? OR firstname LIKE ? OR lastname LIKE ? OR email LIKE ?)");
+            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            return $req->fetchAll();
+        case "admins":
+            $req = $db->prepare("SELECT * FROM user WHERE grade = 6 AND (pseudo LIKE ? OR firstname LIKE ? OR lastname LIKE ? OR email LIKE ?)");
+            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            return $req->fetchAll();
+        case "housing":
+            $req = $db->prepare("SELECT * FROM housing WHERE title LIKE ? OR address LIKE ? OR type_house LIKE ? or price LIKE ? or creation_date LIKE ?");
+            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            return $req->fetchAll();
+        case "performance":
+            $req = $db->prepare("SELECT * FROM performances WHERE title LIKE ? OR address LIKE ? OR performance_type LIKE ? or price LIKE ? or creation_date LIKE ?");
+            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            return $req->fetchAll();
+        case "vlandlords":
+            $req = $db->prepare("SELECT * FROM user WHERE grade = 4 AND is_validated = 0 AND (pseudo LIKE ? OR firstname LIKE ? OR lastname LIKE ? OR email LIKE ?)");
+            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            return $req->fetchAll();
+        case "vproviders":
+            $req = $db->prepare("SELECT * FROM user WHERE grade = 5 AND is_validated = 0 AND (pseudo LIKE ? OR firstname LIKE ? OR lastname LIKE ? OR email LIKE ?)");
+            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            return $req->fetchAll();
+        case "vhousing":
+            $req = $db->prepare("SELECT * FROM housing WHERE is_validated = 0 AND (title LIKE ? OR address LIKE ? OR type_house LIKE ? or price LIKE ? or creation_date LIKE ?)");
+            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            return $req->fetchAll();
+        case "vperformance":
+            $req = $db->prepare("SELECT * FROM performances WHERE is_validated = 0 AND (title LIKE ? OR address LIKE ? OR performance_type LIKE ? or price LIKE ? or creation_date LIKE ?)");
+            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            return $req->fetchAll();
+            
+    }
+}
+//Verifier si un email existe déjà
+function emailExists($email){
+    $db = connectDB();
+    $req = $db->prepare("SELECT COUNT(*) FROM user WHERE email = ?");
+    $req->execute([$email]);
+    $count = $req->fetchColumn();
+    return $count != 0;
+}
+//Verifier si un pseudo existe déjà
+function pseudoExists($pseudo){
+    $db = connectDB();
+    $req = $db->prepare("SELECT COUNT(*) FROM user WHERE pseudo = ?");
+    $req->execute([$pseudo]);
+    $count = $req->fetchColumn();
+    return $count != 0;
 }
 
 //#########################################Pending #########################################
@@ -157,25 +252,36 @@ function nbAllPendingUsers(){
 }
 
 //Afficher la liste des annonces en attente de validation
+function getPendingAdsByType($type){
+    $db = connectDB();
+    if ($type == "housing"){
+        $req = $db->prepare("SELECT * FROM housing WHERE is_validated = 0");
+    }else{
+        $req = $db->prepare("SELECT * FROM performances WHERE is_validated = 0");
+    }
+    $req->execute();
+    return $req->fetchAll();
+}
+
+//Afficher la liste des annonces en attente de validation
 function getAllPendingAds(){
     $db = connectDB();
-    $req = $db->prepare("SELECT * FROM housing WHERE is_validated = 0 UNION SELECT * FROM performance WHERE is_validated = 0");
+    $req = $db->prepare("SELECT * FROM housing WHERE is_validated = 0 UNION SELECT * FROM performances WHERE is_validated = 0");
     $req->execute();
     return $req->fetchAll();
 }
 
 function nbAllPendingAds(){
     $db = connectDB();
-    $req = $db->prepare("SELECT COUNT(*) FROM housing WHERE is_validated = 0 UNION SELECT COUNT(*) FROM performance WHERE is_validated = 0");
+    $req = $db->prepare("SELECT COUNT(*) FROM housing WHERE is_validated = 0 UNION SELECT COUNT(*) FROM performances WHERE is_validated = 0");
     $req->execute();
     return  $req->fetchColumn();
 }
-
 //##########################################Ads #########################################
 //Afficher la liste des annonces (housing + performance tables)
 function nbAds(){
     $db = connectDB();
-    $req = $db->prepare("SELECT COUNT(*) FROM housing UNION SELECT COUNT(*) FROM performance");
+    $req = $db->prepare("SELECT COUNT(*) FROM housing UNION SELECT COUNT(*) FROM performances");
     $req->execute();
     $count = $req->fetchColumn();
     return $count;
@@ -185,7 +291,7 @@ function nbAdsByType($type){
     if ($type == "housing"){
         $req = $db->prepare("SELECT COUNT(*) FROM housing");
     }elseif($type == "performance"){
-        $req = $db->prepare("SELECT COUNT(*) FROM performance");
+        $req = $db->prepare("SELECT COUNT(*) FROM performances");
     }
     $req->execute();
     $count = $req->fetchColumn();
@@ -194,7 +300,7 @@ function nbAdsByType($type){
 
 function nbPerformancesByCategory($category){
     $db = connectDB();
-    $req = $db->prepare("SELECT COUNT(*) FROM performance WHERE performance_type = ?");
+    $req = $db->prepare("SELECT COUNT(*) FROM performances WHERE performance_type = ?");
     $req->execute([$category]);
     $count = $req->fetchColumn();
     return $count;
@@ -205,7 +311,7 @@ function getAdsByCategory($category){
     if ($category == "housing"){
         $req = $db->prepare("SELECT * FROM housing");
     }else{
-        $req = $db->prepare("SELECT * FROM performance");
+        $req = $db->prepare("SELECT * FROM performances");
     }
     $req->execute();
     return $req->fetchAll();
@@ -216,7 +322,7 @@ function getAdsById($id, $type){
     if ($type == "housing"){
         $req = $db->prepare("SELECT * FROM housing WHERE id = ?");
     }else{
-        $req = $db->prepare("SELECT * FROM performance WHERE id = ?");
+        $req = $db->prepare("SELECT * FROM performances WHERE id = ?");
     }
     $req->execute([$id]);
     return $req->fetch();
@@ -227,7 +333,7 @@ function deleteAd($id, $type){
     if ($type == "housing"){
         $req = $db->prepare("UPDATE housing SET is_deleted = 1 WHERE id = ?");
     }else{
-        $req = $db->prepare("UPDATE performance SET is_deleted = 1 WHERE id = ?");
+        $req = $db->prepare("UPDATE performances SET is_deleted = 1 WHERE id = ?");
     }
     $req->execute([$id]);
 }
@@ -238,7 +344,7 @@ function getAdStatus ($id, $type){
     if ($type == "housing"){
         $req = $db->prepare("SELECT is_deleted, is_validated FROM housing WHERE id = ?");
     }else{
-        $req = $db->prepare("SELECT is_deleted, is_validated FROM performance WHERE id = ?");
+        $req = $db->prepare("SELECT is_deleted, is_validated FROM performances WHERE id = ?");
     }
     $req->execute([$id]);
     $status = $req->fetch();
@@ -250,4 +356,29 @@ function getAdStatus ($id, $type){
     }
     return "Validée";
 }
+
+
+
+//Reactiver une annonce (is_deleted=0)
+function reactivateAd($id, $type){
+    $db = connectDB();
+    if ($type == "housing"){
+        $req = $db->prepare("UPDATE housing SET is_deleted = 0 WHERE id = ?");
+    }else{
+        $req = $db->prepare("UPDATE performances SET is_deleted = 0 WHERE id = ?");
+    }
+    $req->execute([$id]);
+}
+
+//Valider une annonce (is_validated=1)
+function validateAd($id, $type){
+    $db = connectDB();
+    if ($type == "housing"){
+        $req = $db->prepare("UPDATE housing SET is_validated = 1 WHERE id = ?");
+    }else{
+        $req = $db->prepare("UPDATE performances SET is_validated = 1 WHERE id = ?");
+    }
+    $req->execute([$id]);
+}
+
 ?>

@@ -1,147 +1,131 @@
 <?php
 session_start();
-require_once "functions/functions.php";
+require "functions/functions.php";
+
+
+// Connexion à la base de données avec gestion d'erreur
 $conn = connectDB();
 
-$action = "";
-$id = "";
-$firstname = "";
-$lastname = "";
-$email = "";
-$pwd = "";
-$pwdConfirm = "";
-$phone_mobile = "";
-$consent = "";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	$action = $_POST['action'];
-
-	$firstname = cleanFirstname($_POST['firstname']);
-	$lastname = cleanLastname($_POST['lastname']);
-	$email = cleanMail($_POST['email']);
-	$phone_mobile = $_POST['phone_mobile'];
-
-	if ($action == "update") {
-		$user_type = $_POST['user_type'];
-		$id = $_POST['id'];
-		$consent = "1";
-	} else {
-		$user_type = 7;
-		$pwd = $_POST['pwd'];
-		$pwdConfirm = $_POST['pwdConfirm'];
-		$consent = $_POST['consent'];
-	}
-
-	$listOfErrors = [];
-
-	// --> Est-ce que le genre est cohérent
-
-	// --> Nom plus de 2 caractères
-	if (strlen($lastname) < 2) {
-		$listOfErrors[] = "Le nom doit faire plus de 2 caractères";
-	}
-	if ($consent != "1") {
-		$listOfErrors[] = "Le consentement à l'utilsation des données n'est pas accepté";
-	}
-
-	// --> Prénom plus de 2 caractères
-	if (strlen($firstname) < 2) {
-		$listOfErrors[] = "Le prénom doit faire plus de 2 caractères";
-	}
-
-	if ($action == "add") {
-		// --> Format de l'email
-		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-			$listOfErrors[] = "L'email est incorrect";
-		} else {
-			// --> Unicité de l'email (plus tard)
-
-			$queryPrepared = $conn->prepare("SELECT * FROM ".DB_PREFIX."user WHERE email=:email");
-			$queryPrepared->execute(["email" => $email]);
-
-			$results = $queryPrepared->fetch();
-
-			if (!empty($results)) {
-				$listOfErrors[] = "L'email est déjà utilisé";
-			}
-		}
-
-		// --> Complexité du pwd
-
-		if (
-			strlen($pwd) < 8
-			|| !preg_match("#[a-z]#", $pwd)
-			|| !preg_match("#[A-Z]#", $pwd)
-			|| !preg_match("#[0-9]#", $pwd)
-		) {
-			$listOfErrors[] = "Le mot de passe doit faire au min 8 caractères avec des minuscules, des majuscules et des chiffres";
-		}
-
-		// --> Meme mot de passe de confirmation
-		if ($pwd != $pwdConfirm) {
-			$listOfErrors[] = "La confirmation du mot de passe ne correspond pas";
-		}
-	}
-
-	//Si OK
-	if (empty($listOfErrors)) {
-		if ($action == "add") {
-			//Insertion en BDD
-			$queryPrepared = $conn->prepare("INSERT INTO ".DB_PREFIX."user
-														(firstname, lastname, email, pwd, phone_mobile, user_type, created_at, consent)
-														VALUES 
-														(:firstname, :lastname, :email, :pwd, :phone_mobile, :user_type, NOW(), :consent)");
-
-			$queryPrepared->execute([
-				"firstname" => $firstname,
-				"lastname" => $lastname,
-				"email" => $email,
-				"pwd" => password_hash($pwd, PASSWORD_DEFAULT),
-				"phone_mobile" => $phone_mobile,
-				"user_type" => $user_type,
-				"consent" => $consent,
-			]);
+$action = $_POST['action'] ?? '';
+$id = $_POST['id'] ?? '';
+$pseudo = $_POST['pseudo'] ?? '';
+$firstname = $_POST['firstname'] ?? '';
+$lastname = $_POST['lastname'] ?? '';
+$email = $_POST['email'] ?? '';
+$password = $_POST['password'] ?? '';
+$passwordConfirm = $_POST['passwordConfirm'] ?? '';
+$phone_number = $_POST['phone_number'] ?? '';
+$extension = $_POST['extension'] ?? '';
+$country = $_POST['country'] ?? '';
+$address = $_POST['address'] ?? '';
+$city = $_POST['city'] ?? '';
+$postal_code = $_POST['postal_code'] ?? '';
+$grade = $_POST['grade'] ?? '';
+$consent = $_POST['consent'] ?? '';
 
 
-			//Redirection sur la page de connexion
-			header('Location: ../login.php');
-		} elseif ($action == "update") {
-			$queryPrepared = $conn->prepare(
-				"UPDATE users SET
-					firstname=:firstname,
-					lastname=:lastname,
-					email=:email,
-					phone_mobile=:phone_mobile,
-					user_type=:user_type,
-					updated_at=NOW()
-					WHERE id=:id"
-			);
 
-			$queryPrepared->execute([
-				"id" => $id,
-				"firstname" => $firstname,
-				"lastname" => $lastname,
-				"email" => $email,
-				"phone_mobile" => $phone_mobile,
-				"user_type" => $user_type
-			]);
-			header('Location: ');
-		}
-	} else {
 
-		//Si NOK
-		//On stock les erreurs et la data
-		$_SESSION['listOfErrors'] = $listOfErrors;
-		unset($_POST["pwd"]);
-		unset($_POST["pwdConfirm"]);
-		$_SESSION['data'] = $_POST;
-		//Redirection sur la page d'inscription
-		if ($action == "add") {
-			header('Location: register.php');
-		} elseif ($action == "update") {
-			//header('Location: ../pages/admin/user_managment.php');
-		}
-	}
+if (isset($_POST['submit'])) {
+    // Nettoyage et validation des données
+    $listOfErrors = [];
+
+
+    $firstname = cleanFirstname($firstname);
+    $lastname = cleanLastname($lastname);
+    $email = cleanMail($email);
+
+    // Validation des entrées
+    if (strlen($password) < 8 || !preg_match("#[a-z]#", $password) || !preg_match("#[A-Z]#", $password) || !preg_match("#[0-9]#", $password)) {
+        $listOfErrors[] = "Password must be at least 8 characters with lowercase, uppercase, and digits.";
+    }
+    if ($password !== $passwordConfirm) {
+        $listOfErrors[] = "Password confirmation does not match.";
+    }
+    if (!in_array($grade, [1, 4, 5])) {
+        $listOfErrors[] = "Invalid grade selected.";
+    }
+    if (strlen($lastname) < 2) {
+        $listOfErrors[] = "Last name must be more than 2 characters.";
+    }
+    if (strlen($firstname) < 2) {
+        $listOfErrors[] = "First name must be more than 2 characters.";
+    }
+    if ($consent != "1") {
+        $listOfErrors[] = "Consent to data usage not accepted.";
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $listOfErrors[] = "L'email est incorrect";
+    } else {
+        // --> Unicité de l'email (plus tard)
+
+        $queryPrepared = $conn->prepare("SELECT * FROM user WHERE email=:email");
+        $queryPrepared->execute(["email" => $email]);
+
+        $results = $queryPrepared->fetch();
+
+        if (!empty($results)) {
+            $listOfErrors[] = "L'email est déjà utilisé";
+        }
+    }    
+
+    // Si aucune erreur, procéder à l'insertion ou à la mise à jour
+    if (empty($listOfErrors)) {
+
+        if ($action === "add") {
+            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+            $sql = "INSERT INTO user (pseudo, firstname, lastname, email, phone_number, extension, password, country, address, city, postal_code, grade, consent, is_deleted, is_admin, vip_status, is_validated)
+                    VALUES (:pseudo, :firstname, :lastname, :email, :phone_number, :extension, :password, :country, :address, :city, :postal_code, :grade, :consent, 0, 0, 0, 0)";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                'pseudo' => $pseudo,
+                'firstname' => $firstname,
+                'lastname' => $lastname,
+                'email' => $email,
+                'phone_number' => $phone_number,
+                'extension' => $extension,
+                'password' => $passwordHash,
+                'country' => $country,
+                'address' => $address,
+                'city' => $city,
+                'postal_code' => $postal_code,
+                'grade' => $grade,
+                'consent' => $consent
+            ]);
+            echo "Point de contrôle 2";
+
+            header('Location: ../login.php');
+            exit;
+        } elseif ($action === "update") {
+            $sql = "UPDATE user SET pseudo = :pseudo, firstname = :firstname, lastname = :lastname, email = :email, phone_number = :phone_number, extension = :extension, country = :country, address = :address, city = :city, postal_code = :postal_code, grade = :grade WHERE id = :id";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                'id' => $id,
+                'pseudo' => $pseudo,
+                'firstname' => $firstname,
+                'lastname' => $lastname,
+                'email' => $email,
+                'phone_number' => $phone_number,
+                'extension' => $extension,
+                'country' => $country,
+                'address' => $address,
+                'city' => $city,
+                'postal_code' => $postal_code,
+                'grade' => $grade
+            ]);
+            header('Location: ../admin.php');
+            exit;
+        }
+    } else {
+        // Gestion des erreurs
+        $_SESSION['listOfErrors'] = $listOfErrors;
+        unset($_POST["password"]);
+        unset($_POST["passwordConfirm"]);
+        $_SESSION['data'] = $_POST;
+        header('Location: ../register.php');
+        exit;
+    }
 }
-//Nettoyage des données
 $conn = null;
+?>

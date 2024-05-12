@@ -9,8 +9,6 @@
 
     <link rel="stylesheet" href="..\..\css\base.css">
 	<link rel="stylesheet" href="includes\admin.css">
-
-     <!-- Import de la bibliothèque Chart.js -->
      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
@@ -22,7 +20,6 @@
                 <a class="navbar-brand"  <?php if(isset($_SESSION['admin'])): ?> href="index.php"<?php endif;?>>
                     <img src="../assets/logos/darkLogo.png" alt="Logo" height="70">
                 </a>
-                <!--si l'admin est connecte-->
                 <?php if(isset($_SESSION['admin'])): ?>
                 <div class="collapse navbar-collapse" id="navbarText">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -31,19 +28,18 @@
                             En attente de validation
                             </a>
                             <ul class="dropdown-menu dropdown-menu-dark">
-                                <li><a class="dropdown-item" href="#">Bailleurs</a></li>
-                                <li><a class="dropdown-item" href="#">Prestataires</a></li>
-                                <li><a class="dropdown-item" href="#">Tous les utilisateurs</a></li>
+                                <li><a class="dropdown-item" href="validation?choice=vlandlords">Bailleurs</a></li>
+                                <li><a class="dropdown-item" href="validation?choice=vproviders">Prestataires</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
                                     
-                                <li><a class="dropdown-item" href="#">Logements</a></li>
-                                <li><a class="dropdown-item" href="#">Prestations</a></li>
+                                <li><a class="dropdown-item" href="validation?choice=vhousing">Logements</a></li>
+                                <li><a class="dropdown-item" href="validation?choice=vperformance">Prestations</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="#">Evolution tarifaire</a></li>
+                                <li><a class="dropdown-item" href="validation?choice=vevolution">Evolution tarifaire</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
@@ -71,8 +67,6 @@
                                 <li><a class="dropdown-item" href="users?choice=all">Voir tout</a></li>
                             </ul>
                         </li>
-
-                        <!--Renvoi vers le client lourd a effectuer-->
                         <li class="nav-item">
                             <a class="nav-link" href="#">Tickets</a>
                         </li>
@@ -85,7 +79,6 @@
         <?php if(isset($_SESSION['admin'])): ?>
             <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
                 <div class="justify-content-end">
-                    <!-- faire en sorte que le burger menu soit tout a droite -->
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>

@@ -8,16 +8,9 @@ if (!isset($_SESSION['admin'])) {
 }
 //Si y'a un POST qui est envoyé (par rapport au formulaire)
 if (isset($_POST['userForm'])) {
-    updateUser($_POST['id'], $_POST['pseudo'], $_POST['lastname'], $_POST['firstname'], $_POST['email']);
+    updateUser($_POST['id'], $_POST['pseudo'], $_POST['lastname'], $_POST['firstname'], $_POST['email'], $_POST['grade']);
     //Nettoyer les variables
-    unset($_POST['userForm']);
-    unset($_POST['id']);
-    unset($_POST['pseudo']);
-    unset($_POST['lastname']);
-    unset($_POST['firstname']);
-    unset($_POST['email']);
-    unset($_POST['grade']);
-
+    unset($_POST);
 }
     
 
@@ -25,22 +18,50 @@ if (isset($_POST['userForm'])) {
 if (isset($_POST['deleteUser'])) {
     deleteUser($_POST['id']);
     //Nettoyer les variables
-    unset($_POST['deleteUser']);
-    unset($_POST['id']);
+    unset($_POST);
 }
 
 //Si un admin est ajouté
 if (isset($_POST['addNewAdmin'])) {
-    addNewAdmin($_POST['pseudo'], $_POST['firstname'], $_POST['lastname'], $_POST['email'], $_POST['pwd'], $_POST['pwdConfirm'], $_POST['grade']);
+    $result=addNewAdmin($_POST['pseudo'], $_POST['firstname'], $_POST['lastname'], $_POST['email'], $_POST['pwd'], $_POST['pwdConfirm'], $_POST['grade']);
+    //Si le tableau d'erreur est plein, afficher les erreurs dans un alert
+    if (!empty($result)) {
+        ?>
+        <div class="alert alert-danger" role="alert" style="text-align: center;" >
+            L'ajout de l'administrateur a échoué
+        </div>
+    <?php
+    }else{
+        ?>
+        <div class="alert alert-success" role="alert" style="text-align: center;">
+            L'administrateur a bien été ajouté
+        </div>
+        <?php
+        //Nettoyer les variables
+        unset($_POST);
+        unset ($result);
+    }
+}
+
+if (isset($_POST['annuler'])) {
     //Nettoyer les variables
-    unset($_POST['addAdmin']);
-    unset($_POST['pseudo']);
-    unset($_POST['lastname']);
-    unset($_POST['firstname']);
-    unset($_POST['email']);
-    unset($_POST['pwd']);
-    unset($_POST['pwdConfirm']);
-    unset($_POST['grade']);
+    unset($_POST);
+    unset ($result);
+
+}
+
+//Si un admin est réactivé
+if (isset($_POST['reactivateUser'])) {
+    reactivateUser($_POST['id']);
+    //Nettoyer les variables
+    unset($_POST);
+}
+
+//Si un admin est validé
+if (isset($_POST['validateUser'])) {
+    validateUser($_POST['id']);
+    //Nettoyer les variables
+    unset($_POST);
 }
 
 //si c'est le choix qui est donné en paramètre :*
@@ -80,11 +101,13 @@ if (isset($_GET['choice'])) {
             $users = getUsersByGrade(6);
             ?>
             <div class="admin-content">
+
+            <div class="d-flex justify-content-between align-items-center">
                 <h1> Administrateurs (<?php echo nbUserByGrade(6);?>)</h1>
-                <!--Pour ajouter un bouton pour ajouter un admin; viaa une modale. Le traitement est effectué en POST sur ce meme fichier -->
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddAdmin">
-                    Ajouter un administrateur
+                    +
                 </button>
+            </div>
                 <div class="modal fade" id="modalAddAdmin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
@@ -95,34 +118,52 @@ if (isset($_GET['choice'])) {
                             <div class="modal-body ">
                                 <form method="post" action="">
                                     <input type="hidden" name="grade" value="6">
+                                    <?php 
+                                        if (!empty($result)) {
+                                            ?>
+                                            <div class="alert alert-danger" role="alert">
+                                                <?php
+                                                foreach ($result as $error) {
+                                                    echo $error . "<br>";
+                                                }
+                                                unset($result);
+                                                ?>
+                                            </div>
+                                        <?php
+                                        }
+                                    ?>
                                     <div class="mb-3">
                                         <label for="pseudo" class="form-label">Pseudo</label>
-                                        <input type="text" class="form-control" id="pseudo" name="pseudo">
+                                        <input type="text" class="form-control" id="pseudo" name="pseudo"  value="<?php if(isset($_POST["pseudo"])){echo $_POST["pseudo"];};?>"   required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="lastname" class="form-label">Nom</label>
-                                        <input type="text" class="form-control" id="lastname" name="lastname">
+                                        <input type="text" class="form-control" id="lastname" name="lastname" value="<?php if(isset($_POST["pseudo"])){echo $_POST["lastname"];};?>" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="firstname" class="form-label">Prénom</label>
-                                        <input type="text" class="form-control" id="firstname" name="firstname">
+                                        <input type="text" class="form-control" id="firstname" name="firstname"  value="<?php if(isset($_POST["pseudo"])){echo $_POST["firstname"];};?>" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="email" name="email">
+                                        <input type="email" class="form-control" id="email" name="email" value="<?php if(isset($_POST["pseudo"])){echo $_POST["email"];};?>" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="pwd" class="form-label">Mot de passe</label>
-                                        <input type="password" class="form-control" id="pwd" name="pwd">
+                                        <input type="password" class="form-control" id="pwd" name="pwd" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="pwdConfirm" class="form-label">Confirmez le mot de passe</label>
-                                        <input type="password" class="form-control" id="pwdConfirm" name="pwdConfirm">
+                                        <input type="password" class="form-control" id="pwdConfirm" name="pwdConfirm"  required>
+                                    </div>
+                                    <div class="alert alert-info" role="alert">
+                                        Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un caractère spécial
                                     </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                <button type="submit" class="btn btn-primary" name="addNewAdmin">Ajouter</button>
+                                <button type="submit" class="btn btn-primary" name="addNewAdmin" onclick="window.location.href='#';">Ajouter</button>
+                                <button type="button" class="btn btn-secondary" onclick="window.location.href='users?choice=admins';">Annuler</button>
                             </div>
                             </form>
                         </div>
@@ -136,7 +177,28 @@ if (isset($_GET['choice'])) {
         default:
 
             break;
-    }?>
+    }
+    ?>
+    <form method="get" action="">
+        <input type="hidden" name="choice" value="<?php echo $id; ?>">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Rechercher un utilisateur" name="search">
+            <button class="btn btn-outline-secondary" type="submit">Rechercher</button>
+        </div>
+    </form>
+        <?php
+        if (isset($_GET['search'])) {
+            $users = searchingBar($_GET['search'],$id);
+        }
+
+        if (empty($users)) {
+            echo "Aucun utilisateur trouvé";
+        } else {
+
+    
+    
+    ?>
+
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -176,31 +238,28 @@ if (isset($_GET['choice'])) {
                                                     <h5 class="modal-title" id="exampleModalLabel">Informations de <?php echo $user['pseudo']; ?></h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                                <!--Faire un formulaire pour afficher les informations de l'utilisateur, que l'on peut modifier-->
-                                                <div class="modal-body
-                                                ">
+                                                <div class="modal-body">
                                                     <form id="userForm<?php echo $user['id']; ?>" method="post" action="">
-                                                    
                                                         <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
                                                         <div class="mb-3">
                                                             <label for="pseudo" class="form-label">Pseudo</label>
-                                                            <input type="text" class="form-control" id="pseudo" value="<?php echo $user['pseudo']; ?> " name="pseudo">
+                                                            <input type="text" class="form-control" id="pseudo" name="pseudo" value="<?php echo $user['pseudo']; ?>" <?php if (getUserStatus($user['id']) == "Supprimé") { ?> disabled <?php } ?>>
                                                         </div>
                                                         <div class="mb-3">
                                                             <label for="lastname" class="form-label">Nom</label>
-                                                            <input type="text" class="form-control" id="lastname" value="<?php echo $user['lastname']; ?>" name="lastname">
+                                                            <input type="text" class="form-control" id="lastname" name="lastname" value="<?php echo $user['lastname']; ?>" <?php if (getUserStatus($user['id']) == "Supprimé") { ?> disabled <?php } ?>>
                                                         </div>
                                                         <div class="mb-3">
                                                             <label for="firstname" class="form-label">Prénom</label>
-                                                            <input type="text" class="form-control" id="firstname" value="<?php echo $user['firstname']; ?>" name="firstname">
+                                                            <input type="text" class="form-control" id="firstname" name="firstname" value="<?php echo $user['firstname']; ?>" <?php if (getUserStatus($user['id']) == "Supprimé") { ?> disabled <?php } ?>>
                                                         </div>
                                                         <div class="mb-3">
                                                             <label for="email" class="form-label">Email</label>
-                                                            <input type="email" class="form-control" id="email" value="<?php echo $user['email']; ?>" name="email">
+                                                            <input type="email" class="form-control" id="email" name="email" value="<?php echo $user['email']; ?>" <?php if (getUserStatus($user['id']) == "Supprimé") { ?> disabled <?php } ?>>
                                                         </div>
                                                         <div class="mb-3">
                                                             <label for="grade" class="form-label">Grade</label>
-                                                            <select class="form-select" id="grade" name="grade">
+                                                            <select class="form-select" id="grade" name="grade" <?php if (getUserStatus($user['id']) == "Supprimé") { ?> disabled <?php } ?>>
                                                                 <option value="1">Voyageur</option>
                                                                 <option value="2">Voyageur VIP1</option>
                                                                 <option value="3">Voyageur VIP2</option>
@@ -212,20 +271,53 @@ if (isset($_GET['choice'])) {
                                                     </form>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                                    <button type="submit" form="userForm<?php echo $user['id']; ?>" class="btn btn-info" name="userForm" >Enregistrer les changements</button>
+                                                    <?php if (getUserStatus($user['id']) != "Supprimé") { ?>
+                                                        <button type="submit" form="userForm<?php echo $user['id']; ?>" class="btn btn-info" name="userForm" >Enregistrer les changements</button>
+                                                    <?php }else{
+                                                        ?>
+                                                        <form method="post" action="">
+                                                            <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
+                                                            <button type="submit" class="btn btn-outline-success" name="reactivateUser">Réactiver</button>
+                                                        </form>
+                                                        <?php } ?>
+                                                        <?php if (getUserStatus($user['id']) == "En attente de validation") { ?>
+                                                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalValidate<?php echo $user['id']; ?>">
+                                                            Valider
+                                                        </button>
+                                                        <div class="modal fade
+                                                        " id="modalValidate<?php echo $user['id']; ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="exampleModalLabel">Valider <?php echo $user['pseudo']; ?></h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body
+                                                                    ">
+                                                                        <p>Êtes-vous sûr de vouloir valider <?php echo $user['pseudo']; ?> ?</p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                                                        <form method="post" action="">
+                                                                            <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
+                                                                            <button type="submit" class="btn btn-success" name="validateUser">Valider</button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    <?php } ?>
+
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                    <!--Si l'utilisateur est supprimé, on ne peut pas afficher le bouton de suppression-->
                                     <?php if (getUserStatus($user['id']) != "Supprimé") { ?>
-                                        <!--Modale pour demander la confirmation de suppression-->
                                         <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalDelete<?php echo $user['id']; ?>">
                                             Supprimer
                                         </button>
-                                        <!--Modale pour demander la confirmation de suppression-->
                                         <div class="modal fade" id="modalDelete<?php echo $user['id']; ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content">
@@ -258,10 +350,13 @@ if (isset($_GET['choice'])) {
                 </table>
             </div>
         </div>
-            
+   
+    <?php } ?>
+ </div>
 <?php
-}
 
+
+}
 
 
 
