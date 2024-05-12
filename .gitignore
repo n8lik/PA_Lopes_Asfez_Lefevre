@@ -1,3 +1,5 @@
 api/
 includes/conf.inc.php
 admin/includes/conf.inc.php
+providers/map.php
+catalog.php
