@@ -1,0 +1,293 @@
+/*Css pour le header, le footer et le body*/
+html, body {
+    height: 100%; 
+    margin: 0; 
+    padding: 0; 
+}
+header {
+    background-color: #08152B;
+    color: white;
+    padding: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Montserrat', sans-serif;
+    color: #08152B;
+    font-size: clamp(0.5rem, 1vw, 1rem);
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: #08152B;
+    font-size: clamp(0.5rem, 1vw, 1rem);
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa ;
+    display: flex;        
+    flex-direction: column;
+    min-height: 100vh;    /* (viewport height) */
+    margin: 0;
+}
+footer {
+    font-family: 'Montserrat', sans-serif;
+    color: #08152B;
+    font-size: clamp(0.5rem, 1vw, 1rem);
+    background-color: #08152B;
+    color: white;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto; 
+    width: 100%;    
+    position: relative; 
+    bottom: 0;         /* Pousse le footer en bas de la page */
+}
+/*###############################################   reecriture bootsrap  ###############################################*/
+
+.nav-link{
+    text-decoration: none;
+    color: white !important;
+    font-family: 'Montserrat', sans-serif   !important;
+    font-size: large !important ;
+}
+.nav-link:hover{
+    color: #BEA57D !important;
+}
+
+.btn-primary{
+    background-color: #BEA57D !important;
+    border: none;
+    color: white;
+    padding: 0.5em 1em;
+    font-family: 'Montserrat', sans-serif   !important;
+}
+
+.navbar-toggler .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255, 255, 255, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/*###############################################   Footer  ###############################################*/
+.footer-content {
+    width: 60%;
+    display: flex;
+    justify-content: space-around; 
+    align-items: start;
+    flex-wrap: wrap; /* Permet aux éléments de passer à la ligne en dessous sur les petits écrans */
+}
+
+.footer-content-column {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    font-size: small !important;
+}
+
+.footer-content-column h3 {
+    margin-top: 0; 
+    margin-bottom: 0;
+    font-size: medium;
+    color: white;
+    text-align: center;
+}
+
+.footer-content-column ul {
+    list-style-type: none;
+    padding: 0; 
+    margin: 0;
+}
+
+.footer-content-column ul li a {
+    color: white; 
+    text-decoration: none; 
+    text-align: center;
+}
+
+.footer-content-column ul li a:hover {
+    color: #BEA57D !important; 
+}
+
+
+.footer-mentions a {
+    color: white;
+    font-size: xx-small;
+    padding-left: 0.5em;
+}
+/*###############################################   terms and conditions    ###############################################*/
+.terms-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #FFFDF6;
+    margin: 1.5em;
+    padding-right: 5%;
+    padding-left: 5%;
+    border-radius: 1em;
+}
+
+.terms-content h2 {
+    text-align: center !important;
+}
+
+/*###############################################   support  ###############################################*/
+/*Css de la page tickets*/
+.support-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #FFFDF6;
+    margin: 1.5em;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    border-radius: 1em;
+}
+
+.support-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #FFFDF6;
+    margin: 1.5em;
+    width: 80%;
+    border-radius: 1em;
+}
+/*champ de saisie*/
+.support-form select  {
+    width: 70%;
+    margin: 0.5em;
+    border-radius: 0.5em;
+    border: 1px solid #BEA57D;
+}
+.support-form input {
+    width: 70%;
+    margin: 0.5em;
+    border-radius: 0.5em;
+    border: 1px solid #BEA57D;
+}
+.support-form textarea {
+    width: 70%;
+    margin: 0.5em;
+    border-radius: 0.5em;
+    border: 1px solid #BEA57D;
+    height: 10em;
+    resize: none;
+    
+}
+.support-form label {
+    font-size: larger;
+    color: #08152B;
+    margin-top: 2%;
+}
+/* ##############################PROFILE################################# */
+.p-nav{
+    color:#BEA57D !important;
+}
+.p-nav:hover{
+    color:#08152B !important;
+}
+.p-background {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 1.5em;
+    padding: 1.5em;
+    border-radius: 1em;
+    background-color: #FFFDF6;
+}
+
+
+.ticket-content {
+    width: 60%; 
+    display: flex;
+    flex-direction: column;
+    background-color: #FFFDF6;
+    border-radius: 1em;
+}
+
+.user-answer, .other-answer {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1em;
+    padding : 0.5em;
+    border-radius: 10px;
+    word-wrap: break-word;
+    font-size: medium;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+
+}
+
+.user-answer {
+    align-items: flex-end; 
+    background-color: #BEA57D;
+}
+
+.other-answer {
+    align-items: flex-start; 
+    background-color: #34656D;
+}
+
+.support-form .form-control {
+    display: block;      
+    margin: 0 auto;  
+    width: 90%;
+}
+
+
+/*Foonts*/
+@font-face {
+    font-family: 'Montserrat';
+    /*depuis un ficher local*/
+    src: url('../assets/fonts/Montserrat/static/Montserrat-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+} 
+@font-face {
+    font-family: "Poppins";
+    src: url('../assets/fonts/Poppins/Poppins-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+/*###############################################   RESPONSIVE  ###############################################*/
+@media screen and (max-width: 768px) {
+    .header-search-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .header-search-bar input,
+    .header-search-bar button,
+    .header-search-bar-text {
+        width: 100%;
+        margin-right: 0;
+    }
+    
+    .header-search-bar input {
+        border-right: none;
+    }
+
+    .footer-content-column {
+        margin-bottom: 1em;
+    }
+
+}
+
+/* Styles pour les appareils mobiles */
+@media screen and (max-width: 480px) {
+    .header-search-bar-text,
+    .header-login button,
+    .header-search-bar button {
+        font-size: 0.8em; 
+    }
+    
+    .header-search-bar {
+        padding: 0.3em;
+    }
+}
+

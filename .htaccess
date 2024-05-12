@@ -1,0 +1,11 @@
+RewriteEngine On    # Active le moteur de réécriture
+
+# Redirige les demandes de .php vers les URL sans extension
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+RewriteRule ^ /%1 [R=302,L,NE]
+
+# Traite les requêtes sans extension comme des fichiers .php
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*?)/?$ $1.php [L]
+
