@@ -1,9 +1,31 @@
 <?php
 require "includes/header.php";
-session_start();
+require "vendor/autoload.php";
+
+use GuzzleHttp\Client;
+
 if (!isset($_SESSION['userId'])) {
     header('Location: login.php');
 }
+$idUser = $_SESSION['userId'];
+//Réception des informations de l'utilisateur
+try {
+    $client = new Client();
+    $response = $client->get('https://pcs-all.online:8000/users/' . $idUser);
+    $user = json_decode($response->getBody(), true)['users'];
+} catch (Exception $e) {
+    echo '<div class="alert alert-danger" role="alert">Erreur lors de la récupération des informations</div>';
+}
+
+//Récéption de la photo de profil
+try {
+    $client = new Client();
+    $response = $client->get('https://pcs-all.online:8000/getPpById/' . $idUser);
+    $userpdp = json_decode($response->getBody(), true)["users"];
+} catch (Exception $e) {
+    echo '<div class="alert alert-danger" role="alert">Erreur lors de la récupération de la photo de profil</div>';
+}
+
 ?>
 
 <div class="p-background">
@@ -21,7 +43,7 @@ if (!isset($_SESSION['userId'])) {
         <div class="tab-pane fade show active" id="InfosPerso" role="tabpanel" aria-labelledby="InfosPerso-tab">.
             <center>
                 <h2> Mes informations personnelles </h2>
-                <?php $user = getUserById($_SESSION['userId']);
+                <?php 
                 //On affiche le résultat si changement a eu lieu
                 if (isset($_SESSION['profileUpdateOk'])) {
                     echo '<div class="alert alert-success" role="alert">' . $_SESSION['profileUpdateOk'] . '</div>';
@@ -31,11 +53,8 @@ if (!isset($_SESSION['userId'])) {
                     unset($_SESSION['profileUpdateError']);
                 }
                 ?>
+                <img src="<?= $userpdp[0]; ?>" alt="Photo de profil" style="width: 200px; height: 200px; border-radius: 50%; margin-bottom: 20px;">
                 <form action=".FutureAPI/profile_update" method="post" class="support-form">
-                    <?php 
-                    $userpdp=getPpByUserId($_SESSION['userId']);
-                    echo '<img src='.$userpdp.' alt="Photo de profil" style="width: 5em; border-radius: 50%;">';
-                    ?>
                     <label for="pp">Changer de photo de profil</label>
                     <input type="file" name="pp" id="pp" class="form-control" style="width: 80% !important; ">
                     <label for="pseudo">Votre pseudo</label>
@@ -121,14 +140,21 @@ if (!isset($_SESSION['userId'])) {
                     </thead>
                     <tbody>
                         <?php
-                        $tickets = getTicketsByUserId($_SESSION['userId']);
+                        //Appel API pour récupérer les tickets
+                        try {
+                            $client = new Client();
+                            $response = $client->get('https://pcs-all.online:8000/getTicketsByUserId/' . $idUser);
+                            $tickets = json_decode($response->getBody(), true)['tickets'];
+                        } catch (Exception $e) {
+                            echo '<div class="alert alert-danger" role="alert">Erreur lors de la récupération des tickets</div>';
+                        }
                         foreach ($tickets as $ticket) {
                             echo '<tr>';
                             echo '<th scope="row">' . $ticket['id'] . '</th>';
-                            echo '<td>' . getTicketSubject($ticket['subject']) . '</td>';
+                            echo '<td>' . $ticket['subject'] . '</td>';
                             $date = new DateTime($ticket['creation_date']);
                             echo '<td>' . $date->format('d/m/y à H:i') . '</td>';
-                            echo '<td>' . getTicketStatus($ticket['status']) . '</td>';
+                            echo '<td>' . $ticket['status'] . '</td>';
                             echo '<td><a href="myTicket?id=' . $ticket['id'] . '" class="btn btn-outline-secondary">Voir</a></td>';
                             echo '</tr>';
                         }

@@ -1,9 +1,10 @@
 <?php
-
-require '../vendor/autoload.php';
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+error_reporting(E_ALL); 
+
+require '../vendor/autoload.php';
+
 
 session_start();
 
@@ -20,51 +21,53 @@ if (!isset($_SESSION["PaymentIntent"])) {
     die();
 }
 
-
 $userId = $_SESSION["userId"];
 $paymentIntent = $_SESSION["PaymentIntent"];
 $id = $paymentIntent["id"];
 $type = $paymentIntent["type"];
 $price = $paymentIntent["price"];
-$start_date = $paymentIntent["date_start"];
-$end_date = $paymentIntent["date_end"];
+$start_date = $paymentIntent["s-date"];
+$end_date = $paymentIntent["e-date"];
 $amount_people = $paymentIntent["amount_people"];
+$title = $paymentIntent["title"];
 
 
 try {
-    $client = new Client([
-        'base_uri' => 'https://pcs-all.online:8000'
+    $client = new Client(['base_uri' => 'https://pcs-all.online:8000']);
+    $response = $client->post('/addBooking', [
+        'json' => [
+            'title' => $title,
+            'id' => $id,
+            'type' => $type,
+            'price' => $price,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+            'amount_people' => $amount_people,
+            'userId' => $userId
+        ]
     ]);
-    $test = [
-        'userId' => $userId,
-        'id' => $id,
-        'type' => $type,
-        'price' => $price,
-        'start_date' => $start_date,
-        'end_date' => $end_date,
-        'amount_people' => $amount_people
-    ];
-
-    $response = $client->post('/booking', [
-        'json' => $test
-
-    ]);
-
-    $body = json_decode($response->getBody()->getContents(), true);
-
-    if ($body['success'] == true) {
-?>
-        <script>
-            alert("Votre réservation a bien été prise en compte. Vous allez être redirigé vers la page d'accueil.");
-            window.location.replace("https://pcs-all.online/");
-        </script>
-<?
+    $booking = json_decode($response->getBody()->getContents(), true);
+   
+    if ($booking["success"]) {
+        unset($_SESSION["PaymentIntent"]);
+        $_SESSION["booking"] = 0;
     } else {
-        echo "Erreur lors de la réservation";
+        unset($_SESSION["PaymentIntent"]);
+        $_SESSION["booking"] = 1;
     }
-} catch (Exception $e) {
 
+} catch (Exception $e) {
     echo $e->getMessage();
     die();
+} 
+finally{
+    header("Location: /reservation/booking?id=$id&type=$type");
+    die();
 }
+
+
+
+
+
+var_dump($_SESSION["PaymentIntent"]);
 ?>

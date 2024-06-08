@@ -1,5 +1,4 @@
 <?php
-
 require '../../vendor/autoload.php';
 session_start();
 use GuzzleHttp\Client;
@@ -44,9 +43,23 @@ if (isset($_POST['email']) && isset($_POST['subject']) && isset($_POST['message'
 if ($_GET['id'] == "answer") {
     //Verifier que la reponse n'est pas vide
     if (!empty($_POST['message'])) {
-        $db = connectDB();
-        $req = $db->prepare("INSERT INTO ticket(id_user,type,subject,content,status,answer_id) VALUES (:id_user,1,:subject,:content,0,:answer_id)");
-        $req->execute(['id_user' => $_SESSION['userId'], 'subject' => $_POST['subject'], 'content' => $_POST['message'], 'answer_id' => $_POST['ticketId']]);
+        try{
+            $client = new Client([
+                'base_uri' => 'https://pcs-all.online:8000'
+            ]);
+            $answer = [
+                'userId' => $_SESSION['userId'],
+                'ticketId' => $_POST['ticketId'],
+                'message' => $_POST['message']
+            ];
+            $response = $client->post('/addTicketAnswer', [
+                'json' => $answer
+            ]);
+            $body = json_decode($response->getBody()->getContents(), true);
+        } catch (Exception $e) {
+            $_SESSION["ticketerror"] = "Une erreur est survenue";
+            header('Location: /myTicket.php?id=' . $_POST['ticketId']);
+        }
         $_SESSION["ticketok"] = "Votre réponse a bien été envoyée";
         header('Location: /myTicket.php?id=' . $_POST['ticketId']);
     } else {
@@ -58,9 +71,22 @@ if ($_GET['id'] == "answer") {
 
 //Si on ferme un ticket
 if ($_GET['id'] == "close") {
-    $db = connectDB();
-    $req = $db->prepare("UPDATE ticket SET status = 2 WHERE id = :id");
-    $req->execute(['id' => $_POST['ticketId']]);
+    try{
+        $client = new Client([
+            'base_uri' => 'https://pcs-all.online:8000'
+        ]);
+        $ticket = [
+            'ticketId' => $_POST['ticketId'],
+            'status' => 2
+        ];
+        $response = $client->post('/changeStatusTicket', [
+            'json' => $ticket
+        ]);
+        $body = json_decode($response->getBody()->getContents(), true);
+    } catch (Exception $e) {
+        $_SESSION["ticketerror"] = "Une erreur est survenue";
+        header('Location: /myTicket.php?id=' . $_POST['ticketId']);
+    }
     $_SESSION["ticketok"] = "Le ticket a bien été fermé";
     header('Location: /myTicket.php?id=' . $_POST['ticketId']);
 }

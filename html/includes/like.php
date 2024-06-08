@@ -1,5 +1,7 @@
 <?php
-require "functions/functions.php";
+require "../vendor/autoload.php";
+
+use GuzzleHttp\Client;
 var_dump($_POST);
 session_start();
 if (!isset($_POST['action']) || !isset($_SESSION['userId'])) {
@@ -15,7 +17,28 @@ switch ($_POST['action']) {
         $id = $_POST['id'];
         $type = $_POST['type'];
         $userId = $_SESSION['userId'];
-        addLike($id, $type, $userId);
+
+        try{
+            $client = new Client([
+                'base_uri' => 'https://pcs-all.online:8000'
+            ]);
+            $like = [
+                'userId' => $userId,
+                'type' => $type,
+                'id' => $id
+            ];
+            $response = $client->post('/addLike', [
+                'json' => $like
+            ]);
+            $body = json_decode($response->getBody()->getContents(), true);
+
+        } catch (Exception $e) {
+            $_SESSION["likeError"] = "Une erreur est survenue";
+        }
+
+        $_SESSION["likeSuccess"] = "Annonce ajoutée aux favoris";
+        
+
         break;
     case 'removeLike':
         if (!isset($_POST['id']) || !isset($_POST['type'])) {
@@ -25,7 +48,25 @@ switch ($_POST['action']) {
         $id = $_POST['id'];
         $type = $_POST['type'];
         $userId = $_SESSION['userId'];
-        removeLike($id, $type, $userId);
+
+        try{
+            $client = new Client([
+                'base_uri' => 'https://pcs-all.online:8000'
+            ]);
+            $like = [
+                'userId' => $userId,
+                'type' => $type,
+                'id' => $id
+            ];
+            $response = $client->post('/removeLike', [
+                'json' => $like
+            ]);
+            $body = json_decode($response->getBody()->getContents(), true);
+
+        } catch (Exception $e) {
+            $_SESSION["likeError"] = "Une erreur est survenue";
+        }
+        $_SESSION["likeSuccess"] = "Annonce retirée des favoris";
         break;
 }
 

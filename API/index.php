@@ -85,7 +85,7 @@ if (isPath("housingAdsImages/:id")) {
 
 if (isPath("performanceAdsImages/:id")) {
     if (isGetMethod()) {
-        require_once __DIR__ . "/routes/ads/getPerformanceAdsImagesById.php";
+        require_once __DIR__ . "/routes/ads/getPerformancesAdsImagesById.php";
         die();
     }
 }

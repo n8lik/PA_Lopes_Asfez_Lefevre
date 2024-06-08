@@ -5,10 +5,10 @@ session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+$_SESSION["PaymentIntent"] = $_POST;
 
 \Stripe\Stripe::setApiKey($stripeSecretTest);
 \Stripe\Stripe::setApiVersion("2024-04-10");
-$_SESSION["PaymentIntent"] = $_POST;
 
 $price = $_POST['price'] * 100;
 
@@ -26,7 +26,7 @@ $session = \Stripe\Checkout\Session::create([
     ]],
     'mode' => 'payment',
     'success_url' => 'https://pcs-all.online/reservation/success',
-    'cancel_url' => 'https://pcs-all.online/',
+    'cancel_url' => 'https://pcs-all.online/reservation/cancel',
 ]);
 header ('Location: ' . $session->url);
 

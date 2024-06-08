@@ -64,9 +64,21 @@ if ($type == 'housing') {
     $response = $client->get('/performanceDisponibility/' . $id);
 }
 $disponibility = json_decode($response->getBody()->getContents(), true);
-?>
 
+//Gestion message Like
+if (isset($_SESSION['likeSuccess'])) {
+    echo '<div class="alert alert-success" role="alert" style="text-align:center !important">' . $_SESSION['likeSuccess'] . '</div>';
+    unset($_SESSION['likeSuccess']);
+}
+if (isset($_SESSION['likeError'])) {
+    echo '<div class="alert alert-danger" role="alert" style="text-align:center !important">' . $_SESSION['likeError'] . '</div>';
+    unset($_SESSION['likeError']);
+}
+
+?>
 <div class="container" style="margin-top: 2em; background-color:#FFFDF6; padding: 1em;">
+
+
     <div class="row">
         <div class="col-md-6">
             <div id="carrouselIndividualAds" class="carousel slide" data-bs-ride="carousel">

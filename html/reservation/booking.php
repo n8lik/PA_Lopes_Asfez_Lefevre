@@ -2,6 +2,7 @@
 require '../includes/header.php';
 require '../vendor/autoload.php';
 session_start();
+
 use GuzzleHttp\Client;
 
 if (!isset($_SESSION["userId"])) {
@@ -39,6 +40,24 @@ $ad = json_decode($response->getBody()->getContents(), true)['adsInfo'];
                 <hr>
             </center>
         </div>
+        <?php if (isset($_SESSION["booking"])) {
+            if ($_SESSION["booking"] == 0) {
+        ?>
+                <div class="alert alert-success" role="alert">
+                    Votre réservation a été effectuée avec succès.
+                </div>
+            <?php
+                unset($_SESSION["booking"]);
+            } else {
+            ?>
+                <div class="alert alert-danger" role="alert">
+                    Une erreur est survenue lors de la réservation.
+                </div>
+        <?php
+                unset($_SESSION["booking"]);
+            }
+        }
+        ?>
         <div class="row" style="height: 40vh;">
             <div class="col-8" style="height: 100%;">
                 <div class="row" style="height: 100%;">
@@ -98,10 +117,10 @@ $ad = json_decode($response->getBody()->getContents(), true)['adsInfo'];
                         <input type="hidden" name="id" value="<?php echo $id; ?>" required>
                         <input type="hidden" name="type" value="<?php echo $type; ?>">
                         <input type="number" name="amount_people">
-                        
+
                         <input type="hidden" id="s-date" name="s-date" value="">
                         <input type="hidden" id="e-date" name="e-date" value="">
-                        <input type="hidden" id="price" name="price" value="50">
+                        <input type="hidden" id="price" name="price" value="">
                         <input type="hidden" name="title" value="<?php echo $ad['title'] ?>">
                         <div id="card-element"></div>
 
@@ -163,7 +182,7 @@ require '../includes/footer.php';
             if (availableDates.has(startDate) && availableDates.has(endDate)) {
                 document.getElementById('start-date').textContent = startDate;
                 document.getElementById('end-date').textContent = endDate;
-                
+
                 let totalPrice = calculateTotalPrice(startDate, endDate, <?php echo $ad['price']; ?>);
                 document.getElementById('total-price').textContent = totalPrice + " €";
                 document.getElementById('price').value = totalPrice;
@@ -193,10 +212,6 @@ require '../includes/footer.php';
         let nights = (end - start) / (1000 * 60 * 60 * 24);
         return nights * pricePerNight;
     }
-
-
-    //Stripe
-
 
 
     // Gestion des flèches du carousel

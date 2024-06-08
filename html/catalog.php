@@ -2,8 +2,6 @@
 require 'includes/header.php';
 require 'vendor/autoload.php';
 
-//Afficher les erreurs
-
 use GuzzleHttp\Client;
 
 if (isset($_GET['choice'])) {
@@ -15,11 +13,23 @@ if (isset($_GET['choice'])) {
                 $arrivalDate = $_POST['arrivalDate'];
                 $departureDate = $_POST['departureDate'];
                 $travelers = $_POST['travelers'];
-                $content = getHousingCatalogBySearch($destination, $arrivalDate, $departureDate, $travelers);
+                //Requete API en POST pour récupérer le catalogue
+                $client = new Client([
+                    'base_uri' => 'https://pcs-all.online:8000'
+                ]);
+                $response = $client->post('/getHousingCatalogBySearch', [
+                    'json' => [
+                        'destination' => $destination,
+                        'arrivalDate' => $arrivalDate,
+                        'departureDate' => $departureDate,
+                        'travelers' => $travelers
+                    ]
+                ]);
+                $content = json_decode($response->getBody()->getContents(), true)['catalog'];
                 unset($_POST);
             } else {
                 $client = new Client();
-                $response = $client->request('GET', 'http://localhost:8000/getAllCatalogByChoice/' . $choice);
+                $response = $client->request('GET', 'https://pcs-all.online:8000/getAllCatalogByChoice/' . $choice);
                 $content = json_decode($response->getBody(), true)['catalog'];
             }
 ?>
@@ -56,11 +66,21 @@ if (isset($_GET['choice'])) {
             if (isset($_POST['activity'])) {
                 $activity = $_POST['activity'];
                 $date = $_POST['date'];
-                $content = getPerformanceCatalogBySearch($activity, $date);
+                //Requete API en POST pour récupérer le catalogue
+                $client = new Client([
+                    'base_uri' => 'https://pcs-all.online:8000'
+                ]);
+                $response = $client->post('/getPerformanceCatalogBySearch', [
+                    'json' => [
+                        'activity' => $activity,
+                        'date' => $date
+                    ]
+                ]);
+                $content = json_decode($response->getBody()->getContents(), true)['catalog'];
                 unset($_POST);
             } else {
                 $client = new Client();
-                $response = $client->request('GET', 'http://localhost:8000/getAllCatalogByChoice/' . $choice);
+                $response = $client->request('GET', 'https://pcs-all.online:8000/getAllCatalogByChoice/' . $choice);
                 $content = json_decode($response->getBody(), true)['catalog'];
             }
 
@@ -91,12 +111,26 @@ if (isset($_GET['choice'])) {
         //Affichage du contenu sous forme de mosaique
         echo '<div class="row">';
         foreach ($content as $item) {
+            //Requete API pour récupérer l'image
+            try {
+                $client = new Client([
+                    'base_uri' => 'https://pcs-all.online:8000'
+                ]);
+                if ($choice == 'housing') {
+                    $response = $client->get('/housingAdsImages/' . $item['id']);
+                } else {
+                    $response = $client->get('/performanceAdsImages/' . $item['id']);
+                }
+                $image = json_decode($response->getBody()->getContents(), true)['images'][0];
+            } catch (Exception $e) {
+                echo $e->getMessage();
+                die();
+            }
             echo '<div class="col-lg-3 col-md-6 col-12">';
             echo '<div class="card" style="width: 18rem; margin-bottom :1em !important;">
-            <img src="/externalFiles/ads/' . $choice . '/' . $item['id'] . '_' . $item['id_user'] . '_1.jpg" class="card-img-top" alt="Image of ' . $item['title'] . '">
+            <img img src="' . $image . '" class="card-img-top" alt="image de '.$item['title'].'">
             <div class="card-body" >
                 <h5 class="card-title">' . $item['title'] . '</h5>
-                <p class="card-text">' . $item['description'] . '</p>
                 <a href="/ads.php?id=' . $item['id'] . '&type=' . $choice . '" class="btn btn-primary">Voir plus</a>
             </div>
                 </div>';

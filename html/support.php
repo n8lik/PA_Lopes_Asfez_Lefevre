@@ -1,4 +1,7 @@
 <?php require 'includes/header.php';
+require 'vendor/autoload.php';
+
+use GuzzleHttp\Client;
 
 
 ini_set('display_errors', 'on');
@@ -49,8 +52,14 @@ if (isset($_GET['type'])) {
                 </div>
             <?php
             } else {
-                
-                $user = getUserById($_SESSION['userId']);
+                $idUser = $_SESSION['userId'];
+                try {
+                    $client = new Client();
+                    $response = $client->get('https://pcs-all.online:8000/users/' . $idUser);
+                    $user = json_decode($response->getBody(), true)['users'];
+                } catch (Exception $e) {
+                    echo '<div class="alert alert-danger" role="alert">Erreur lors de la récupération des informations</div>';
+                }
             ?>
                 <div class="support-container">
                     <h2>Créer un ticket</h2>
