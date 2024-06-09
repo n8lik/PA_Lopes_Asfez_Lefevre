@@ -1,10 +1,10 @@
 <?php 
 
 
-require_once __DIR__ . "/../../libraries/response.php";
-require_once __DIR__ . "/../../libraries/body.php";
-require_once __DIR__ . "/../../entities/ads/booking.php";
-require_once __DIR__ . "/../../libraries/parameters.php";
+require_once __DIR__ . "/../../../libraries/response.php";
+require_once __DIR__ . "/../../../libraries/body.php";
+require_once __DIR__ . "/../../../entities/ads/booking.php";
+require_once __DIR__ . "/../../../libraries/parameters.php";
 
 $body = getBody();
 

@@ -98,10 +98,10 @@ $ad = json_decode($response->getBody()->getContents(), true)['adsInfo'];
             </div>
             <hr>
             <div class="row">
+                <?php if ($type== 'housing'){ ?>
                 <div class="col-8">
-                    <?php echo $ad['capacity']; ?> personnes - <?php echo $ad['surface']; ?> m² - <?php echo $ad['rooms']; ?> pièces - <?php echo $ad['bedrooms']; ?> chambres
+                    <?php echo $ad['guest_capacity']; ?> personnes - <?php echo $ad['property_area']; ?> m² - <?php echo $ad['amount_room']; ?> chambres
                     <br>
-                    <strong>Ascenseur:</strong> <?php echo $ad['elevator'] ? 'Oui' : 'Non'; ?> - <strong>Chauffage:</strong> <?php echo $ad['heating']; ?></p>
                     <p><strong>Description:</strong> <?php echo $ad['description']; ?></p>
                 </div>
                 <div class="col-4">
@@ -128,6 +128,11 @@ $ad = json_decode($response->getBody()->getContents(), true)['adsInfo'];
                         <button id="submit">Payer</button>
                     </form>
                 </div>
+                <?php } else { ?>
+                <div class="col-8">
+                    <p><strong>Description:</strong> <?php echo $ad['description']; ?></p>
+                </div>
+                <?php } ?>
             </div>
         </div>
     </div>

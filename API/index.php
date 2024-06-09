@@ -140,9 +140,33 @@ if (isPath("getPerformanceCatalogBySearch")){
     }
 }
 
+//Faire la moyenne des notes
+if (isPath("getAverageRate")){
+    if(isPostMethod()){
+        require_once __DIR__ . "/routes/ads/getAverageRate.php";
+        die();
+    }
+}
+
+#############################Booking##############################
+
 if (isPath("addBooking")) {
     if (isPostMethod()) {
-        require_once __DIR__ . "/routes/ads/addBooking.php";
+        require_once __DIR__ . "/routes/ads/booking/addBooking.php";
+        die();
+    }
+}
+
+if (isPath("getBookingByTravelerId/:id")) {
+    if (isGetMethod()) {
+        require_once __DIR__ . "/routes/ads/booking/getBookingByTravelerId.php";
+        die();
+    }
+}
+
+if (isPath("addReview")) {
+    if (isPostMethod()) {
+        require_once __DIR__ . "/routes/ads/booking/addReview.php";
         die();
     }
 }

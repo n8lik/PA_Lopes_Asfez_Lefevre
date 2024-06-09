@@ -1,4 +1,6 @@
-<?php require 'includes/header.php';
+<?php 
+ $pageTitle="Accueil";
+require 'includes/header.php';
 ?>
 <link rel="stylesheet" href="/css/index.css">
 

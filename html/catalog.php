@@ -1,4 +1,5 @@
 <?php
+ $pageTitle="Catalogue";
 require 'includes/header.php';
 require 'vendor/autoload.php';
 
@@ -25,12 +26,43 @@ if (isset($_GET['choice'])) {
                         'travelers' => $travelers
                     ]
                 ]);
-                $content = json_decode($response->getBody()->getContents(), true)['catalog'];
+                $tmp_content = json_decode($response->getBody()->getContents(), true)['catalog'];
                 unset($_POST);
             } else {
                 $client = new Client();
                 $response = $client->request('GET', 'https://pcs-all.online:8000/getAllCatalogByChoice/' . $choice);
-                $content = json_decode($response->getBody(), true)['catalog'];
+                $tmp_content = json_decode($response->getBody(), true)['catalog'];
+            }
+            $content=[];
+            foreach ($tmp_content as $key => $item) {
+                //Requete API pour récupérer les disponibilités
+                $client = new Client([
+                    'base_uri' => 'https://pcs-all.online:8000'
+                ]);
+                $response = $client->get('/housingDisponibility/' . $item['id']);
+                $disponibility = json_decode($response->getBody()->getContents(), true)['disponibility'];
+                if (!empty($disponibility)) {
+                    //Ajouter la note moyenne
+                    try{
+                        $client=new Client();
+                        $response=$client->post('https://pcs-all.online:8000/getAverageRate',[
+                            'json'=>[
+                                'id'=>$item['id'],
+                                'type'=>'housing'
+                            ]
+                        ]);
+                        $averageRate=json_decode($response->getBody()->getContents(),true)['average'];
+                    }catch (Exception $e){
+                        echo $e->getMessage();
+                        die();
+                    }
+
+                    if ($averageRate==null){
+                        $averageRate="Pas de note disponible";
+                    }
+                    $item['averageRate']=$averageRate;
+                    $content[] = $item;
+                }
             }
 ?>
             <link rel="stylesheet" href="css/catalog.css">
@@ -76,12 +108,42 @@ if (isset($_GET['choice'])) {
                         'date' => $date
                     ]
                 ]);
-                $content = json_decode($response->getBody()->getContents(), true)['catalog'];
+                $tmp_content = json_decode($response->getBody()->getContents(), true)['catalog'];
                 unset($_POST);
             } else {
                 $client = new Client();
                 $response = $client->request('GET', 'https://pcs-all.online:8000/getAllCatalogByChoice/' . $choice);
-                $content = json_decode($response->getBody(), true)['catalog'];
+                $tmp_content = json_decode($response->getBody(), true)['catalog'];
+            }
+            $content=[];
+            foreach ($tmp_content as $key => $item) {
+                //Requete API pour récupérer les disponibilités
+                $client = new Client([
+                    'base_uri' => 'https://pcs-all.online:8000'
+                ]);
+                $response = $client->get('/performanceDisponibility/' . $item['id']);
+                $disponibility = json_decode($response->getBody()->getContents(), true)['disponibility'];
+                if (!empty($disponibility)) {
+                    //Ajouter la note moyenne
+                    try{
+                        $client=new Client();
+                        $response=$client->post('https://pcs-all.online:8000/getAverageRate',[
+                            'json'=>[
+                                'id'=>$item['id'],
+                                'type'=>'performance'
+                            ]
+                        ]);
+                        $averageRate=json_decode($response->getBody()->getContents(),true)['average'];
+                    }catch (Exception $e){
+                        echo $e->getMessage();
+                        die();
+                    }
+                    if ($averageRate==null){
+                        $averageRate="Pas de note disponible";
+                    }
+                    $item['averageRate']=$averageRate;
+                    $content[] = $item;
+                }
             }
 
             ?>
@@ -128,9 +190,10 @@ if (isset($_GET['choice'])) {
             }
             echo '<div class="col-lg-3 col-md-6 col-12">';
             echo '<div class="card" style="width: 18rem; margin-bottom :1em !important;">
-            <img img src="' . $image . '" class="card-img-top" alt="image de '.$item['title'].'">
+            <img img src="' . $image . '" class="card-img-top" alt="image de ' . $item['title'] . '">
             <div class="card-body" >
                 <h5 class="card-title">' . $item['title'] . '</h5>
+                <p class="card-text">Note moyenne : ' . $item['averageRate'] . '/5</p>
                 <a href="/ads.php?id=' . $item['id'] . '&type=' . $choice . '" class="btn btn-primary">Voir plus</a>
             </div>
                 </div>';

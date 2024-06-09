@@ -31,4 +31,44 @@ function getAdsInfo ($id, $type)
     }
 }
 
+function getAdsAddress($id, $type)
+{
+    require_once __DIR__ . "/../../database/connection.php";
+    $db = connectDB();
+
+    if ($type == 'housing') {
+        $req = $db->prepare("SELECT * FROM housing WHERE id = :id");
+        $req->execute(['id' => $id]);
+        $housing = $req->fetch();
+        return $housing["address"] . " " . $housing["city"] . " " . $housing["postal_code"];
+    } else if ($type == 'performance') {
+        $req = $db->prepare("SELECT * FROM performances WHERE id = :id");
+        $req->execute(['id' => $id]);
+        $performance = $req->fetch();
+        return $performance["address_appointment"] . " " . $performance["city_appointment"] . " " . $performance["zip_code_appointment"];
+    } else {
+        return null;
+    }
+}
+
+
+function getAdsAverageRate($id, $type)
+{
+    require_once __DIR__ . "/../../database/connection.php";
+    $db = connectDB();
+
+    if ($type == 'housing') {
+        $req = $db->prepare("SELECT AVG(rate) as average FROM booking WHERE housing_id = :id");
+        $req->execute(['id' => $id]);
+        return round($req->fetch()["average"], 2);
+    } else if ($type == 'performance') {
+        $req = $db->prepare("SELECT AVG(rate) as average FROM booking WHERE performance_id = :id");
+        $req->execute(['id' => $id]);
+        return round($req->fetch()["average"], 2);
+    } else {
+        return null;
+    }
+}
+
+
 ?>

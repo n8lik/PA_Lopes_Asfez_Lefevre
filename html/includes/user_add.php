@@ -59,7 +59,7 @@ if (isset($_POST['submit'])) {
             $_SESSION['userId'] = $body['id'];
             header('Location: /');
         } else {
-            $_SESSION['ERRORS']['nouser'] = $body['error'];
+            $_SESSION['listOfErrors'] = $body['error'];
             header('Location: /register.php');
         }
     } catch (Exception $e) {

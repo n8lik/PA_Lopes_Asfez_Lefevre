@@ -54,7 +54,7 @@ if (isset($_POST['new_disponibility']) && !empty($_POST['new_disponibility'])) {
     //effacer la variable de session
     unset($_POST['new_disponibility']);
 }
-
+//Recuperer les disponibilités
 $client = new Client([
     'base_uri' => 'https://pcs-all.online:8000'
 ]);
@@ -64,6 +64,11 @@ if ($type == 'housing') {
     $response = $client->get('/performanceDisponibility/' . $id);
 }
 $disponibility = json_decode($response->getBody()->getContents(), true);
+//Si pas de disponibilité et que nous ne somme pas admin ou propriétaire de l'annonce, , on retourne à l'index
+if ($disponibility['success'] == false && $_SESSION['grade'] != 4 && $_SESSION['userId'] != $content['id_user']) {
+    header('Location:/');
+    exit();
+}
 
 //Gestion message Like
 if (isset($_SESSION['likeSuccess'])) {
@@ -73,6 +78,23 @@ if (isset($_SESSION['likeSuccess'])) {
 if (isset($_SESSION['likeError'])) {
     echo '<div class="alert alert-danger" role="alert" style="text-align:center !important">' . $_SESSION['likeError'] . '</div>';
     unset($_SESSION['likeError']);
+}
+
+//Recuperer la note moyenne
+try {
+    $client = new Client([
+        'base_uri' => 'https://pcs-all.online:8000'
+    ]);
+    $response = $client->post('/averageNote', [
+        'json' => [
+            'id' => $id,
+            'type' => $type
+        ]
+    ]);
+    $averageNote = json_decode($response->getBody()->getContents(), true)['average'];
+} catch (Exception $e) {
+    echo $e->getMessage();
+    die();
 }
 
 ?>
@@ -134,7 +156,7 @@ if (isset($_SESSION['likeError'])) {
                 <div class="ads-localisation"><?php echo $content['type_location'] . ' à ' . $content['city'] . ', ' . $content['country']; ?></div>
                 <div class="ads-price"><?php echo $content['type_house'] . '  -  ' . $content['guest_capacity'] . ' voyageurs  -  ' . $content['amount_room'] . ' chambres '; ?></div>
                 <hr>
-                <p> note : & commentaires</p>
+                <p> note : <?php echo $averageNote['averageNote']; ?> / 5</p>
                 <p>Publié par : <b><?php
                                     $client = new Client([
                                         'base_uri' => 'https://pcs-all.online:8000'
