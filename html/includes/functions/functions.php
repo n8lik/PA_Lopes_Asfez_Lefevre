@@ -18,11 +18,10 @@ function connectDB()
 // vérification si l'utilisateur est connecté
 function isConnected()
 {
-    if (isset($_SESSION['email'])) {
+    if (isset($_SESSION['userId'])) {
         return true;
     } else {
         return false;
-        header("https://pcs-all.online/login");
     }
 }
 

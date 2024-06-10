@@ -260,6 +260,33 @@ footer {
     color: black !important;
 }
 
+/*###############################################   BOUTON  ###############################################*/
+.btn-secondary {
+    background-color: var(--pcs-blue) !important;
+    border: none;
+    color: white;
+    padding: 0.5em 1em;
+    font-family: 'Montserrat', sans-serif   !important;
+}
+
+.btn-secondary:hover {
+    background-color: white !important;
+    color: var(--pcs-blue) !important;
+    border: 1px solid var(--pcs-blue) !important;
+}
+
+.btn-outline-secondary {
+    background-color: white !important;
+    border: 1px solid var(--pcs-blue) !important;
+    color: var(--pcs-blue) !important;
+    padding: 0.5em 1em;
+    font-family: 'Montserrat', sans-serif   !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--pcs-blue) !important;
+    color: white !important;
+}
 
 /*Foonts*/
 @font-face {

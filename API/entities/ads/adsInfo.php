@@ -70,5 +70,22 @@ function getAdsAverageRate($id, $type)
     }
 }
 
+function getAdsComments($id, $type)
+{
+    require_once __DIR__ . "/../../database/connection.php";
+    $db = connectDB();
+    //récupérer les commentaires (review dans booking) et le pseudo dans user correspondant à l'user_id dans booking grace a une jointure, et où review not null
+    if ($type == 'housing') {
+        $req = $db->prepare("SELECT review, pseudo FROM booking INNER JOIN user ON booking.user_id = user.id WHERE housing_id = :id AND review IS NOT NULL");
+        $req->execute(['id' => $id]);
+        return $req->fetchAll();
+    } else if ($type == 'performance') {
+        $req = $db->prepare("SELECT review, pseudo FROM booking INNER JOIN user ON booking.user_id = user.id WHERE performance_id = :id AND review IS NOT NULL");
+        $req->execute(['id' => $id]);
+        return $req->fetchAll();
+    } else {
+        return null;
+    }
+}
 
 ?>

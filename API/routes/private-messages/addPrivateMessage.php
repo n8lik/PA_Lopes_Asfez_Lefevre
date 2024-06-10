@@ -4,24 +4,28 @@ require_once __DIR__ . "/../../libraries/body.php";
 require_once __DIR__ . "/../../entities/private-message/privateMessage.php";
 require_once __DIR__ . "/../../libraries/parameters.php";
 
-
 $body = getBody();
 
 $id = $body['id'];
-$type = $body['type'];
+$content = $body['content'];
+$type = getTypeById($id);
 $userId = $body['userId'];
 
-if (empty($id) || empty($type) || empty($userId)) {
+$to_user = getUserIdInConv($id, $userId);
+$adsId = getPerfOrHousingIdById($id);
+
+
+if (empty($id) || empty($content) || empty($type) || empty($userId)) {
     jsonResponse(400,  [], "Missing parameters");
 }
 
-$idConv = addConversation($userId, $type, $id);
+$message = addMessage($id, $content, $type, $userId, $to_user, $adsId);
 
-if (!$idConv) {
-    jsonResponse(404, [], "Conversation not found");
+if (!$message) {
+    jsonResponse(404, [], "Private message not found");
 }
 
 echo jsonResponse(200, [], [
     "success" => true,
-    "idConv" => $idConv
+    "message" => "gg"
 ]);

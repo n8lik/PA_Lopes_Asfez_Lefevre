@@ -18,9 +18,8 @@ if (isPath("login")) {
     }
 }
 
-if(isPath("register")){
-    if(isPostMethod())
-    {
+if (isPath("register")) {
+    if (isPostMethod()) {
         require_once __DIR__ . "/routes/users/post.php";
         die();
     }
@@ -126,28 +125,34 @@ if (isPath("getPerformanceCatalogByType/:type")) {
 }
 
 
-if (isPath("getHousingCatalogBySearch")){
-    if(isPostMethod()){
+if (isPath("getHousingCatalogBySearch")) {
+    if (isPostMethod()) {
         require_once __DIR__ . "/routes/ads/getHousingCatalogBySearch.php";
         die();
     }
 }
 
-if (isPath("getPerformanceCatalogBySearch")){
-    if(isPostMethod()){
+if (isPath("getPerformanceCatalogBySearch")) {
+    if (isPostMethod()) {
         require_once __DIR__ . "/routes/ads/getPerformanceCatalogBySearch.php";
         die();
     }
 }
 
 //Faire la moyenne des notes
-if (isPath("getAverageRate")){
-    if(isPostMethod()){
+if (isPath("getAverageRate")) {
+    if (isPostMethod()) {
         require_once __DIR__ . "/routes/ads/getAverageRate.php";
         die();
     }
 }
-
+//Récupérer les commentaires
+if (isPath("getComments")) {
+    if (isPostMethod()) {
+        require_once __DIR__ . "/routes/ads/getComments.php";
+        die();
+    }
+}
 #############################Booking##############################
 
 if (isPath("addBooking")) {
@@ -245,19 +250,22 @@ if (isPath("getTicketAnswers/:id")) {
 
 ##############################PrivateMessages##############################
 
-if (isPath("private-message/:id")){
-    if(isGetMethod()){
+if (isPath("private-message/:id")) {
+    if (isGetMethod()) {
         require_once __DIR__ . "/routes/private-messages/getPrivateMessage.php";
         die();
     }
-    if(isPostMethod()){
+}
+if (isPath("private-message")) {
+    if (isPostMethod()) {
         require_once __DIR__ . "/routes/private-messages/addPrivateMessage.php";
         die();
     }
 }
 
-if(isPath("addConversation")){
-    if(isPostMethod()){
+
+if (isPath("addConversation")) {
+    if (isPostMethod()) {
         require_once __DIR__ . "/routes/private-messages/addConversation.php";
         die();
     }

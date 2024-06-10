@@ -1,0 +1,12 @@
+.comment-box {
+    border: 1px solid var(--pcs-blue);
+    border-radius: 2em;
+    margin-left: 10%;
+    margin-right: 10%;
+    padding :1%;
+}
+
+.carrouselComments .carousel-control-prev ,
+.carrouselComments .carousel-control-next {
+    color: black !important;
+}
