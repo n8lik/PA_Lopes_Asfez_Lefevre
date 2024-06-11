@@ -44,15 +44,17 @@ if ($getType == "add") {
         $timeSlot1 = isset($_POST['timeSlot1']) ? $_POST['timeSlot1'] : $_POST['timeSlot1_hidden'];
         $timeSlot2 = isset($_POST['timeSlot2']) ? $_POST['timeSlot2'] : $_POST['timeSlot2_hidden'];
         $timeSlot3 = isset($_POST['timeSlot3']) ? $_POST['timeSlot3'] : $_POST['timeSlot3_hidden'];
-        $wifi = $_POST['wifi'];
-        $parking = $_POST['parking'];
-        $piscine = $_POST['piscine'];
-        $tele = $_POST['tele'];
-        $four = $_POST['four'];
-        $laveLinge = $_POST['laveLinge'];
-        $cuisineEquipee = $_POST['cuisineEquipee'];
-        $climatisation = $_POST['climatisation'];
-        $salleSport = $_POST['salleSport'];
+        // si $_post['wifi'] est vide alors $wifi = 0 sinon $wifi = 1
+        $wifi = isset($_POST['wifi']) ? 1 : 0;
+        $parking = isset($_POST['parking']) ? 1 : 0;
+        $pool = isset($_POST['piscine']) ? 1 : 0;
+        $tele = isset($_POST['tele']) ? 1 : 0;
+        $oven = isset($_POST['four']) ? 1 : 0;
+        $wash_machine = isset($_POST['laveLinge']) ? 1 : 0;
+        $kitchen = isset($_POST['cuisineEquipee']) ? 1 : 0;
+        $air_conditionning = isset($_POST['climatisation']) ? 2 : 1;
+        $gym = isset($_POST['salleSport']) ? 2 : 1;
+
 
 
         $_SESSION['data']['title'] = $title;
@@ -162,115 +164,37 @@ if ($getType == "add") {
 
             // Préparer les parties multipart pour les champs du formulaire
             $multipart = [
-                [
-                    'name' => 'title',
-                    'contents' => $title
-                ],
-                [
-                    'name' => 'id_user',
-                    'contents' => $id_user
-                ],
-                [
-                    'name' => 'experienceType',
-                    'contents' => $experienceType
-                ],
-                [
-                    'name' => 'description',
-                    'contents' => $description
-                ],
-                [
-                    'name' => 'propertyAddress',
-                    'contents' => $propertyAddress
-                ],
-                [
-                    'name' => 'propertyCity',
-                    'contents' => $propertyCity
-                ],
-                [
-                    'name' => 'propertyZip',
-                    'contents' => $propertyZip
-                ],
-                [
-                    'name' => 'propertyCountry',
-                    'contents' => $propertyCountry
-                ],
-                [
-                    'name' => 'propertyType',
-                    'contents' => $propertyType
-                ],
-                [
-                    'name' => 'rentalType',
-                    'contents' => $rentalType
-                ],
-                [
-                    'name' => 'bedroomCount',
-                    'contents' => $bedroomCount
-                ],
-                [
-                    'name' => 'guestCapacity',
-                    'contents' => $guestCapacity
-                ],
-                [
-                    'name' => 'propertyArea',
-                    'contents' => $propertyArea
-                ],
-                [
-                    'name' => 'price',
-                    'contents' => $price
-                ],
-                [
-                    'name' => 'fee',
-                    'contents' => $fee
-                ],
-                [
-                    'name' => 'contactPhone',
-                    'contents' => $contactPhone
-                ],
-                [
-                    'name' => 'time',
-                    'contents' => $time
-                ],
-                [
-                    'name' => 'wifi',
-                    'contents' => $wifi
-                ],
-                [
-                    'name' => 'pool',
-                    'contents' => $pool
-                ],
-                [
-                    'name' => 'parking',
-                    'contents' => $parking
-                ],
-                [
-                    'name' => 'tele',
-                    'contents' => $tele
-                ],
-                [
-                    'name' => 'oven',
-                    'contents' => $four
-                ],
-                [
-                    'name' => 'wash_machine',
-                    'contents' => $laveLinge
-                ],
-                [
-                    'name' => 'kitchen',
-                    'contents' => $cuisineEquipee
-                ],
-                [
-                    'name' => 'air_conditionning',
-                    'contents' => $climatisation
-                ],
-                [
-                    'name' => 'gym',
-                    'contents' => $salleSport
-                ],
-                [
-                    'name' => 'file',
-                    'contents' => fopen($_FILES['file']['tmp_name'], 'r'),
-                    'filename' => $_FILES['file']['name']
-                ]
+                ['name' => 'title', 'contents' => $title],
+            ['name' => 'id_user', 'contents' => $id_user],
+            ['name' => 'experienceType', 'contents' => $experienceType],
+            ['name' => 'description', 'contents' => $description],
+            ['name' => 'propertyAddress', 'contents' => $propertyAddress],
+            ['name' => 'propertyCity', 'contents' => $propertyCity],
+            ['name' => 'propertyZip', 'contents' => $propertyZip],
+            ['name' => 'propertyCountry', 'contents' => $propertyCountry],
+            ['name' => 'propertyType', 'contents' => $propertyType],
+            ['name' => 'rentalType', 'contents' => $rentalType],
+            ['name' => 'bedroomCount', 'contents' => $bedroomCount],
+            ['name' => 'guestCapacity', 'contents' => $guestCapacity],
+            ['name' => 'propertyArea', 'contents' => $propertyArea],
+            ['name' => 'price', 'contents' => $price],
+            ['name' => 'fee', 'contents' => $fee],
+            ['name' => 'contactPhone', 'contents' => $contactPhone],
+            ['name' => 'time', 'contents' => $time],
+            ['name' => 'wifi', 'contents' => $wifi],
+            ['name' => 'parking', 'contents' => $parking],
+            ['name' => 'pool', 'contents' => $pool],
+            ['name' => 'tele', 'contents' => $tele],
+            ['name' => 'oven', 'contents' => $oven],
+            ['name' => 'wash_machine', 'contents' => $wash_machine],
+            ['name' => 'kitchen', 'contents' => $kitchen],
+            ['name' => 'air_conditionning', 'contents' => $air_conditionning],
+            ['name' => 'gym', 'contents' => $gym],
+            [
+                'name' => 'file',
+                'contents' => fopen($_FILES['file']['tmp_name'], 'r'),
+                'filename' => $_FILES['file']['name']
+            ]
             ];
 
             try {

@@ -10,6 +10,7 @@ file_put_contents('/var/log/apilog/logfile.log', print_r($_FILES, true), FILE_AP
 
 
 $title = $_POST["title"];
+$description = $_POST["description"];
 $experienceType = $_POST["experienceType"];
 $id_user = $_POST["id_user"];
 $propertyAddress = $_POST["propertyAddress"];
@@ -34,15 +35,10 @@ $air_conditionning = $_POST["air_conditionning"];
 $wash_machine = $_POST["wash_machine"];
 $gym = $_POST["gym"];
 $kitchen = $_POST["kitchen"];
-$file = $_FILES["file"];
-$usertype = "landlord";
-
-                        
 
 
 
-$insert = insertHousing($title, $experienceType, $id_user, $propertyAddress, $propertyCity, $propertyZip, $propertyCountry, $fee, $propertyType, $rentalType, $bedroomCount, $guestCapacity, $propertyArea, $price, $contactPhone, $time, $wifi, $parking, $pool, $tele, $oven, $air_conditionning, $wash_machine, $gym, $kitchen);
-
+$insert = insertHousing($title, $description, $experienceType, $id_user, $propertyAddress, $propertyCity, $propertyZip, $propertyCountry, $fee, $propertyType, $rentalType, $bedroomCount, $guestCapacity, $propertyArea, $price, $contactPhone, $time, $wifi, $parking, $pool, $tele, $oven, $air_conditionning, $wash_machine, $gym, $kitchen);
 if (!$insert) {
     echo jsonResponse(
         400,
@@ -55,9 +51,20 @@ if (!$insert) {
     die();
 }
 
+$file = $_FILES["file"];
+$usertype = "landlord";
+
+                        
+
+
+
+
+
 uploadFile($usertype, $id_user, $insert, $file);
 
 
 echo jsonResponse(200, [], [
     "success" => true,
+    "message" => $insert
 ]);
+ 

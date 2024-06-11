@@ -94,9 +94,9 @@ function getTicketsByStatus($status)
 {
     require_once __DIR__ . "/../database/connection.php";
     $conn = connectDB();
-    if ($status == "open") {
+    if ($status == "new") {
         $status = 0;
-    } else if ($status == "pending") {
+    } else if ($status == "assigned") {
         $status = 1;
     } else if ($status == "closed") {
         $status = 2;
