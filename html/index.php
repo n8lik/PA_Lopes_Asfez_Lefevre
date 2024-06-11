@@ -1,8 +1,16 @@
-<?php 
- $pageTitle="Accueil";
+<?php
+$pageTitle = "Accueil";
 require 'includes/header.php';
 ?>
 <link rel="stylesheet" href="/css/index.css">
+
+<?php if (isset($_SESSION['isConnected'])) { ?>
+	<div class="alert alert-danger" role="alert">
+		<?php echo $_SESSION['isConnected'];
+		unset($_SESSION['isConnected']);
+		?>
+	</div>
+<?php } ?>
 
 
 <div id="carouselIndexIndicators" class="carousel slide" data-bs-ride="carousel" style="margin-bottom: 4em;">
@@ -52,7 +60,7 @@ require 'includes/header.php';
 	<div class="row" style="margin-bottom: 1em;">
 		<div class="col-12 col-md-6">
 			<div class="card">
-				<img src="/assets/img/indexDestination/paris.jpg" class="card-img-top" alt="Paris" >
+				<img src="/assets/img/indexDestination/paris.jpg" class="card-img-top" alt="Paris">
 				<div class="card-body">
 					<h5 class="card-title">Paris</h5>
 					<p class="card-text"> Visitez la ville lumière et ses monuments historiques.</p>
@@ -166,12 +174,12 @@ require 'includes/header.php';
 <?php include 'includes/footer.php'; ?>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBfTvwEttd84Lx7xTxVqNk85d6z3CaDYrE&libraries=places&callback=initAutocomplete" async defer></script>
 <script>
-    function initAutocomplete() {
-        var input = document.getElementById('destinationInput');
-        var options = {
-            //Limites aux villes
-            types: ['(cities)'],
-        };
-        new google.maps.places.Autocomplete(input, options);
-    }
+	function initAutocomplete() {
+		var input = document.getElementById('destinationInput');
+		var options = {
+			//Limites aux villes
+			types: ['(cities)'],
+		};
+		new google.maps.places.Autocomplete(input, options);
+	}
 </script>

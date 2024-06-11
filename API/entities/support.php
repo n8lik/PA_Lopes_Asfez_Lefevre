@@ -89,3 +89,36 @@ function changeStatusTicket($ticketId, $status)
     $req->execute(['status' => $status, 'id' => $ticketId]);
     return "ok";
 }
+
+function getTicketsByStatus($status)
+{
+    require_once __DIR__ . "/../database/connection.php";
+    $conn = connectDB();
+    if ($status == "open") {
+        $status = 0;
+    } else if ($status == "pending") {
+        $status = 1;
+    } else if ($status == "closed") {
+        $status = 2;
+    }else if ($status == "all") {
+        $req = $conn->prepare("SELECT * FROM ticket WHERE answer_id IS NULL");
+        $req->execute();
+        return $req->fetchAll();
+    }else{
+        return "error";
+    }
+
+    $req = $conn->prepare("SELECT * FROM ticket WHERE status = :status AND answer_id IS NULL");
+    $req->execute(['status' => $status]);
+    return $req->fetchAll();
+    
+}
+
+function getAssignedTicketsByUserId($userId)
+{
+    require_once __DIR__ . "/../database/connection.php";
+    $conn = connectDB();
+    $req = $conn->prepare("SELECT * FROM ticket WHERE tech_id = :id AND status = 1 AND answer_id IS NULL");
+    $req->execute(['id' => $userId]);
+    return $req->fetchAll();
+}

@@ -40,8 +40,8 @@ try {
             'id' => $id,
             'type' => $type,
             'price' => $price,
-            'start_date' => $start_date,
-            'end_date' => $end_date,
+            's_date' => $start_date,
+            'e_date' => $end_date,
             'amount_people' => $amount_people,
             'userId' => $userId
         ]

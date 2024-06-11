@@ -58,8 +58,11 @@ function getAdsAverageRate($id, $type)
     $db = connectDB();
 
     if ($type == 'housing') {
+
         $req = $db->prepare("SELECT AVG(rate) as average FROM booking WHERE housing_id = :id");
         $req->execute(['id' => $id]);
+       
+       
         return round($req->fetch()["average"], 2);
     } else if ($type == 'performance') {
         $req = $db->prepare("SELECT AVG(rate) as average FROM booking WHERE performance_id = :id");

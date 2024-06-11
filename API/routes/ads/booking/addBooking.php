@@ -10,8 +10,8 @@ $body = getBody();
 
 $id = $body["id"];
 $type = $body["type"];
-$start_date = $body["start_date"];
-$end_date = $body["end_date"];
+$start_date = $body["s_date"];
+$end_date = $body["e_date"];
 $amount_people = $body["amount_people"];
 $price = $body["price"];
 $userId = $body["userId"];

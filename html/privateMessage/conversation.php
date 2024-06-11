@@ -1,5 +1,7 @@
 <?php
 
+$pageTitle = "Conversation";
+
 require '../vendor/autoload.php';
 require '../includes/header.php';
 

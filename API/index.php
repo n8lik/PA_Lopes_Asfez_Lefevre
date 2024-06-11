@@ -18,6 +18,14 @@ if (isPath("login")) {
     }
 }
 
+//route pour le login assistance, sans captcha
+if (isPath("loginAssistance")) {
+    if (isPostMethod()) {
+        require_once __DIR__ . "/routes/loginAssistance.php";
+        die();
+    }
+}
+
 if (isPath("register")) {
     if (isPostMethod()) {
         require_once __DIR__ . "/routes/users/post.php";
@@ -248,6 +256,20 @@ if (isPath("getTicketAnswers/:id")) {
     }
 }
 
+if (isPath("getTicketsByStatus/:status")) {
+    if (isGetMethod()) {
+        require_once __DIR__ . "/routes/support/tickets/getTicketsByStatus.php";
+        die();
+    }
+}
+
+if(isPath("getAssignedTicketsByUserId/:id")){
+    if(isGetMethod()){
+        require_once __DIR__ . "/routes/support/tickets/getAssignedTicketsByUserId.php";
+        die();
+    }
+}
+
 ##############################PrivateMessages##############################
 
 if (isPath("private-message/:id")) {
@@ -267,6 +289,13 @@ if (isPath("private-message")) {
 if (isPath("addConversation")) {
     if (isPostMethod()) {
         require_once __DIR__ . "/routes/private-messages/addConversation.php";
+        die();
+    }
+}
+
+if (isPath("addAHouse")){
+    if (isPostMethod()){
+        require_once __DIR__ . "/routes/ads/addAHouse.php";
         die();
     }
 }

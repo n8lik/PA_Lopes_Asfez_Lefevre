@@ -1,5 +1,29 @@
 <?php
 
+function isbooked($id, $type, $start_date, $end_date)
+{
+
+    if ($type = "housing") {
+        $db = connectDB();
+        $req = $db->prepare("UPDATE disponibility SET is_booked = 1 WHERE id_housing = :id AND date >= :start_date AND date <= :end_date");
+
+        $req->execute([
+            'id' => $id,
+            'start_date' => $start_date,
+            'end_date' => $end_date
+        ]);
+    } else {
+
+        $db = connectDB();
+        $req = $db->prepare("UPDATE disponibility SET is_booked = 1 WHERE id_performances = :id AND date >= :start_date AND date <= :end_date");
+
+        $req->execute([
+            'id' => $id,
+            'start_date' => $start_date,
+            'end_date' => $end_date
+        ]);
+    }
+}
 
 
 function addBooking($id, $type, $start_date, $end_date, $amount_people, $price, $userId, $title)
@@ -8,8 +32,8 @@ function addBooking($id, $type, $start_date, $end_date, $amount_people, $price, 
 
     $db = connectDB();
 
-    if ($type == "performance"){
-        $req = $db->prepare("INSERT INTO booking (performance_id,  start_date, end_date, amount_people, price, user_id, title) VALUES (:id,:start_date, :end_date, :amount_people, :price, :user_id, :title)");
+    if ($type == "performance") {
+        $req = $db->prepare("INSERT INTO booking (performance_id,  start_date, end_date, amount_people, price, user_id, title) VALUES (:id, :start_date, :end_date, :amount_people, :price, :user_id, :title)");
         $req->execute([
             'id' => $id,
             'start_date' => $start_date,
@@ -19,14 +43,8 @@ function addBooking($id, $type, $start_date, $end_date, $amount_people, $price, 
             'user_id' => $userId,
             'title' => $title
         ]);
-        //mettre a jour la disponibilité de l'annonce
-        $req = $db->prepare("UPDATE disponibility SET is_booked = 1 WHERE id_performance = :id AND date BETWEEN :start_date AND :end_date");
-        $req->execute([
-            'id' => $id,
-            'start_date' => $start_date,
-            'end_date' => $end_date
-        ]);
-    } else if ($type == "housing"){
+        isbooked($id, $type, $start_date, $end_date);
+    } else if ($type == "housing") {
         $req = $db->prepare("INSERT INTO booking (housing_id, start_date, end_date, amount_people, price, user_id, title) VALUES (:id,  :start_date, :end_date, :amount_people, :price, :user_id, :title)");
         $req->execute([
             'id' => $id,
@@ -37,13 +55,10 @@ function addBooking($id, $type, $start_date, $end_date, $amount_people, $price, 
             'user_id' => $userId,
             'title' => $title
         ]);
-        //mettre a jour la disponibilité de l'annonce
-        $req = $db->prepare("UPDATE disponibility SET is_booked = 1 WHERE id_housing = :id AND date BETWEEN :start_date AND :end_date");
-        $req->execute([
-            'id' => $id,
-            'start_date' => $start_date,
-            'end_date' => $end_date
-        ]);
+
+        isbooked($id, $type, $start_date, $end_date);
+
+        
     }
 }
 
@@ -55,7 +70,7 @@ function getBookingByUserId($userId, $type)
 
     $db = connectDB();
 
-    if ($type == "traveler"){
+    if ($type == "traveler") {
         $req = $db->prepare("SELECT * FROM booking WHERE user_id = :userId");
         $req->execute(['userId' => $userId]);
         $bookings = $req->fetchAll();
@@ -70,15 +85,14 @@ function getBookingByUserId($userId, $type)
                 $bookings[$key]["address"] = getAdsAddress($booking["performance_id"], "performance");
             }
         }
-        
+
 
         return $bookings;
-    } else if ($type == "host"){
+    } else if ($type == "host") {
         $req = $db->prepare("SELECT * FROM booking WHERE housing_id IN (SELECT id FROM housing WHERE user_id = :userId)");
         $req->execute(['userId' => $userId]);
         return $req->fetchAll();
     }
-    
 }
 
 function addReview($rate, $comment, $id)

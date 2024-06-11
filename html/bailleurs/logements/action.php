@@ -1,6 +1,9 @@
 <?php
 session_start();
 require '../../includes/functions/functions.php';
+require '../../vendor/autoload.php';
+
+use GuzzleHttp\Client;
 
 $connect = connectDB();
 $getType = $_GET["type"];
@@ -21,7 +24,7 @@ if ($getType == "add") {
     if (isset($_POST['submit'])) {
         $title = $_POST['title'];
         $experienceType = $_POST['experienceType'];
-
+        $description = $_POST['description'];
         $propertyAddress = $_POST['propertyAddress'];
         $propertyCity = $_POST['propertyCity'];
         $propertyZip = $_POST['propertyZip'];
@@ -41,42 +44,98 @@ if ($getType == "add") {
         $timeSlot1 = isset($_POST['timeSlot1']) ? $_POST['timeSlot1'] : $_POST['timeSlot1_hidden'];
         $timeSlot2 = isset($_POST['timeSlot2']) ? $_POST['timeSlot2'] : $_POST['timeSlot2_hidden'];
         $timeSlot3 = isset($_POST['timeSlot3']) ? $_POST['timeSlot3'] : $_POST['timeSlot3_hidden'];
+        $wifi = $_POST['wifi'];
+        $parking = $_POST['parking'];
+        $piscine = $_POST['piscine'];
+        $tele = $_POST['tele'];
+        $four = $_POST['four'];
+        $laveLinge = $_POST['laveLinge'];
+        $cuisineEquipee = $_POST['cuisineEquipee'];
+        $climatisation = $_POST['climatisation'];
+        $salleSport = $_POST['salleSport'];
+
+
+        $_SESSION['data']['title'] = $title;
+        $_SESSION['data']['experienceType'] = $experienceType;
+        $_SESSION['data']['description'] = $description;
+        $_SESSION['data']['propertyAddress'] = $propertyAddress;
+        $_SESSION['data']['propertyCity'] = $propertyCity;
+        $_SESSION['data']['propertyZip'] = $propertyZip;
+        $_SESSION['data']['propertyCountry'] = $propertyCountry;
+        $_SESSION['data']['propertyType'] = $propertyType;
+        $_SESSION['data']['rentalType'] = $rentalType;
+        $_SESSION['data']['bedroomCount'] = $bedroomCount;
+        $_SESSION['data']['guestCapacity'] = $guestCapacity;
+        $_SESSION['data']['propertyArea'] = $propertyArea;
+        $_SESSION['data']['price'] = $price;
+        $_SESSION['data']['contactPhone'] = $contactPhone;
+        $_SESSION['data']['timeSlot1'] = $timeSlot1;
+        $_SESSION['data']['timeSlot2'] = $timeSlot2;
+        $_SESSION['data']['timeSlot3'] = $timeSlot3;
+        $_SESSION['data']['wifi'] = $wifi;
+        $_SESSION['data']['parking'] = $parking;
+        $_SESSION['data']['piscine'] = $piscine;
+        $_SESSION['data']['tele'] = $tele;
+        $_SESSION['data']['four'] = $four;
+        $_SESSION['data']['laveLinge'] = $laveLinge;
+        $_SESSION['data']['cuisineEquipee'] = $cuisineEquipee;
+        $_SESSION['data']['climatisation'] = $climatisation;
+        $_SESSION['data']['salleSport'] = $salleSport;
+
+
+
+
 
         $time = contactTime($timeSlot1, $timeSlot2, $timeSlot3);
 
         $errorMessage = '';
 
 
-        if (!preg_match("/^[a-zA-Z0-9 ]{3,50}$/", $title)) {
+        if (strlen($title) < 3 || strlen($title) > 50) {
             $errorMessage .= '<div class="alert alert-danger" role="alert">Le titre doit contenir entre 3 et 50 caractères.</div>';
         }
-        if (!preg_match("/^[a-zA-Z0-9 ]{3,50}$/", $propertyAddress)) {
+
+        // Description juste entre 30 et 500 caractères (non pas de regex)
+        if (strlen($description) < 30 || strlen($description) > 500) {
+            $errorMessage .= '<div class="alert alert-danger" role="alert">La description doit contenir entre 30 et 500 caractères.</div>';
+        }
+
+        if (strlen($propertyAddress) < 3 || strlen($propertyAddress) > 50) {
             $errorMessage .= '<div class="alert alert-danger" role="alert">L\'adresse doit contenir entre 3 et 50 caractères.</div>';
         }
-        if (!preg_match("/^[a-zA-Z0-9 ]{3,50}$/", $propertyCity)) {
+
+        if (strlen($propertyCity) < 3 || strlen($propertyCity) > 50) {
             $errorMessage .= '<div class="alert alert-danger" role="alert">La ville doit contenir entre 3 et 50 caractères.</div>';
         }
+
         if (!preg_match("/^[0-9]{5}$/", $propertyZip)) {
             $errorMessage .= '<div class="alert alert-danger" role="alert">Le code postal doit contenir 5 chiffres.</div>';
         }
-        if (!preg_match("/^[a-zA-Z0-9 ]{3,50}$/", $propertyCountry)) {
+
+        if (strlen($propertyCountry) < 3 || strlen($propertyCountry) > 50) {
             $errorMessage .= '<div class="alert alert-danger" role="alert">Le pays doit contenir entre 3 et 50 caractères.</div>';
         }
-        if (!preg_match("/^[0-9]{1,2}$/", $bedroomCount)) {
+
+        if (strlen($bedroomCount) < 1 || strlen($bedroomCount) > 2 || !preg_match("/^[0-9]{1,2}$/", $bedroomCount)) {
             $errorMessage .= '<div class="alert alert-danger" role="alert">Le nombre de chambres doit être compris entre 1 et 2 chiffres.</div>';
         }
-        if (!preg_match("/^[0-9]{1,2}$/", $guestCapacity)) {
+
+        if (strlen($guestCapacity) < 1 || strlen($guestCapacity) > 2 || !preg_match("/^[0-9]{1,2}$/", $guestCapacity)) {
             $errorMessage .= '<div class="alert alert-danger" role="alert">La capacité d\'accueil doit être comprise entre 1 et 2 chiffres.</div>';
         }
-        if (!preg_match("/^[0-9]{1,4}$/", $propertyArea)) {
+
+        if (strlen($propertyArea) < 1 || strlen($propertyArea) > 4 || !preg_match("/^[0-9]{1,4}$/", $propertyArea)) {
             $errorMessage .= '<div class="alert alert-danger" role="alert">La surface doit être comprise entre 1 et 4 chiffres.</div>';
         }
+
         if (!preg_match("/^[0-9]{1,4}$/", $price)) {
             $errorMessage .= '<div class="alert alert-danger" role="alert">Le prix doit être compris entre 1 et 4 chiffres.</div>';
         }
+
         if (!preg_match("/^[0-9]{10}$/", $contactPhone)) {
             $errorMessage .= '<div class="alert alert-danger" role="alert">Le numéro de téléphone doit contenir 10 chiffres.</div>';
         }
+
         if (!isset($_POST['acceptation'])) {
             $errorMessage .= '<div class="alert alert-danger" role="alert">Vous devez accepter les conditions générales d\'utilisation.</div>';
         }
@@ -88,42 +147,146 @@ if ($getType == "add") {
             $errorMessage .= '<div class="alert alert-danger" role="alert">Vous devez télécharger au moins une image de votre logement.</div>';
         }
 
-
+        // vérif si c une image via l'extension (jpg jpeg ou png uniquement)
+        $allowed = ['jpg', 'jpeg', 'png'];
+        $fileExtension = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
+        if (!in_array($fileExtension, $allowed)) {
+            $errorMessage .= '<div class="alert alert-danger" role="alert">Désolé, seuls les fichiers JPG, JPEG et PNG sont autorisés.</div>';
+        }
+        //si la taille du  fichier est supérieur à 15mo alors erreur
+        if ($_FILES['file']['size'] > 15728640) {
+            $errorMessage .= '<div class="alert alert-danger" role="alert">Désolé, votre fichier est trop volumineux.</div>';
+        }
         if ($errorMessage === '') {
-            insertHousing($title, $experienceType, $id_user, $propertyAddress, $propertyCity, $propertyZip, $propertyCountry, $fee, $propertyType, $rentalType, $bedroomCount, $guestCapacity, $propertyArea, $price, $contactPhone, $time);
-            $target_dir = "/externalFiles/" . $usertype . "/";
-            $originalFileName = $_FILES["file"]["name"];
-            $number = 1;
+            $client = new Client(['base_uri' => 'https://pcs-all.online:8000']);
 
-            if ($id != '' && $user['id'] == $housing['id_user']) {
-                $extension = pathinfo($originalFileName, PATHINFO_EXTENSION);
-                if ($extension != "jpg" && $extension != "jpeg" && $extension != "png") {
-                    $errors = '<div class="alert alert-danger" role="alert">Désolé, seuls les fichiers PDF, JPG, JPEG et PNG sont autorisés.</div>';
-                }
-            }
+            // Préparer les parties multipart pour les champs du formulaire
+            $multipart = [
+                [
+                    'name' => 'title',
+                    'contents' => $title
+                ],
+                [
+                    'name' => 'id_user',
+                    'contents' => $id_user
+                ],
+                [
+                    'name' => 'experienceType',
+                    'contents' => $experienceType
+                ],
+                [
+                    'name' => 'description',
+                    'contents' => $description
+                ],
+                [
+                    'name' => 'propertyAddress',
+                    'contents' => $propertyAddress
+                ],
+                [
+                    'name' => 'propertyCity',
+                    'contents' => $propertyCity
+                ],
+                [
+                    'name' => 'propertyZip',
+                    'contents' => $propertyZip
+                ],
+                [
+                    'name' => 'propertyCountry',
+                    'contents' => $propertyCountry
+                ],
+                [
+                    'name' => 'propertyType',
+                    'contents' => $propertyType
+                ],
+                [
+                    'name' => 'rentalType',
+                    'contents' => $rentalType
+                ],
+                [
+                    'name' => 'bedroomCount',
+                    'contents' => $bedroomCount
+                ],
+                [
+                    'name' => 'guestCapacity',
+                    'contents' => $guestCapacity
+                ],
+                [
+                    'name' => 'propertyArea',
+                    'contents' => $propertyArea
+                ],
+                [
+                    'name' => 'price',
+                    'contents' => $price
+                ],
+                [
+                    'name' => 'fee',
+                    'contents' => $fee
+                ],
+                [
+                    'name' => 'contactPhone',
+                    'contents' => $contactPhone
+                ],
+                [
+                    'name' => 'time',
+                    'contents' => $time
+                ],
+                [
+                    'name' => 'wifi',
+                    'contents' => $wifi
+                ],
+                [
+                    'name' => 'pool',
+                    'contents' => $pool
+                ],
+                [
+                    'name' => 'parking',
+                    'contents' => $parking
+                ],
+                [
+                    'name' => 'tele',
+                    'contents' => $tele
+                ],
+                [
+                    'name' => 'oven',
+                    'contents' => $four
+                ],
+                [
+                    'name' => 'wash_machine',
+                    'contents' => $laveLinge
+                ],
+                [
+                    'name' => 'kitchen',
+                    'contents' => $cuisineEquipee
+                ],
+                [
+                    'name' => 'air_conditionning',
+                    'contents' => $climatisation
+                ],
+                [
+                    'name' => 'gym',
+                    'contents' => $salleSport
+                ],
+                [
+                    'name' => 'file',
+                    'contents' => fopen($_FILES['file']['tmp_name'], 'r'),
+                    'filename' => $_FILES['file']['name']
+                ]
+            ];
 
-            $newFileName = $id . "_" . $user["id"] . "_" . $number . "." . $extension;
+            try {
+                // Envoyer la requête multipart
+                $response = $client->post('https://pcs-all.online:8000/addAHouse', [
+                    'multipart' => $multipart
+                ]);
 
-            while (file_exists($target_dir . $newFileName)) {
-                $number++;
-                $newFileName = $id . "_" . $user["id"] . "_" . $number . "." . $extension;
-                if ($number > 20) {
-                    $errors = '<div class="alert alert-danger" role="alert">Désolé, vous avez atteint le nombre maximum de fichiers (20).</div>';
-                    break;
-                }
-            }
-
-            $target_file = $target_dir . $newFileName;
-
-            if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
-                echo "<script>alert('Votre demande a bien été envoyée, elle sera traitée prochainement.');</script>";
-                echo "<script> window.location.href='/';</script>";
-            } else {
-                $errors = '<div class="alert alert-danger" role="alert">Désolé, il y a eu une erreur lors du téléchargement de votre fichier.</div>';
+                $body = json_decode($response->getBody()->getContents());
+                var_dump($body);
+            } catch (Exception $e) {
+                echo $e->getMessage();
+                die();
             }
         } else {
             $_SESSION["errorAdd"] = $errorMessage;
-
             header("Location: addAHouse.php");
         }
     }
