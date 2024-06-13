@@ -17,18 +17,19 @@ try {
     $test = [
         'userId' => $userId,
         'id' => $id,
-        'type' => $type,
+        'type' => $type
     ];
 
     $response = $client->post('/addConversation', [
         'json' => $test
     ]);
 
-    $body = json_decode($response->getBody()->getContents(), true);
-    if ($body['success']) {
+    $body = json_decode($response->getBody()->getContents());
+    /* if ($body['success']) {
         $idConv = $body['idConv'];
         header("Location: conversation.php?id=$idConv");
-    }
+    } */
+   var_dump($body);
 } catch (Exception $e) {
 
     echo $e->getMessage();

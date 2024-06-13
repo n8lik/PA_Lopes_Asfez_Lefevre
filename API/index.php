@@ -192,6 +192,14 @@ if(isPath("getAllBookingByOwnerId/:id")){
 
 }
 
+if(isPath("test")){
+    if(isGetMethod()){
+        require_once __DIR__ . "/routes/test.php";
+        die();
+    }
+
+}
+
 ##############################Likes##############################
 if (isPath("getLikes/:id")) {
     if (isGetMethod()) {
