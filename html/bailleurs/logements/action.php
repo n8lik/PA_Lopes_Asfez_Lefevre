@@ -284,31 +284,37 @@ if ($getType == "addFiles") {
     $user = getUserById($userId);
     $housing = getHousingById($id);
 
-
-
     if (isset($_POST['submit'])) {
-        $errors = [];
-        $type = $_POST['type'];
-        $usertype = $_GET['usertype'];
-        $target_dir = "/externalFiles/" . $usertype . "/";
-        $originalFileName = $_FILES["file"]["name"];
+        if ($errorMessage === '') {
+            $client = new Client(['base_uri' => 'https://pcs-all.online:8000']);
 
-        if ($id != '' && $user['id'] == $housing['id_user']) {
-            $extension = pathinfo($originalFileName, PATHINFO_EXTENSION);
-            if ($extension != "pdf" && $extension != "jpg" && $extension != "jpeg" && $extension != "png") {
-                $errors = '<div class="alert alert-danger" role="alert">Désolé, seuls les fichiers PDF, JPG, JPEG et PNG sont autorisés.</div>';
+            // Préparer les parties multipart pour les champs du formulaire
+            $multipart = [
+            
+            [
+                'name' => 'file',
+                'contents' => fopen($_FILES['file']['tmp_name'], 'r'),
+                'filename' => $_FILES['file']['name']
+            ]
+            ];
+
+            try {
+                // Envoyer la requête multipart
+                $response = $client->post('https://pcs-all.online:8000/addAHouse', [
+                    'multipart' => $multipart
+                ]);
+
+                $body = json_decode($response->getBody()->getContents());
+                if ($body['success'] == true)
+                    echo "<script>alert('Votre demande a bien été envoyée, elle sera traitée prochainement.');</script>";
+                echo "<script> window.location.href='houses.php';</script>";
+            } catch (Exception $e) {
+                echo $e->getMessage();
+                die();
             }
+        
+        /* 
 
-            $newFileName = $type . "_" . $user["id"] . "_" . $id . "." . $extension;
-
-            if (file_exists($target_dir . $newFileName)) {
-                $errors = '<div class="alert alert-danger" role="alert">Désolé, vous devez supprimer le fichier actuel avant d\'en retélécharger un.</div>';
-            }
-
-
-            $target_file = $target_dir . $newFileName;
-
-            if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file) && empty($errors)) {
                 echo "<script>alert('Votre demande a bien été envoyée, elle sera traitée prochainement.');</script>";
                 echo "<script> window.location.href='../filesAdd.php?id=" . $id . "';</script>";
             } else {
@@ -318,6 +324,8 @@ if ($getType == "addFiles") {
             }
         } else {
             header("Location: houses.php");
-        }
-    }
+        }*/
+    } 
 }
+}
+

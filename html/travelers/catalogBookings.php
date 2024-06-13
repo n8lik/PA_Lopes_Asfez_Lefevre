@@ -6,10 +6,10 @@ require '../vendor/autoload.php';
 use GuzzleHttp\Client;
 
 // Si l'utilisateur n'est pas connecté ou n'est pas du grade 1, 2 ou 3, on le redirige vers la page d'accueil
-if (!isset($_SESSION["userId"]) || !isset($_SESSION["grade"]) || $_SESSION["grade"] > 3) {
+/* if (!isset($_SESSION["userId"]) || !isset($_SESSION["grade"]) || $_SESSION["grade"] > 3) {
     header("Location: /");
     die();
-}
+} */
 
 // On récupère les réservations de l'utilisateur
 try {
@@ -89,7 +89,12 @@ if (isset($_POST["rate"]) && isset($_POST["comment"]) && isset($_POST["id"])) {
                                 <div class="col-12">
                                     <div class="card" style="width: 100%; margin-bottom: 1em !important;">
                                         <div class="card-body d-flex flex-row align-items-center">
+                                            <?php if (isset($booking["image"])){?>
                                             <img src="<?= $booking["image"] ?>" class="img-fluid" alt="Photo de <?= $booking["title"] ?>" style="max-width: 20%; margin-right: 1em;">
+                                            <?php } else
+                                            {
+                                                echo '<img src="x" class="img-fluid" alt="Photo de '.$booking["title"].'" style="max-width: 20%; margin-right: 1em;">';
+                                            }?>
                                             <div class="flex-grow-1">
                                                 <h5 class="card-title"><strong> <?= $booking["title"] ?></strong></h5>
                                                 <p class="card-text">Du

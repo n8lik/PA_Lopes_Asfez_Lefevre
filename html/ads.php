@@ -103,7 +103,16 @@ try {
             'type' => $type
         ]
     ]);
-    $comments = json_decode($response->getBody()->getContents(), true)['comments'];
+
+    $comments = json_decode($response->getBody()->getContents(), true);
+    if ($comments['success'] == true){
+        $comments = $comments['comments'];
+    }
+    else{
+        $comments = null;
+    }
+
+
 } catch (Exception $e) {
     echo $e->getMessage();
     die();
@@ -185,10 +194,13 @@ try {
                 <div>
                     Note : <?php echo $averageRate; ?>/5
                     <br>
+                    <?php
+                    if(isset($comments)){?>
                     <div id="carrouselComments" class="carousel slide carrouselComments" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             <?php
                             $active = true;
+                            
                             foreach ($comments as $comment) {
                                 echo '<div class="carousel-item';
                                 if ($active) {
@@ -202,6 +214,7 @@ try {
                                 echo '</div>';
                                 echo '</div>';
                             }
+
                             ?>
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carrouselComments" data-bs-slide="prev">
@@ -213,6 +226,7 @@ try {
                             <span class="visually-hidden">Next</span>
                         </button>
                     </div>
+                        <?php } ?>
                 </div>
                 <br>
                 <div class="ads-price">Prix par nuit : <b><?php echo $content['price']; ?> €</b></div>
@@ -259,6 +273,8 @@ try {
                 <hr>
                 <div>
                     Note : <?php echo $averageRate; ?>/5
+                    <?php 
+                    if(isset($comments)){?>
                     <div id="carrouselComments" class="carousel slide carrouselComments" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             <?php
@@ -269,6 +285,8 @@ try {
                                     echo ' active';
                                     $active = false;
                                 }
+
+
                                 echo '">';
                                 echo '<div class="comment-box">';
                                 echo '<p>' . $comment['review'] . '</p>';
@@ -287,6 +305,7 @@ try {
                             <span class="visually-hidden">Next</span>
                         </button>
                     </div>
+                    <?php } ?>
                 </div>
                 <p>Publié par : <b><?php
                                     $client = new Client([

@@ -12,7 +12,7 @@ $ad_type = $body["type"];
 $comments = getAdsComments($ad_id,$ad_type);
 
 if (empty($comments)) {
-    echo jsonResponse(400, [], [
+    echo jsonResponse(200, [], [
         "success" => false,
         "message" => "Error while getting comments"
     ]);

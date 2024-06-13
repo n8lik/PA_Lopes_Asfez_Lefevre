@@ -2,6 +2,7 @@
 
 function isbooked($id, $type, $start_date, $end_date)
 {
+    require_once __DIR__ . "/../../database/connection.php";
 
     if ($type = "housing") {
         $db = connectDB();
@@ -78,11 +79,26 @@ function getBookingByUserId($userId, $type)
         //Récupération de l'image de l'annonceen fonction de son type (si housing_id ou performance_id) grace a la fonction getAdsImages + addresse grace a la fonction getAdsAddress
         foreach ($bookings as $key => $booking) {
             if ($booking["housing_id"] != null) {
+
+                if (!getAdsImages($booking["housing_id"], "housing")){
+                    $bookings[$key]["image"] = NULL;
+                
+                }
+                else{
                 $bookings[$key]["image"] = getAdsImages($booking["housing_id"], "housing")[0];
                 $bookings[$key]["address"] = getAdsAddress($booking["housing_id"], "housing");
+                }
             } else if ($booking["performance_id"] != null) {
+
+                if (!getAdsImages($booking["performance_id"], "performance")){
+                    $bookings[$key]["image"] = NULL;
+                
+                }
+                else{
                 $bookings[$key]["image"] = getAdsImages($booking["performance_id"], "performance")[0];
                 $bookings[$key]["address"] = getAdsAddress($booking["performance_id"], "performance");
+                }
+       
             }
         }
 
@@ -108,4 +124,17 @@ function addReview($rate, $comment, $id)
         'id' => $id
     ]);
     return "ok";
+}
+
+function getAllBookingByOwnerId($id){
+    require_once __DIR__ . "/../../database/connection.php";
+
+    //récupère id housing et date where is booked = 1 dans disponibility et là ou dans la table housing where id_user = id
+    $db = connectDB();
+    $req = $db->prepare("SELECT * FROM booking b JOIN housing h ON b.housing_id = h.id WHERE h.id_user = :id");
+    $req->execute(['id' => $id]);
+    $bookings = $req->fetchALL();
+    return $bookings;
+
+
 }
