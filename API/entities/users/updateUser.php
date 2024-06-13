@@ -1,40 +1,38 @@
 <?php
 
-function updateUser(string $id, $columns): void
+function updateUser($pseudo, $firstname, $lastname, $phone, $extension, $userId)
 {
     //On se connecte à la base de données
     require_once __DIR__ . "/../../database/connection.php";
 
-    //On vérifie que l'on a bien des colonnes à mettre à jour
-    if (count($columns) === 0) {return;}
-
-    //On initialise un tableau vide, on définit les colonnes qui seront modifiées et on définit un tableau contenant les informations de l'utilisateur
-    $tab = [];
-    $changeColumns = ["email", "password", "token"];
-    $idToChar = ["id" => htmlspecialchars($id)];
-
-    //On parcourt les colonnes à modifier
-    foreach ($columns as $columnName => $columnValue) {
-        //Si la colonne n'est pas autorisée on passe à la suivante
-        if (!in_array($columnName, $changeColumns)) {continue;}
-
-        //On ajoute la colonne à modifier dans le tableau
-        $tab[] = "$columnName = :$columnName";
-
-        //Si la colonne est le mot de passe on le hash
-        if ($columnName === "password") {
-            $idToChar[$columnName] = password_hash($columnValue, PASSWORD_BCRYPT);
-        } else {
-            $idToChar[$columnName] = htmlspecialchars($columnValue);
-        }
-    }
-
-    //On prépare la requête
-    $pdo = getDatabaseConnection();
-    $query = "UPDATE users SET " . implode(", ", $tab) . " WHERE id = :id";
-    $updateUser = $pdo->prepare($query);
-
-    //On exécute la requête
-    $updateUser->execute($idToChar);
+    $db = connectDB();
+    $querypreprared = $db->prepare("UPDATE user SET pseudo = :pseudo, firstname = :firstname, lastname = :lastname, phone_number = :phone, extension = :extension WHERE id = :userId");
+    $querypreprared->execute([
+        'pseudo' => $pseudo,
+        'firstname' => $firstname,
+        'lastname' => $lastname,
+        'phone' => $phone,
+        'extension' => $extension,
+        'userId' => $userId
+    ]);
+    
+    return 1;
+    
 }
 
+function updatePassword($userId, $newPassword)
+{
+    //On se connecte à la base de données
+    require_once __DIR__ . "/../../database/connection.php";
+
+    $db = connectDB();
+    $querypreprared = $db->prepare("UPDATE user SET password = :newPassword WHERE id = :userId");
+    $querypreprared->execute([
+        'newPassword' => $newPassword,
+        'userId' => $userId
+    ]);
+
+    return 1;
+    
+    
+}

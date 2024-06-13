@@ -51,9 +51,9 @@ if ($body["password"] !== $body["passwordConfirm"]) {
 
 
 //Si le mot de passe ne contient pas au moins 8 caractères on renvoie une erreur
-if (strlen($body["password"]) < 8) {
+if (strlen($body["password"]) < 8 || strlen($body["password"]) > 20 && !preg_match('/[A-Z]/', $body["password"]) && !preg_match('/[a-z]/', $body["password"]) && !preg_match('/[0-9]/', $body["password"])){
 
-    $error[] = "Mot de passe trop court";
+    $error[] = "Mot de passe  doit contenir entre 8 et 20 caractères, une majuscule, une minuscule et un chiffre";
 }
 
 //Si l'email est déjà utilisé on renvoie une erreur

@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Connexion";
 require 'includes/header.php';
 session_start();
 
@@ -38,7 +39,32 @@ session_start();
                     <?php
                         unset($_SESSION['ERRORS']['captcha']);
                     }
+                    if (isset($_SESSION['passwordOk'])) {
                     ?>
+                        <div class="alert alert-success" role="alert">
+                            <?php echo $_SESSION['passwordOk']; ?>
+                        </div>
+                    <?php
+                        unset($_SESSION['passwordOk']);
+                    }
+                    if (isset($_SESSION['passwordError'])) {
+                    ?>
+                        <div class="alert alert-danger" role="alert">
+                            <?php echo $_SESSION['passwordError']; ?>
+                        </div>
+                    <?php
+                        unset($_SESSION['passwordError']);
+                    }
+                    if (isset($_SESSION['SUCCESS']['password'])) {
+                    ?>
+                        <div class="alert alert-success" role="alert">
+                            <?php echo $_SESSION['SUCCESS']['password']; ?>
+                        </div>
+                    <?php
+                        unset($_SESSION['SUCCESS']['password']);
+                    }
+                    ?>
+
                     <label for="signin-email" class="form-label">Email</label>
                     <input type="email" class="form-control" id="signin-email" name="email" placeholder="Adresse email" required>
 
@@ -46,7 +72,7 @@ session_start();
                 <div class="mb-3 position-relative">
                     <label for="signin-password" class="form-label">Mot de passe</label>
                     <input type="password" class="form-control" id="signin-password" name="password" placeholder="Mot de passe" required>
-                    <i class="toggle-password bi bi-eye-slash position-absolute" style="top: 38px; right: 10px; cursor: pointer;"></i> 
+                    <i class="toggle-password bi bi-eye-slash position-absolute" style="top: 38px; right: 10px; cursor: pointer;"></i>
                 </div>
                 <center>
                     <div class="g-recaptcha" data-sitekey="6Ldj_NopAAAAAPFMUGV9t6pDP3nJnqh-VuqpkTwg"></div>
@@ -58,10 +84,35 @@ session_start();
                 <div class="mt-3 text-center">
                     Pas de compte ? <a href="register.php">Inscrivez-vous ici</a>.
                 </div>
-                <div class="mt-2 text-center">
-                    <a href="forgot_password.php">Mot de passe oublié?</a>
+                <div class="mt-3 text-center">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Mot de passe oublié ?</a>
                 </div>
             </form>
+            <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="forgotPasswordModalLabel">Récupération de mot de passe</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="includes/forgotPassword" method="POST">
+                                <div>
+                                    Entrez votre adresse email pour recevoir un lien de réinitialisation de mot de passe.
+                                </div>
+                                <br>
+                                <div class="mb-3">
+                                    <label for="forgot-email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="forgot-email" name="email" placeholder="Adresse email" required>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary" name="forgotpasswordsubmit">Envoyer</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -79,7 +130,7 @@ session_start();
             // Toggle the type attribute
             const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordField.setAttribute('type', type);
-            
+
             // Toggle the icon
             this.classList.toggle('bi-eye');
             this.classList.toggle('bi-eye-slash');

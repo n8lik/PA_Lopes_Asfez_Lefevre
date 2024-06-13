@@ -299,3 +299,33 @@ if (isPath("addAHouse")){
         die();
     }
 }
+
+
+######################Password##############################
+if (isPath("resetPasswordVerifyUser")) {
+    if (isPostMethod()) {
+        require_once __DIR__ . "/routes/password/resetPasswordVerifyUser.php";
+        die();
+    }
+}
+
+if (isPath("resetPassword")) {
+    if (isPostMethod()) {
+        require_once __DIR__ . "/routes/password/resetPassword.php";
+        die();
+    }
+}
+
+if(isPath("updateUser")){
+    if(isPostMethod()){
+        require_once __DIR__ . "/routes/users/updateUser.php";
+        die();
+    }
+}
+
+if(isPath("updatePassword")){
+    if(isPostMethod()){
+        require_once __DIR__ . "/routes/users/updatePassword.php";
+        die();
+    }
+}

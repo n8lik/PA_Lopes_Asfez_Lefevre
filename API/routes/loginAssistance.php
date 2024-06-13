@@ -40,8 +40,7 @@ $_SESSION["token"] = $token;
 echo jsonResponse(200, [], [
     "success" => true,
     "token" => $token,
-    "grade" => $user["grade"],
-    "id" => $user["id"]
+    "user" => $user
     
 ]);
 

@@ -53,10 +53,19 @@ try {
                     unset($_SESSION['profileUpdateError']);
                 }
                 ?>
+                <?php
+                if (isset($_SESSION['passwordUpdateOk'])) {
+                    echo '<div class="alert alert-success" role="alert">' . $_SESSION['passwordUpdateOk'] . '</div>';
+                    unset($_SESSION['passwordUpdateOk']);
+                } elseif (isset($_SESSION['passwordUpdateError'])) {
+                    echo '<div class="alert alert-danger" role="alert">' . $_SESSION['passwordUpdateError'] . '</div>';
+                    unset($_SESSION['passwordUpdateError']);
+                }
+                ?>
                 <img src="<?= $userpdp[0]; ?>" alt="Photo de profil" style="width: 200px; height: 200px; border-radius: 50%; margin-bottom: 20px;">
-                <form action=".FutureAPI/profile_update" method="post" class="support-form">
+                <form action="includes/updateUser" method="post" class="support-form" enctype="multipart/form-data">
                     <label for="pp">Changer de photo de profil</label>
-                    <input type="file" name="pp" id="pp" class="form-control" style="width: 80% !important; ">
+                    <input type="file" name="file" id="pp" class="form-control" style="width: 80% !important; ">
                     <label for="pseudo">Votre pseudo</label>
                     <input type="pseudo" name="pseudo" id="pseudo" class="form-control" value="<?php echo $user['pseudo'];  ?>" style="width: 80% !important; ">
                     <label for="email">Votre adresse mail</label>
@@ -85,23 +94,15 @@ try {
         <div class="tab-pane fade" id="Security" role="tabpanel" aria-labelledby="Security-tab">
             <center>
                 <h2>Connexion & sécurité</h2>
-                <?php
-                if (isset($_SESSION['passwordUpdateOk'])) {
-                    echo '<div class="alert alert-success" role="alert">' . $_SESSION['passwordUpdateOk'] . '</div>';
-                    unset($_SESSION['passwordUpdateOk']);
-                } elseif (isset($_SESSION['passwordUpdateError'])) {
-                    echo '<div class="alert alert-danger" role="alert">' . $_SESSION['passwordUpdateError'] . '</div>';
-                    unset($_SESSION['passwordUpdateError']);
-                }
-                ?>
-                <form action=".FutureAPI/pwd_update" method="post" class="support-form">
+                
+                <form action="includes/updateUser" method="post" class="support-form">
                     <label for="oldPassword">Ancien mot de passe</label>
                     <input type="password" name="oldPassword" id="oldPassword" class="form-control" style="width: 80% !important; " required>
                     <label for="newPassword">Nouveau mot de passe</label>
                     <input type="password" name="newPassword" id="newPassword" class="form-control" style="width: 80% !important; " required>
                     <label for="confirmPassword">Confirmer le mot de passe</label>
                     <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" style="width: 80% !important; " required>
-                    <button type="submit" name="submit" class="btn btn-primary">Modifier</button>
+                    <button type="submit" name="submit-password" class="btn btn-primary">Modifier</button>
                 </form>
             </center>
         </div>

@@ -204,7 +204,9 @@ if ($getType == "add") {
                 ]);
 
                 $body = json_decode($response->getBody()->getContents());
-                var_dump($body);
+                if ($body['success'] == true)
+                    echo "<script>alert('Votre demande a bien été envoyée, elle sera traitée prochainement.');</script>";
+                echo "<script> window.location.href='houses.php';</script>";
             } catch (Exception $e) {
                 echo $e->getMessage();
                 die();
