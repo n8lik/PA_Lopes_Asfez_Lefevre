@@ -39,7 +39,7 @@ try {
     $mail->addAddress($email);
     $token=bin2hex(random_bytes(30));
     //Ajout du token dans la base de données
-    $req=$conn->prepare('UPDATE user SET token=:token WHERE email=:email');
+    $req=$conn->prepare('UPDATE user SET pwd_token=:token WHERE email=:email');
     $req->execute(array(
         'token'=>$token,
         'email'=>$email

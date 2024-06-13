@@ -184,6 +184,14 @@ if (isPath("addReview")) {
     }
 }
 
+if(isPath("getAllBookingByOwnerId/:id")){
+    if(isGetMethod()){
+        require_once __DIR__ . "/routes/ads/booking/getAllBookingByOwnerId.php";
+        die();
+    }
+
+}
+
 ##############################Likes##############################
 if (isPath("getLikes/:id")) {
     if (isGetMethod()) {

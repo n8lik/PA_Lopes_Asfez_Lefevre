@@ -11,10 +11,10 @@ if (!isset($body['email']) || !isset($body['password'])) {
     die();
 }
 
-$verif=resetPasswordVerifyUser($body['email'], $body['password']);
+$verif=resetPassword($body['email'], $body['password']);
 
 if (!$verif) {
-    jsonResponse(404, [], "User not found");
+    jsonResponse(400, [], "User not found");
     die();
 }
 echo jsonResponse(200, [], [

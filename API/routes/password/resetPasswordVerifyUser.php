@@ -1,7 +1,7 @@
 <?php
+require_once __DIR__ . "/../../entities/password.php";
 require_once __DIR__ . "/../../libraries/response.php";
 require_once __DIR__ . "/../../libraries/body.php";
-require_once __DIR__ . "/../../entities/password.php";
 
 
 $body = getBody();
@@ -14,9 +14,13 @@ if (!isset($body['email']) || !isset($body['token'])) {
 $verif=resetPasswordVerifyUser($body['email'], $body['token']);
 
 if (!$verif) {
-    jsonResponse(404, [], "User not found");
+    echo jsonResponse(400, [], [
+        "success" => false,
+        "message" => "User not found"
+    ]);
     die();
 }
 echo jsonResponse(200, [], [
-    "success" => true
+    "success" => true,
+    "message" => "User found"
 ]);

@@ -5,7 +5,7 @@ require "vendor/autoload.php";
 use GuzzleHttp\Client;
 
 if (!isset($_GET['email']) || !isset($_GET['token'])) {
-    header('Location: /');
+    echo "manque qqch";
 }
 
 ini_set('display_errors', 1);
@@ -15,13 +15,16 @@ error_reporting(E_ALL);
 $client = new Client([
     'base_uri' => 'https://pcs-all.online:8000'
 ]);
+$data=[
+    'email' => $_GET['email'],
+    'token' => $_GET['token']
+];
+
 $response = $client->post('/resetPasswordVerifyUser', [
-    'json' => [
-        'email' => $_GET['email'],
-        'token' => $_GET['token']
-    ]
+    'json' => $data
 ]);
 $body = json_decode($response->getBody()->getContents(), true);
+var_dump($body);
 
 if ($body['success']) {
     if (isset($_POST['resetPassword'])) {
@@ -32,18 +35,31 @@ if ($body['success']) {
             $_SESSION['ERRORS']['emptyfields'] = "Veuillez remplir tous les champs";
         } else if ($password !== $passwordconfirm) {
             $_SESSION['ERRORS']['passwordconfirm'] = "Les mots de passe ne correspondent pas";
+        }else if(strlen($password) < 8){
+            $_SESSION['ERRORS']['password'] = "Le mot de passe doit contenir au moins 8 caractères";
+        }else if(!preg_match('/[A-Z]/', $password)){
+            $_SESSION['ERRORS']['password'] = "Le mot de passe doit contenir au moins une lettre majuscule";
+        }else if(!preg_match('/[a-z]/', $password)){
+            $_SESSION['ERRORS']['password'] = "Le mot de passe doit contenir au moins une lettre minuscule";
+        }else if(!preg_match('/[0-9]/', $password)){
+            $_SESSION['ERRORS']['password'] = "Le mot de passe doit contenir au moins un chiffre";
         } else {
+            $client = new Client([
+                'base_uri' => 'https://pcs-all.online:8000'
+            ]);
+            $data=[
+                'email' => $_GET['email'],
+                'password' => $password
+            ];
             $response = $client->post('/resetPassword', [
-                'json' => [
-                    'email' => $_GET['email'],
-                    'password' => $password
-                ]
+                'json' => $data
             ]);
             $body = json_decode($response->getBody()->getContents(), true);
 
             if ($body['success']) {
                 $_SESSION['SUCCESS']['password'] = "Votre mot de passe a été réinitialisé avec succès";
                 header('Location: /login.php');
+                exit();
             } else {
                 $_SESSION['ERRORS']['password'] = $body['message'];
             }
@@ -81,6 +97,13 @@ if ($body['success']) {
                             </div>
                         <?php
                             unset($_SESSION['ERRORS']['passwordconfirm']);
+                        }if (isset($_SESSION['ERRORS']['password'])) {
+                        ?>
+                            <div class="alert alert-danger" role="alert">
+                                <?php echo $_SESSION['ERRORS']['password']; ?>
+                            </div>
+                        <?php
+                            unset($_SESSION['ERRORS']['password']);
                         }
                         ?>
                         <label for="signin-email" class="form-label">Nouveau mot de passe</label>
@@ -99,7 +122,9 @@ if ($body['success']) {
     </div>
 <?php
 } else {
-    header('Location: /');
+    
+    header('Location: /login');
+    exit();
 }
 
 include 'includes/footer.php';

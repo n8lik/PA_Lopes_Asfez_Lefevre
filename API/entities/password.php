@@ -19,7 +19,7 @@ function resetPassword($email, $password)
     require_once __DIR__ . "/../database/connection.php";
     $password=password_hash($password, PASSWORD_DEFAULT);
     $conn=connectDB();
-    $req=$conn->prepare("UPDATE user SET password = :password WHERE email = :email");
-    $req->execute(['email' => $email, 'password' => $password]);
+    $req=$conn->prepare("UPDATE user SET password = :password, pwd_token = NULL WHERE email = :email");
+    $req->execute(['password' => $password, 'email' => $email]);
     return true;
 }

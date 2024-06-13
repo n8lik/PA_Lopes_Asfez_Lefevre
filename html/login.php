@@ -63,6 +63,14 @@ session_start();
                     <?php
                         unset($_SESSION['SUCCESS']['password']);
                     }
+                    if (isset($_SESSION['pwd'])) {
+                    ?>
+                        <div class="alert alert-success" role="alert">
+                            <?php echo $_SESSION['pwd']; ?>
+                        </div>
+                    <?php
+                        unset($_SESSION['pwd']);
+                    }
                     ?>
 
                     <label for="signin-email" class="form-label">Email</label>

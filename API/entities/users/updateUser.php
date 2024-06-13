@@ -24,6 +24,7 @@ function updatePassword($userId, $newPassword)
 {
     //On se connecte à la base de données
     require_once __DIR__ . "/../../database/connection.php";
+    $newPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
     $db = connectDB();
     $querypreprared = $db->prepare("UPDATE user SET password = :newPassword WHERE id = :userId");
