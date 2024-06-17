@@ -49,6 +49,13 @@ if (isPath("users")) {
     }
 }
 
+if (isPath("usersbytoken/:id")) {
+    if (isGetMethod()) {
+        require_once __DIR__ . "/routes/users/getByToken.php";
+        die();
+    }
+}
+
 //Photo de profil
 
 if (isPath("getPpById/:id")) {
@@ -58,6 +65,8 @@ if (isPath("getPpById/:id")) {
     }
 }
 
+
+
 ##############################ADS##############################
 
 if (isPath("housingDisponibility/:id")) {
@@ -65,6 +74,14 @@ if (isPath("housingDisponibility/:id")) {
         require_once __DIR__ . "/routes/ads/getHousingDisponibilityById.php";
         die();
     }
+}
+
+if(isPath("housing/:id")){
+    if(isGetMethod()){
+        require_once __DIR__ . "/routes/ads/getHousingById.php";
+        die();
+    }
+
 }
 
 
@@ -192,14 +209,12 @@ if(isPath("getAllBookingByOwnerId/:id")){
 
 }
 
-if(isPath("test")){
+if(isPath("booking/:id")){
     if(isGetMethod()){
-        require_once __DIR__ . "/routes/test.php";
+        require_once __DIR__ . "/routes/ads/booking/getBookingById.php";
         die();
     }
-
 }
-
 ##############################Likes##############################
 if (isPath("getLikes/:id")) {
     if (isGetMethod()) {
@@ -342,6 +357,15 @@ if(isPath("updateUser")){
 if(isPath("updatePassword")){
     if(isPostMethod()){
         require_once __DIR__ . "/routes/users/updatePassword.php";
+        die();
+    }
+}
+
+
+
+if(isPath("test")){
+    if(isPostMethod()){
+        require_once __DIR__ . "/routes/test.php";
         die();
     }
 }

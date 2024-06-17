@@ -11,7 +11,7 @@ $answers=getTicketAnswers($id);
 
 if(empty($answers))
 {
-    echo(jsonResponse(200,[],[
+    echo(jsonResponse(404,[],[
         "success"=>false,
         "message"=>"No answer found"
     ]));

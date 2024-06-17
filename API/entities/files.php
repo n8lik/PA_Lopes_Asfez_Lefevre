@@ -43,6 +43,7 @@ function uploadFile($type, $id_user, $id_ads, $file)
         $files = glob($target_dir . $id_user . ".*");
         
         unlink($files[0]);
+        
         $newFileName = $id_user . "." . $extension;
         $target_file = $target_dir . $newFileName;
         if ($file['error'] !== UPLOAD_ERR_OK) {

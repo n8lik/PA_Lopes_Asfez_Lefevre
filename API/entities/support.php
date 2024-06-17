@@ -110,7 +110,14 @@ function getTicketsByStatus($status)
 
     $req = $conn->prepare("SELECT * FROM ticket WHERE status = :status AND answer_id IS NULL");
     $req->execute(['status' => $status]);
-    return $req->fetchAll();
+    $res = $req->fetchAll();
+
+    foreach ($res as $key => $ticket) {
+        $res[$key]["subject"] = getSubjectById($ticket["subject"]);
+        $res[$key]["status"] = getStatusById($ticket["status"]);
+    }
+
+    return $res;
     
 }
 

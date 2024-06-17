@@ -45,7 +45,7 @@ $ad = json_decode($response->getBody()->getContents(), true)['adsInfo'];
             if ($_SESSION["booking"] == 0) {
         ?>
                 <div class="alert alert-success" role="alert">
-                    Votre réservation a été effectuée avec succès.
+                    Votre réservation a été effectuée avec succès. Vous recevrez votre facture par mail sous peu.
                 </div>
             <?php
                 unset($_SESSION["booking"]);

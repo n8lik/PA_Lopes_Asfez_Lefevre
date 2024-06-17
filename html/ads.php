@@ -89,6 +89,7 @@ try {
         ]
     ]);
     $averageRate = json_decode($response->getBody()->getContents(), true)['average'];
+    
 } catch (Exception $e) {
     echo $e->getMessage();
     die();
@@ -192,9 +193,11 @@ try {
                     </b>
                 </p>
                 <div>
-                    Note : <?php echo $averageRate; ?>/5
+                    <?php /* if (isset($averageRate)){ ?>
+                    Note : <?php echo $averageRate;} ?>/5
+                        
                     <br>
-                    <?php
+                    <?php */
                     if(isset($comments)){?>
                     <div id="carrouselComments" class="carousel slide carrouselComments" data-bs-ride="carousel">
                         <div class="carousel-inner">
@@ -272,8 +275,10 @@ try {
                 <div class="ads-localisation"><?php echo $content['performance_type'] . ' à ' . $content['city_appointment'] . ', ' . $content['country_appointment']; ?></div>
                 <hr>
                 <div>
-                    Note : <?php echo $averageRate; ?>/5
-                    <?php 
+                    <?php /* if (isset($averageRate)){ ?>
+                    Note : <?php echo $averageRate;} ?>/5
+                    <?php  */
+                    
                     if(isset($comments)){?>
                     <div id="carrouselComments" class="carousel slide carrouselComments" data-bs-ride="carousel">
                         <div class="carousel-inner">

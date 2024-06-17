@@ -11,17 +11,11 @@ $ad_type = $body["type"];
 
 $average = getAdsAverageRate($ad_id,$ad_type);
 
-if (empty($average)) {
-    echo jsonResponse(400, [], [
-        "success" => false,
-        "message" => "Error while getting average rate"
-    ]);
-    die();
-}else{
-    echo jsonResponse(200, [], [
+if(!$average){
+
+    echo(jsonResponse(200, [], [
         "success" => true,
         "average" => $average
-    ]);
-    die();
+    ]));
 }
-?>
+

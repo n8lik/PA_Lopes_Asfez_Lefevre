@@ -78,7 +78,7 @@ $choice = "housing";
                         } else {
                             echo "Validé";
                         } ?></td>
-                    <td><center><a href="announce.php?id=<?= $houseId ?>" class="btn btn-outline-secondary">Voir</a></center></td>
+                    <td><center><a href="/ads.php?id=<?= $houseId ?>&type=housing" class="btn btn-outline-secondary">Voir</a></center></td>
                     <td>
                         <a href="../filesAdd.php?id=<?= $houseId ?>" class="btn btn-outline-success">Ajout de Document</a>
                     </td>

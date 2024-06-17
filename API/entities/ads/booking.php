@@ -27,6 +27,16 @@ function isbooked($id, $type, $start_date, $end_date)
 }
 
 
+function getBookingById($id){
+    require_once __DIR__ . "/../../database/connection.php";
+
+    $db = connectDB();
+
+    $req = $db->prepare("SELECT * FROM booking WHERE id = :id");
+    $req->execute(['id' => $id]);
+    return $req->fetch();
+}
+
 function addBooking($id, $type, $start_date, $end_date, $amount_people, $price, $userId, $title)
 {
     require_once __DIR__ . "/../../database/connection.php";
@@ -58,6 +68,9 @@ function addBooking($id, $type, $start_date, $end_date, $amount_people, $price, 
         ]);
 
         isbooked($id, $type, $start_date, $end_date);
+
+        $lastId = $db->lastInsertId();
+        return $lastId;
 
         
     }

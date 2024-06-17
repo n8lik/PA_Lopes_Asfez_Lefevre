@@ -26,9 +26,18 @@ if (!isset($id) || !isset($type) || !isset($start_date) || !isset($end_date) || 
     die();
 }
 
-addBooking($id, $type, $start_date, $end_date, $amount_people, $price, $userId, $title);
+$id=addBooking($id, $type, $start_date, $end_date, $amount_people, $price, $userId, $title);
+
+if (!$id) {
+    echo jsonResponse(200, [], [
+        "success" => false,
+        "message" => "Booking not added"
+    ]);
+    die();
+}
 
 echo jsonResponse(200, [], [
     "success" => true,
-    "message" => "Booking added"
+    "message" => "Booking added",
+    "id" => $id
 ]);

@@ -42,3 +42,9 @@ function insertHousing($title,$description, $experienceType, $id_user, $property
 
 }
 
+function getHousingById($id){
+    $db = connectDB();
+    $req = $db->prepare("SELECT * FROM housing WHERE id = :id");
+    $req->execute(['id' => $id]);
+    return $req->fetch();
+}

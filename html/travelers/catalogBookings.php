@@ -156,7 +156,7 @@ if (isset($_POST["rate"]) && isset($_POST["comment"]) && isset($_POST["id"])) {
                                         <h5 class="card-title"><?= $booking["title"] ?></h5>
                                         <p class="card-text">Du <?= $booking["start_date"] ?> au <?= $booking["end_date"] ?></p>
                                         <p class="card-text">Prix : <?= $booking["price"] ?>€</p>
-                                        <?php if ($booking["review"] == null) : ?>
+                                        <?php if ($booking["review"] == null) { ?>
                                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#commentModal<?= $booking["id"] ?>">Laisser un commentaire</button>
                                             <div class="modal fade" id="commentModal<?= $booking["id"] ?>" tabindex="-1" aria-labelledby="commentModalLabel<?= $booking["id"] ?>" aria-hidden="true">
                                                 <div class="modal-dialog">
@@ -182,9 +182,17 @@ if (isset($_POST["rate"]) && isset($_POST["comment"]) && isset($_POST["id"])) {
                                                     </div>
                                                 </div>
                                             </div>
-                                        <?php endif; ?>
-                                        <a href="/ads?id=<?= $booking["id"] ?> &type=<?= $booking["type"] ?>" class="btn btn-primary">Voir l'annonce</a>
-                                    </div>
+                                        <?php } 
+                                        if ($booking["housing_id"] != null) {
+                                                    echo '<a href="/ads?id=' . $booking["housing_id"] . '&type=housing" class="btn btn-primary">Voir l\'annonce</a>';
+                                                } else {
+                                                    echo '<a href="/ads?id=' . $booking["performance_id"] . '&type=performance" class="btn btn-primary">Voir l\'annonce</a>';
+                                                }
+
+                                                $token = $_SESSION["token"];
+                                                ?>
+                                                <a href="/pdf/generatePDF.php?id=<?= $booking["id"] ?>&user=<?php echo $token;?>" class="btn btn-primary">Télécharger la facture <i class="fas fa-download"></i></a>
+                                         </div>       
                                 </div>
                             </div>
                         <?php }; ?>

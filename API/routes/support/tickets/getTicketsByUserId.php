@@ -10,7 +10,7 @@ $id = $parameters["id"];
 $tickets = getTicketsByUserId($id);
 
 if (empty($tickets)) {
-    echo(jsonResponse(200, [], [
+    echo(jsonResponse(400, [], [
         "success" => false,
         "message" => "No ticket found"
     ]));

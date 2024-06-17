@@ -313,7 +313,7 @@ if ($getType == "addFiles") {
                 die();
             }
         
-        /* 
+        
 
                 echo "<script>alert('Votre demande a bien été envoyée, elle sera traitée prochainement.');</script>";
                 echo "<script> window.location.href='../filesAdd.php?id=" . $id . "';</script>";
@@ -324,8 +324,7 @@ if ($getType == "addFiles") {
             }
         } else {
             header("Location: houses.php");
-        }*/
+        }
     } 
-}
-}
+    
 

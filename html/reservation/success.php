@@ -9,6 +9,9 @@ require '../vendor/autoload.php';
 session_start();
 
 use GuzzleHttp\Client;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 
 
 if (!isset($_SESSION["userId"])) {
@@ -20,7 +23,7 @@ if (!isset($_SESSION["PaymentIntent"])) {
     header("Location: /");
     die();
 }
-
+$token = $_SESSION["token"];
 $userId = $_SESSION["userId"];
 $paymentIntent = $_SESSION["PaymentIntent"];
 $id = $paymentIntent["id"];
@@ -47,10 +50,15 @@ try {
         ]
     ]);
     $booking = json_decode($response->getBody()->getContents(), true);
+    $idresa = $booking["id"];
    
     if ($booking["success"]) {
         unset($_SESSION["PaymentIntent"]);
         $_SESSION["booking"] = 0;
+        header('location: /pdf/sendmail?id='.$idresa.'&user='.$token);
+   
+        
+
     } else {
         unset($_SESSION["PaymentIntent"]);
         $_SESSION["booking"] = 1;
@@ -60,14 +68,8 @@ try {
     echo $e->getMessage();
     die();
 } 
-finally{
-    header("Location: /reservation/booking?id=$id&type=$type");
-    die();
-}
 
 
 
 
-
-var_dump($_SESSION["PaymentIntent"]);
 ?>
