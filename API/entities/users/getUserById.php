@@ -47,12 +47,12 @@ function getUserByAdsId($adsid, $type)
     
 }
 
-function getUserByToken($id)
+function getUserByToken($token)
 {
     require_once __DIR__ . "/../../database/connection.php";
     $db = connectDB();
-    $req = $db->prepare("SELECT * FROM user WHERE token = :id");
-    $req->execute(['id' => $id]);
+    $req = $db->prepare("SELECT * FROM user WHERE token = :token");
+    $req->execute(['token' => $token]);
 
     return $req->fetch();
 }

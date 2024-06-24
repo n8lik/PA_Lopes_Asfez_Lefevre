@@ -1,16 +1,10 @@
 <?php
-//Aficher les erreurs
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 require '/var/www/html/vendor/autoload.php';
 require '/var/www/html/includes/functions/functions.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-var_dump($_POST);
 $mail = new PHPMailer(true);
 $email=$_POST['email'];
 

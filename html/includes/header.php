@@ -69,7 +69,7 @@
 								<a class="nav-link" href="#">Mes frais</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="#">Mes documents</a>
+								<a class="nav-link" href="/files/files">Mes documents</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="#">Messagerie</a>

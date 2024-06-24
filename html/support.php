@@ -31,7 +31,11 @@ if (isset($_POST['message'])) {
     if (!empty($message)) {
         array_push($_SESSION["Usermessages"], $message);
     }
-    $response = botResponse($message);
+    $client = new Client();
+    $response = $client->post('https://pcs-all.online:8000/addChatbotAnswer', [
+        'json' => ['message' => $message]
+    ]);
+    $response = json_decode($response->getBody(), true)['message'];
     array_push($_SESSION["Chatmessages"], $response);
 }
 

@@ -22,7 +22,7 @@ if (isset($_POST['loginsubmit'])) {
         $queryPrepared->execute();
         $admin = $queryPrepared->fetch();
 
-        if ($admin && password_verify($password, $admin['password']) && $admin['is_admin'] == 1 && $admin['grade'] == 6 && $admin['is_validated'] == 1) {
+        if ($admin && password_verify($password, $admin['password']) && $admin['grade'] == 6 && $admin['is_validated'] == 1) {
             //Comparaison des deux morts de passes
             $_SESSION['email'] = $admin['email'];
             $_SESSION['firstname'] = $admin['firstname'];

@@ -65,7 +65,28 @@ if (isPath("getPpById/:id")) {
     }
 }
 
+if (isPath("files")) {
+    if (isGetMethod()) {
+        require_once __DIR__ . "/routes/files/getByUserToken.php";
+        die();
+    }
+}
 
+if (isPath("deleteFile")){
+    if(isPostMethod()){
+        require_once __DIR__ . "/routes/files/deleteFile.php";
+        die();
+    }
+
+}
+
+//Supprimer un utilisateur
+if (isPath("deleteUserById/:id")) {
+    if (isDeleteMethod()) {
+        require_once __DIR__ . "/routes/users/deleteUserById.php";
+        die();
+    }
+}
 
 ##############################ADS##############################
 

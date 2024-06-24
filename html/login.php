@@ -3,7 +3,6 @@ $pageTitle = "Connexion";
 require 'includes/header.php';
 session_start();
 
-
 ?>
 
 <div class="container mt-5">
@@ -71,6 +70,7 @@ session_start();
                     <?php
                         unset($_SESSION['pwd']);
                     }
+
                     ?>
 
                     <label for="signin-email" class="form-label">Email</label>

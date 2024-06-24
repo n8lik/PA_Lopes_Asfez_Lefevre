@@ -63,3 +63,77 @@ function uploadFile($type, $id_user, $id_ads, $file)
     }
     return $reponse;
 }
+
+function getAllFilesByUserProviderId($id){
+    $directoryPath = "externalFiles/provider/".$id."/";
+
+    $fileData = [];
+
+    if (file_exists($directoryPath) && is_dir($directoryPath)) {
+        // Récupérer la liste des fichiers
+        $files = scandir($directoryPath);
+
+        foreach ($files as $file) {
+            if ($file != '.' && $file != '..') {
+                $filePath = $directoryPath . $file;
+
+                // Récupérer les informations sur le fichier
+                $fileInfo = [
+                    'name' => $file,
+                    'type' => mime_content_type($filePath),
+                    'size' => filesize($filePath),
+                    'path' => $filePath,
+                    'userId' => $id
+                ];
+
+                // Ajouter les informations du fichier au tableau $fileData
+                $fileData[] = $fileInfo;
+            }
+        }
+    }
+
+    return $fileData;
+}
+
+
+function getAllFilesByUserId($id,$type){
+    $basePath = 'externalFiles/';
+    $userPath = '';
+    if ($type === 'landlord') {
+        $userPath = "landlord/{$id}/";
+    } elseif ($type === 'provider') {
+        $userPath = "providers/{$id}/";
+    }
+    $userDirectory = $basePath . $userPath;
+    $filesData = array();
+    $files = scandir($userDirectory);
+
+    // Filtrer les fichiers pour enlever '.' et '..'
+    $files = array_diff($files, array('.', '..'));
+    // Lire le contenu de chaque fichier et l'ajouter au tableau de données
+    foreach ($files as $file) {
+        $filePath = $userDirectory . $file;
+        if (is_file($filePath)) {
+            $fileContent = file_get_contents($filePath);
+            $filesData[$file] = $fileContent;
+        }
+    }
+    return $filesData;
+}
+
+function deleteFile($id, $type, $fileName)
+{
+    $basePath = 'externalFiles/';
+    $userPath = '';
+    if ($type === 'landlord') {
+        $userPath = "landlord/{$id}/";
+    } elseif ($type === 'provider') {
+        $userPath = "providers/{$id}/";
+    }
+    $filePath = $basePath . $userPath . $fileName;
+    if (file_exists($filePath)) {
+        unlink($filePath);
+        
+    }
+    
+}

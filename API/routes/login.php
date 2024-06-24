@@ -33,8 +33,6 @@ if (!$user) {
 
     die();
 }
-
-
 $token = generateToken($user["id"]);
 
 $_SESSION["token"] = $token;
@@ -46,8 +44,5 @@ echo jsonResponse(200, [], [
     "id" => $user["id"]
     
 ]);
-
-
-
 
 ?>

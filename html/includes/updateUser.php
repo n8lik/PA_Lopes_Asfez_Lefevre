@@ -10,6 +10,7 @@ use GuzzleHttp\Client;
 
 $userId = $_SESSION["userId"];
 
+var_dump($_FILES);
 
 if (isset($_POST['submit'])) {
 
@@ -20,14 +21,19 @@ if (isset($_POST['submit'])) {
     $extension = $_POST['extension'];
 
     
-    if (isset($_FILES['file'])) {
+    if ($_FILES['file']['size'] > 0) {
         $file = [
             'name' => 'file',
             'contents' => fopen($_FILES['file']['tmp_name'], 'r'),
             'filename' => $_FILES['file']['name']
         ];
     } else {
-        $file = null;
+        $file = [
+            'name' => '',
+            'contents' => '',
+            'filename' => ''
+        
+        ];
     }
 
 

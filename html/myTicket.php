@@ -18,9 +18,13 @@ if (isset($_GET["id"])) {
     $ticket = json_decode($response->getBody()->getContents(), true)['ticket'];
 
     //Récupération des réponses
-    $client = new Client();
-    $response = $client->get('https://pcs-all.online:8000/getTicketAnswers/' . $_GET["id"]);
-    $answers = json_decode($response->getBody()->getContents(), true)['answers'];
+    try {
+        $response = $client->get('https://pcs-all.online:8000/getTicketAnswers/' . $_GET["id"]);
+        $answers = json_decode($response->getBody()->getContents(), true)['answers'];
+    } catch (Exception $e) {
+        $answers = [];
+    }
+
 
     $id = $_GET["id"];
     //Si le ticket n'existe pas

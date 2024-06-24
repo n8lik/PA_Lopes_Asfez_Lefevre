@@ -5,7 +5,7 @@
         <div class="footer-content-column">
             <h3>Assitance</h3>
             <ul>
-                <li><a href="/supporttype=chatbot">ChatBot</a></li>
+                <li><a href="/support?type=chatbot">ChatBot</a></li>
                 <li><a href="/support?type=ticket">Contactez-nous</a></li>
             </ul>
         </div>

@@ -43,7 +43,7 @@ try {
         <div class="tab-pane fade show active" id="InfosPerso" role="tabpanel" aria-labelledby="InfosPerso-tab">.
             <center>
                 <h2> Mes informations personnelles </h2>
-                <?php 
+                <?php
                 //On affiche le résultat si changement a eu lieu
                 if (isset($_SESSION['profileUpdateOk'])) {
                     echo '<div class="alert alert-success" role="alert">' . $_SESSION['profileUpdateOk'] . '</div>';
@@ -87,14 +87,15 @@ try {
                         <input type="text" name="phone" id="phone" class="form-control" value="<?php echo $user['phone_number']; ?>" required style="flex-grow: 3; margin-left: 10px;">
                     </div>
 
-                    <button type="submit" name="submit" class="btn btn-primary">Modifier</button>
+                    <button type="submit" name="submit" class="btn btn-primary" style="margin-top:1em">Modifier</button>
                 </form>
             </center>
         </div>
-        <div class="tab-pane fade" id="Security" role="tabpanel" aria-labelledby="Security-tab">
-            <center>
-                <h2>Connexion & sécurité</h2>
-                
+        <div class="tab-pane fade" id="Security" role="tabpanel" aria-labelledby="Security-tab" >
+            <center >
+                <h2 style="margin-top:1em">Connexion & sécurité</h2>
+
+                <h3 style="margin-top:1em">Changer de mot de passe</h3>
                 <form action="includes/updateUser" method="post" class="support-form">
                     <label for="oldPassword">Ancien mot de passe</label>
                     <input type="password" name="oldPassword" id="oldPassword" class="form-control" style="width: 80% !important; " required>
@@ -102,15 +103,47 @@ try {
                     <input type="password" name="newPassword" id="newPassword" class="form-control" style="width: 80% !important; " required>
                     <label for="confirmPassword">Confirmer le mot de passe</label>
                     <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" style="width: 80% !important; " required>
-                    <button type="submit" name="submit-password" class="btn btn-primary">Modifier</button>
+                    <button type="submit" name="submit-password" class="btn btn-primary" style="margin-top:1em">Modifier</button>
                 </form>
+
+                <hr>
+
+                <h3 style="margin-top:1em">Supprimer le compte</h3>
+                <p style="color:red" style="width: 80% !important;">Attention, cette action est irréversible.<br>
+                    Suite à la suppression de votre compte, vous perdrez l'ensemble de vos données et ne pourrez plus accéder à votre compte.<br>
+                    Votre compte sera supprimé dans un délai de 30 jours après la demande de suppression.
+            </p>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal" style="margin-top:1em">
+                    Supprimer le compte
+                </button>
+
+                <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteAccountModalLabel">Suppression du compte</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body
+                            ">
+                            <p>Êtes-vous sûr de vouloir supprimer votre compte ?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                <a href="includes/deleteUser" class="btn btn-danger">Supprimer</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </center>
         </div>
 
 
         <div class="tab-pane fade" id="Payment" role="tabpanel" aria-labelledby="Payment-tab">
             <center>
-                <h2>Moyen de paiement</h2>
+                <h2 style="margin-top:1em">Moyen de paiement</h2>
             </center>
         </div>
 
@@ -118,7 +151,7 @@ try {
 
         <div class="tab-pane fade" id="Notifications" role="tabpanel" aria-labelledby="Notifications-tab">
             <center>
-                <h2>Notifications & preférences</h2>
+                <h2 style="margin-top:1em">Notifications & preférences</h2>
                 <div class="theme-toggle">
                     <button id="theme-toggle-button">Changer de theme</button>
                 </div>
@@ -126,9 +159,9 @@ try {
         </div>
 
 
-        <div class="tab-pane fade" id="Tickets" role="tabpanel" aria-labelledby="Tickets-tab" >
+        <div class="tab-pane fade" id="Tickets" role="tabpanel" aria-labelledby="Tickets-tab">
             <center>
-                <h2>Mes tickets</h2>
+                <h2 style="margin-top:1em">Mes tickets</h2>
                 <table class="table table-hover" style="color:var(--text-color)!important;">
                     <thead>
                         <tr>
@@ -175,4 +208,3 @@ try {
 <?php
 include "includes/footer.php";
 ?>
-
