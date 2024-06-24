@@ -129,3 +129,22 @@ function getAssignedTicketsByUserId($userId)
     $req->execute(['id' => $userId]);
     return $req->fetchAll();
 }
+
+
+#######################Chatbot#######################
+function getChatbotAnswer($message)
+{
+    require_once __DIR__ . "/../database/connection.php";
+    //selectionner tous les mots clés et réponses de la table chatbot
+    $conn = connectDB();
+    $req = $conn->prepare("SELECT * FROM chatbot");
+    $req->execute();
+    $chatbot = $req->fetchAll();
+
+    foreach ($chatbot as $key => $value) {
+        if (strpos($message, $value["keyword"]) !== false) {
+            return $value["chatbotresponse"];
+        }
+    }
+    return "Je n'ai pas compris votre demande";
+}

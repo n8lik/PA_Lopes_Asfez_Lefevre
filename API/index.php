@@ -79,7 +79,13 @@ if (isPath("deleteFile")){
     }
 
 }
+if (isPath("downloadFile")){
+    if(isPostMethod()){
+        require_once __DIR__ . "/routes/files/downloadFile.php";
+        die();
+    }
 
+}
 //Supprimer un utilisateur
 if (isPath("deleteUserById/:id")) {
     if (isDeleteMethod()) {
@@ -322,6 +328,15 @@ if(isPath("getAssignedTicketsByUserId/:id")){
     }
 }
 
+##############################Chatbot##############################
+if (isPath("getChatbotAnswer")) {
+    if (isGetMethod()) {
+        require_once __DIR__ . "/routes/support/chatbot/getChatbotAnswer.php";
+        die();
+    }
+}
+
+
 ##############################PrivateMessages##############################
 
 if (isPath("private-message/:id")) {
@@ -352,6 +367,13 @@ if (isPath("addAHouse")){
     }
 }
 
+if(isPath("addAFile")){
+    if(isPostMethod()){
+        require_once __DIR__ . "/routes/ads/addAFile.php";
+        die();
+    }
+
+}
 
 ######################Password##############################
 if (isPath("resetPasswordVerifyUser")) {

@@ -1,4 +1,8 @@
 <?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 session_start();
 require '../../includes/functions/functions.php';
 require '../../vendor/autoload.php';
@@ -7,7 +11,7 @@ use GuzzleHttp\Client;
 
 $connect = connectDB();
 $getType = $_GET["type"];
-
+$id = $_GET["id"];
 
 
 $id_user = $_SESSION['userId'];
@@ -281,50 +285,49 @@ if ($getType == 'update') {
 
 if ($getType == "addFiles") {
     $id = $_GET["id"];
-    $user = getUserById($userId);
+    $type = $_GET["usertype"];
+    $user = getUserById($id_user);
     $housing = getHousingById($id);
+    $filetype= $_POST['type'];
 
     if (isset($_POST['submit'])) {
-        if ($errorMessage === '') {
             $client = new Client(['base_uri' => 'https://pcs-all.online:8000']);
 
             // Préparer les parties multipart pour les champs du formulaire
             $multipart = [
-            
-            [
-                'name' => 'file',
-                'contents' => fopen($_FILES['file']['tmp_name'], 'r'),
-                'filename' => $_FILES['file']['name']
-            ]
+                ['name' => 'userId', 'contents' => $id_user],
+                ['name' => 'adsId', 'contents' => $id],
+                ['name' => 'type', 'contents' => $type],
+                ['name' => 'filetype' , 'contents' => $filetype],
+                [
+                    'name' => 'file',
+                    'contents' => fopen($_FILES['file']['tmp_name'], 'r'),
+                    'filename' => $_FILES['file']['name']
+                ] 
+             
             ];
 
             try {
                 // Envoyer la requête multipart
-                $response = $client->post('https://pcs-all.online:8000/addAHouse', [
+                $response = $client->post('https://pcs-all.online:8000/addAFile', [
                     'multipart' => $multipart
                 ]);
-
-                $body = json_decode($response->getBody()->getContents());
-                if ($body['success'] == true)
-                    echo "<script>alert('Votre demande a bien été envoyée, elle sera traitée prochainement.');</script>";
+        
+                $body = json_decode($response->getBody()->getContents(), true);
+                
+                if ($body['success'] == true){
+                    echo "<script>alert('Votre demande a bien été envoyée, elle sera traitée prochainement (vous pouvez retrouver vos fichiers dans la rubrique Mes Documents.');</script>";
                 echo "<script> window.location.href='houses.php';</script>";
+            }
+            else{
+                $errors = '<div class="alert alert-danger" role="alert">'.$body["message"].'</div>';
+                $_SESSION['errorFile'] = $errors;
+                header("Location: ../filesAdd.php?id=" . $id);}
             } catch (Exception $e) {
                 echo $e->getMessage();
                 die();
             }
         
-        
-
-                echo "<script>alert('Votre demande a bien été envoyée, elle sera traitée prochainement.');</script>";
-                echo "<script> window.location.href='../filesAdd.php?id=" . $id . "';</script>";
-            } else {
-                $errors = '<div class="alert alert-danger" role="alert">Désolé, il y a eu une erreur lors du téléchargement de votre fichier.</div>';
-                $_SESSION['errorFile'] = $errors;
-                header("Location: ../filesAdd.php?id=" . $id);
-            }
-        } else {
-            header("Location: houses.php");
-        }
-    } 
+    }
+}
     
-

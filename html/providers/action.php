@@ -1,12 +1,14 @@
 <?php
 session_start();
 require '../includes/functions/functions.php';
+require '../../vendor/autoload.php';
+
+use GuzzleHttp\Client;
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 $connect = connectDB();
 $getType = $_GET["type"];
-
 
 
 $userId = $_SESSION['userId'];
@@ -100,7 +102,7 @@ if ($getType == 'update') {
             $errorMessage .= '<div class="alert alert-danger" role="alert">Le rayon de déplacement doit être compris entre 1 et 50 km.</div>';
         }
         if ($errorMessage === '') {
-            updatePerformance($id, $title, $description, $address_appointment, $city_appointment, $zip_appointment, $country_appointment, $price, $price_type, $userId, $fee, $place, $radius);
+            updatePerformance($id, $title, $description, $address_appointment, $city_appointment, $zip_appointment, $country_appointment, $price, $price_type, $fee, $place, $radius);
             echo "<script>alert('Votre demande a bien été envoyée, elle sera traitée prochainement.');</script>";
             echo "<script>window.location.href='/';</script>";
         } else {
@@ -111,39 +113,54 @@ if ($getType == 'update') {
     }
 }
 
+
+
+
 if ($getType == "addFiles") {
     $id = $_GET["id"];
+    $type = $_GET["usertype"];
     $user = getUserById($userId);
-    $performance = getPerformanceById($id);
-
-
+    $housing = getPerformanceById($id);
+    $filetype= $_POST['type'];
 
     if (isset($_POST['submit'])) {
-        $errors = [];
-        $type = $_POST['type'];
-        $usertype = $_GET['usertype'];
-        $target_dir = "/externalFiles/" . $usertype . "/";
-        $originalFileName = $_FILES["file"]["name"];
+            $client = new Client(['base_uri' => 'https://pcs-all.online:8000']);
 
-        if ($id != '' && $user['id'] == $performance['id_user']) {
-            $extension = pathinfo($originalFileName, PATHINFO_EXTENSION);
-            if ($extension != "pdf" && $extension != "jpg" && $extension != "jpeg" && $extension != "png") {
-                $errors .= '<div class="alert alert-danger" role="alert">Désolé, seuls les fichiers PDF, JPG, JPEG et PNG sont autorisés.</div>';
+            // Préparer les parties multipart pour les champs du formulaire
+            $multipart = [
+                ['name' => 'userId', 'contents' => $userId],
+                ['name' => 'adsId', 'contents' => $id],
+                ['name' => 'type', 'contents' => $type],
+                ['name' => 'filetype' , 'contents' => $filetype],
+                [
+                    'name' => 'file',
+                    'contents' => fopen($_FILES['file']['tmp_name'], 'r'),
+                    'filename' => $_FILES['file']['name']
+                ] 
+             
+            ];
+
+            try {
+                // Envoyer la requête multipart
+                $response = $client->post('https://pcs-all.online:8000/addAFile', [
+                    'multipart' => $multipart
+                ]);
+        
+                $body = json_decode($response->getBody()->getContents(), true);
+                
+                if ($body['success'] == true){
+                    echo "<script>alert('Votre demande a bien été envoyée, elle sera traitée prochainement (vous pouvez retrouver vos fichiers dans la rubrique Mes Documents.');</script>";
+                echo "<script> window.location.href='houses.php';</script>";
             }
-            $newFileName = $type . "_" . $user["id"] . "_" . $id . "." . $extension;
-
-            $target_file = $target_dir . $newFileName;
-
-            if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
-                echo "<script>alert('Votre demande a bien été envoyée, elle sera traitée prochainement.');</script>";
-                echo "<script> window.location.href='../filesAdd.php?id=" . $id . "';</script>";
-            } else {
-                $errors = '<div class="alert alert-danger" role="alert">Désolé, il y a eu une erreur lors du téléchargement de votre fichier.</div>';
+            else{
+                $errors = '<div class="alert alert-danger" role="alert">'.$body["message"].'</div>';
                 $_SESSION['errorFile'] = $errors;
-                header("Location: ../filesAdd.php?id=" . $id);
+                header("Location: ../filesAdd.php?id=" . $id);}
+            } catch (Exception $e) {
+                echo $e->getMessage();
+                die();
             }
-        } else {
-            header("Location: houses.php");
-        }
+        
     }
 }
+    

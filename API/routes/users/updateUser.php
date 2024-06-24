@@ -124,7 +124,7 @@ if ($_FILES["file"]["size"] > 2000000) {
 $file = $_FILES["file"];
 $usertype = "pp";
 
-$test = uploadFile($usertype, $userId, NULL, $file);
+$test = uploadFile($usertype, $userId, NULL, $file, NULL);
 
 
 echo jsonResponse(200, [], [

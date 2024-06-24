@@ -24,6 +24,7 @@ if ($performance['id_user'] != $userId) {
         <?php if (!empty($_SESSION['errorFile'])) {
 
             echo $_SESSION['errorFile'];
+            unset ($_SESSION['errorFile']);
         }
         $_SESSION['errorFile'] = ''; ?>
         <div class="alert alert-primary" role="alert">

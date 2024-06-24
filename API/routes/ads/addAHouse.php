@@ -52,7 +52,7 @@ if (!$insert) {
 }
 
 $file = $_FILES["file"];
-$usertype = "landlord";
+$usertype = "housing";
 
                         
 
@@ -60,7 +60,7 @@ $usertype = "landlord";
 
 
 
-uploadFile($usertype, $id_user, $insert, $file);
+uploadImageforHouse($usertype, $id_user, $insert, $file);
 
 
 echo jsonResponse(200, [], [

@@ -17,51 +17,90 @@ try {
     ];
     $response = $client->get('/files', [
         'json' => $test
-
     ]);
 
     $body = json_decode($response->getBody()->getContents(), true);
-    $files= $body['files'];
-    var_dump($body);
+   
+    if (isset($body['success']) && $body['success'] === true) {
+        $files = $body['files'];
+        
+    } else {
+        $files = [];
+        echo "Error: " . $body['message'] . "\n";
+    }
 } catch (Exception $e) {
-    
-$files=[];
+    $files = [];
     echo $e->getMessage();
 }
-
-
-// front qui récupère tous les fichiers de l'utilisateur connecté et les affiches dans une liste avec un lien pour les télécharger 
-
 ?>
 <link rel="stylesheet" href="../css/files.css">
 <center><h1>Mes Documents</h1></center>
-<?php if (isset($_SESSION["success"])){
-     ?>
+<?php if (isset($_SESSION["success"])){ ?>
     <div class="alert alert-success" role="alert">
         <?php echo $_SESSION["success"]; ?>
-        
     </div>
 <?php
 unset($_SESSION["success"]);
- }
-if (isset($_SESSION['error'])){
-    ?>
+}
+if (isset($_SESSION['error'])){ ?>
     <div class="alert alert-danger" role="alert">
         <?php echo $_SESSION["error"]; ?>
-        
     </div>
 <?php
-
 unset($_SESSION["error"]);
 }
 ?>
 <div class="file-container">
-    <?php foreach ($files as $fileName => $fileContent): ?>
+    <?php foreach ($files as $file): 
+        $parts = explode('/', $file);
+        $idLogement = $parts[3];
+        
+        $fileType = $parts[4];
+        $fileType = htmlspecialchars($fileType);
+        if ($grade == 4)
+            $nomlogement = getHousingById($idLogement)["title"];
+            if($fileType == 1){
+                $fileType = "Document d'identité";
+            }
+            else if($fileType == 2){
+                $fileType = "Bail";
+            }
+            else if($fileType == 3){
+                $fileType = "Contrat de location";
+            }
+            else if($fileType == 4){
+                $fileType = "Diagnostic de performance énergétique";
+            }
+            else if($fileType == 5){
+                $fileType = "Règlement de copropriété";
+
+            }
+        else{
+
+        $nomlogement = getPerformanceById($idLogement)["title"];
+            if($fileType == 1){
+                $fileType = "Document d'identité";
+            }
+            else if($fileType == 2){
+                $fileType = "Licence d'activité";
+            }
+            else if($fileType == 3){
+                $fileType = "Carte professionnelle";
+            }
+            else if($fileType == 4){
+                $fileType = "Facture";
+            }
+    }
+        
+        $fileName = end($parts);
+    ?>
         <div class="file-item">
-            <div class="file-name"><?php echo htmlspecialchars($fileName); ?></div>
-            <center>
-            <a href="download.php?file=<?php echo urlencode($fileName); ?>" class="btn btn-outline-primary">Télécharger <i class="fas fa-download"></i></a>
-            <a href="delete.php?file=<?php echo urlencode($fileName); ?>" class="btn btn-outline-danger">Supprimer</a></center>
+            <div class="file-name">ID Annonce: <?php echo htmlspecialchars($idLogement); ?> <BR> Nom : <?php echo $nomlogement ;?> <BR><BR> Type de Fichier: <?php echo $fileType; ?></div>
+            <center><div class="file-path">Titre : <?php echo htmlspecialchars($fileName); ?></div>
+            
+                <a href="download.php?file=<?php echo $file;  ?>" class="btn btn-outline-primary">Télécharger <i class="fas fa-download"></i></a>
+                <a href="delete.php?file=<?php echo $file; ?>" class="btn btn-outline-danger">Supprimer</a>
+            </center>
         </div>
     <?php endforeach; ?>
 </div>

@@ -31,12 +31,18 @@ if (isset($_POST['message'])) {
     if (!empty($message)) {
         array_push($_SESSION["Usermessages"], $message);
     }
-    $client = new Client();
-    $response = $client->post('https://pcs-all.online:8000/addChatbotAnswer', [
-        'json' => ['message' => $message]
-    ]);
-    $response = json_decode($response->getBody(), true)['message'];
-    array_push($_SESSION["Chatmessages"], $response);
+    try {
+        $client = new Client([
+            'base_uri' => 'https://pcs-all.online:8000'
+        ]);
+        $response = $client->get('/getChatbotAnswer/' . $message);
+        $chatbotResponse = json_decode($response->getBody()->getContents(), true);
+        array_push($_SESSION["Chatmessages"], $chatbotResponse['message']);
+        echo $chatbotResponse;
+    } catch (Exception $e) {
+        echo '<div class="alert alert-danger" role="alert">Erreur lors de la récupération des informations</div>';
+    }
+    unset($_POST['message']);
 }
 
 //Switch pour ticket ou bot

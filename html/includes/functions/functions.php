@@ -267,7 +267,6 @@ function getRdvByIdNotFini($id)
     $req->execute(['id' => $id]);
     return $req->fetchAll();
 
-    $conn = null;
 }
 
 function accepterPrestation($id)
@@ -300,7 +299,6 @@ function getRdvByIdClientNotFini($id)
     $req->execute(['id' => $id]);
     return $req->fetchAll();
 
-    $conn = null;
 }
 function getRdvByIdClientFini($id)
 {
@@ -311,7 +309,6 @@ function getRdvByIdClientFini($id)
     $req->execute(['id' => $id]);
     return $req->fetchAll();
 
-    $conn = null;
 }
 function getRdvByIdClientNotFiniAndEnCours($id)
 {
@@ -322,9 +319,7 @@ function getRdvByIdClientNotFiniAndEnCours($id)
     $req->execute(['id' => $id]);
     return $req->fetchAll();
 
-    $conn = null;
 }
-
 function selectAppointmentHisto()
 {
     $conn = connectDB();
@@ -336,7 +331,6 @@ function selectAppointmentHisto()
     $req->execute(['id_user' => $id_user]);
     return $req->fetchAll();
 
-    $conn = null;
 }
 function listPerformance()
 {
@@ -345,7 +339,6 @@ function listPerformance()
     $req->execute();
     return $req->fetchAll();
 
-    $conn = null;
 }
 
 
@@ -363,13 +356,13 @@ function getTicketStatus($nb)
     switch ($nb) {
         case "0":
             return "En attente";
-            break;
+           
         case "1":
             return "En cours";
-            break;
+            
         case "2":
             return "Résolu";
-            break;
+            
     }
 }
 
@@ -378,16 +371,16 @@ function getTicketSubject($sub)
     switch ($sub) {
         case "1":
             return "Problème de connexion";
-            break;
+            
         case "2":
             return "Problème de paiement";
-            break;
+            
         case "3":
             return "Problème de réservation";
-            break;
+            
         case "4":
             return "Autre";
-            break;
+            
     }
 }
 
@@ -422,7 +415,6 @@ function getCatalogByType($choice, $type)
                 $req->execute(['type' => $type]);
                 return $req->fetchAll();
             }
-            break;
         case 'performance':
             if ($type == 'all') {
                 $req = $db->prepare("SELECT * FROM performances WHERE is_validated = 1");
@@ -433,7 +425,6 @@ function getCatalogByType($choice, $type)
                 $req->execute(['type' => $type]);
                 return $req->fetchAll();
             }
-            break;
     }
 }
 

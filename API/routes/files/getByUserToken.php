@@ -37,7 +37,6 @@ if (!$files) {
     ]));
     exit;
 }
-
 echo (jsonResponse(200, [], [
     "success" => true,
     "files" => $files,

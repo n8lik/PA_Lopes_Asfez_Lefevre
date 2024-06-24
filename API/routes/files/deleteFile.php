@@ -21,6 +21,17 @@ else{
 $id = getUserByToken($token);
 $userId = $id["id"];
 
+// si userid et le 3 / du file ne correspondent pas, on refuse l'accès
+$parts = explode('/', $file);
+
+if ($userId != $parts[2]) {
+    echo (jsonResponse(200, [], [
+        "success" => false,
+        "error" => "Accès refusé"
+    ]));
+    exit;
+}
+
 if (!$id) {
     echo (jsonResponse(200, [], [
         "success" => false,
@@ -29,7 +40,7 @@ if (!$id) {
     exit;
 }
 
-deleteFile($userId, $grade, $file);
+deleteFile($file);
 
 
 echo (jsonResponse(200, [], [
