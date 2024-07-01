@@ -360,9 +360,24 @@ if (isPath("addConversation")) {
     }
 }
 
+if (isPath("getConversation/:userId")){
+    if(isGetMethod()){
+        require_once __DIR__ . "/routes/private-messages/getConversation.php";
+        die();
+    }
+
+}
+
 if (isPath("addAHouse")){
     if (isPostMethod()){
         require_once __DIR__ . "/routes/ads/addAHouse.php";
+        die();
+    }
+}
+
+if (isPath("deleteHouse/:id")){
+    if (isDeleteMethod()){
+        require_once __DIR__ . "/routes/ads/deleteHouse.php";
         die();
     }
 }

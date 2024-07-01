@@ -26,7 +26,7 @@ try {
         
     } else {
         $files = [];
-        echo "Error: " . $body['message'] . "\n";
+        echo "<div class='alert alert-danger' role='alert'>Pas de fichier trouvé</div>";
     }
 } catch (Exception $e) {
     $files = [];

@@ -1,4 +1,9 @@
 <?php
+// debug
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require '../vendor/autoload.php';
 
 use GuzzleHttp\Client;
@@ -24,12 +29,12 @@ try {
         'json' => $test
     ]);
 
-    $body = json_decode($response->getBody()->getContents());
-    /* if ($body['success']) {
-        $idConv = $body['idConv'];
+    $body = json_decode($response->getBody()->getContents(), true);
+    if ($body["success"]== true){
+        $idConv = $body["idConv"];
         header("Location: conversation.php?id=$idConv");
-    } */
-   var_dump($body);
+    }
+     
 } catch (Exception $e) {
 
     echo $e->getMessage();

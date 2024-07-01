@@ -77,7 +77,7 @@ function uploadImageforHouse($type, $id_user, $id_ads, $file)
 
     $uploadOk = 1;
     if (isset($id_ads)) {
-        $target_dir = "externalFiles/ads/" . $type . "/" . $id_user . "/" . $id_ads . "/" ;
+        $target_dir = "externalFiles/ads/" . $type . "/";
         // Vérifier que le répertoire cible existe, sinon le créer
         if (!is_dir($target_dir)) {
             $test = mkdir($target_dir, 0777, true);
@@ -87,10 +87,10 @@ function uploadImageforHouse($type, $id_user, $id_ads, $file)
         $extension = pathinfo($originalFileName, PATHINFO_EXTENSION);
 
         // Générer un nouveau nom de fichier
-        while (file_exists($target_dir . $compteur . "." . $extension)) {
+        while (file_exists($target_dir . $id_ads ."_". $id_user ."_". $compteur. "." . $extension)) {
             $compteur++;
         }
-        $newFileName = $compteur  . "." . $extension;
+        $newFileName =  $id_ads ."_". $id_user ."_". $compteur . "/"   . "." . $extension;
         $target_file = $target_dir . $newFileName;
         if ($file['error'] !== UPLOAD_ERR_OK) {
             $reponse = "Erreur de téléchargement du fichier : " . $file['error'];

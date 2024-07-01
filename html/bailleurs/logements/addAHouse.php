@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 require '../../includes/header.php';
 
 $userId = $_SESSION['userId'];
@@ -264,7 +261,7 @@ $type = 'add';
 <?php
 
 unset($_SESSION['data']);
-?> }]
+?> 
 <script>
     function showOtherField($id, $id_showed) {
 

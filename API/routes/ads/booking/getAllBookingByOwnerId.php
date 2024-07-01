@@ -17,7 +17,12 @@ if (empty($ownerId)) {
 $bookings = getAllBookingByOwnerId($ownerId);
 
 if (!$bookings) {
-    echo(jsonResponse(200, [], "No booking found"));
+    echo(jsonResponse(200, [], 
+[
+    "success" => false,
+    "message" => "no booking found"
+   
+] ));
     die();
 }
 $traveler = $bookings[0]['user_id'];

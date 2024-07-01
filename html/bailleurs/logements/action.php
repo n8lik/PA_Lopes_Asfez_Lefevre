@@ -11,16 +11,27 @@ use GuzzleHttp\Client;
 
 $connect = connectDB();
 $getType = $_GET["type"];
-$id = $_GET["id"];
+
+if(isset($_GET["id"])){
+    $id = $_GET["id"];
+    $house = getHousingById($id);
+
+}
 
 
 $id_user = $_SESSION['userId'];
-$house = getHousingById($id);
+
 
 if ($getType == "delete") {
+    
     $id = $_GET["id"];
-    deleteHousingById($id);
-    header("Location : houses.php");
+    $client = new Client([
+        'base_uri' => 'https://pcs-all.online:8000/',
+        'timeout'  => 2.0,
+    ]);
+    $response = $client->delete('deleteHouse/'. $id);
+    
+    header('Location: houses.php');
 }
 
 if ($getType == "add") {
@@ -80,13 +91,13 @@ if ($getType == "add") {
         $_SESSION['data']['timeSlot3'] = $timeSlot3;
         $_SESSION['data']['wifi'] = $wifi;
         $_SESSION['data']['parking'] = $parking;
-        $_SESSION['data']['piscine'] = $piscine;
+        $_SESSION['data']['piscine'] = $pool;
         $_SESSION['data']['tele'] = $tele;
-        $_SESSION['data']['four'] = $four;
-        $_SESSION['data']['laveLinge'] = $laveLinge;
-        $_SESSION['data']['cuisineEquipee'] = $cuisineEquipee;
-        $_SESSION['data']['climatisation'] = $climatisation;
-        $_SESSION['data']['salleSport'] = $salleSport;
+        $_SESSION['data']['four'] = $oven;
+        $_SESSION['data']['laveLinge'] = $wash_machine;
+        $_SESSION['data']['cuisineEquipee'] = $kitchen;
+        $_SESSION['data']['climatisation'] = $air_conditionning;
+        $_SESSION['data']['salleSport'] = $gym;
 
 
 
@@ -207,7 +218,7 @@ if ($getType == "add") {
                     'multipart' => $multipart
                 ]);
 
-                $body = json_decode($response->getBody()->getContents());
+                $body = json_decode($response->getBody()->getContents(),true);
                 if ($body['success'] == true)
                     echo "<script>alert('Votre demande a bien été envoyée, elle sera traitée prochainement.');</script>";
                 echo "<script> window.location.href='houses.php';</script>";

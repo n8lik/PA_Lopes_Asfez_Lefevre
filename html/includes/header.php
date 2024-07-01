@@ -56,14 +56,14 @@
 								<a class="nav-link" href="#">Souscription VIP</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="#">Messagerie</a>
+								<a class="nav-link" href="/privateMessage/privateMessage">Messagerie</a>
 							</li>
 						<?php } elseif (isset($_SESSION['grade']) && $_SESSION['grade'] == '4') { ?>
 							<li class="nav-item">
 								<a class="nav-link" href="/bailleurs/logements/houses">Mes logements</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="#">Historiques des reservations</a>
+								<a class="nav-link" href="/bailleurs/logements/booking?id=<?php echo $_SESSION["userId"];?>">Historiques des reservations</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="#">Mes frais</a>
@@ -72,7 +72,7 @@
 								<a class="nav-link" href="/files/files">Mes documents</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="#">Messagerie</a>
+								<a class="nav-link" href="/privateMessage/privateMessage">Messagerie</a>
 							</li>
 						<?php } else if (isset($_SESSION['grade']) && $_SESSION['grade'] == '5') { ?>
 								<a class="nav-link" href="/mes-prestation.php">Mes prestations</a>
@@ -84,7 +84,7 @@
 								<a class="nav-link" href="#">Factures</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="#">Messagerie</a>
+								<a class="nav-link" href="/privateMessage/privateMessage">Messagerie</a>
 							</li>
 						<?php } else {
 						?>

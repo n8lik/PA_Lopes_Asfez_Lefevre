@@ -1,4 +1,6 @@
 <?php
+
+
 $pageTitle = "Réservation";
 require '../includes/header.php';
 require '../vendor/autoload.php';
@@ -58,6 +60,9 @@ $ad = json_decode($response->getBody()->getContents(), true)['adsInfo'];
                 unset($_SESSION["booking"]);
             }
         }
+        if (!isset($disponibility)){
+            echo '<div class="alert alert-danger" role="alert">Aucune disponibilité n\'est renseignée pour cette annonce.</div>';
+        } else{
         ?>
         <div class="row" style="height: 40vh;">
             <div class="col-8" style="height: 100%;">
@@ -65,12 +70,14 @@ $ad = json_decode($response->getBody()->getContents(), true)['adsInfo'];
                     <div id="carouselExampleControls" class="carousel slide" data-ride="carousel" style="height: 100%;">
                         <div class="carousel-inner" style="height: 100%;">
                             <?php
+                            if (isset($images)){
                             for ($i = 0; $i < count($images); $i++) {
                                 $image = $images[$i];
                                 echo '<div class="carousel-item' . ($i == 0 ? ' active' : '') . '" style="height: 100%;">';
                                 echo '<img src="' . $image . '" class="d-block w-100" alt="Image ' . $i . '" style="height: 100%; object-fit: cover;">';
                                 echo '</div>';
                             }
+                        }
                             ?>
                         </div>
                         <a class="carousel-control-prev" role="button" data-slide="prev">
@@ -133,12 +140,13 @@ $ad = json_decode($response->getBody()->getContents(), true)['adsInfo'];
                 <div class="col-8">
                     <p><strong>Description:</strong> <?php echo $ad['description']; ?></p>
                 </div>
-                <?php } ?>
+                <?php }} ?>
             </div>
         </div>
     </div>
 </div>
-<?php
+<?php  
+
 require '../includes/footer.php';
 ?>
 <script src="https://js.stripe.com/v3/"></script>

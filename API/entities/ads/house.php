@@ -48,3 +48,23 @@ function getHousingById($id){
     $req->execute(['id' => $id]);
     return $req->fetch();
 }
+
+
+function deletehouse($id){
+    $id_user = getHousingById($id)['id_user'];
+
+    $db = connectDB();
+    $req = $db->prepare("DELETE FROM housing WHERE id = :id");
+    $req->execute(['id' => $id]);
+    $basePath = 'externalFiles/ads/housing/';
+    $extensions = ['jpg', 'png', 'jpeg'];
+    for ($compteur = 0; $compteur <= 9; $compteur++) {
+        foreach ($extensions as $ext) {
+            $filePath = $basePath . $id . '_' . $id_user .'_'. $compteur . '.' . $ext;
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
+    }
+    return 1;  
+}

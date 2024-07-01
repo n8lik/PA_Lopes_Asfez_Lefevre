@@ -35,9 +35,7 @@ if (isset($_GET["id"])) {
     $client = new Client();
     $response = $client->get('https://pcs-all.online:8000/getAllBookingByOwnerId/'.$id);
     $booking = json_decode($response->getBody()->getContents(), true);
-
-
-if ($booking["success"]== true){
+    if ($booking["success"]== true){
 
    
 // Trier les réservations par date de début et mettre celles qui sont passées dans un autre tableau
@@ -56,6 +54,11 @@ foreach ($bookings as $booking) {
         array_push($bookingsFuture, $booking);
     }
 }
+}
+else{
+    $bookingsPassed = [];
+    $bookingsFuture = [];
+    
 }
 // Afficher les réservations passées
 
