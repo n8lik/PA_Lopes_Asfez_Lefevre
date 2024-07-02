@@ -6,7 +6,11 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require 'vendor/autoload.php';
-
+if (!isConnected()){
+    $_SESSION['isConnected()'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+    die();
+}
 $mail = new PHPMailer(true);
 
 try {

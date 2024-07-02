@@ -263,6 +263,7 @@ function getPendingAdsByType($type){
     return $req->fetchAll();
 }
 
+
 //Afficher la liste des annonces en attente de validation
 function getAllPendingAds(){
     $db = connectDB();

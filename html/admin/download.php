@@ -1,17 +1,9 @@
 <?php
-require '../vendor/autoload.php';
+require '/var/www/html/vendor/autoload.php';
 session_start() ;
 Use GuzzleHttp\Client;
-
-
-if (!isConnected()){
-    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
-    header("Location: /");
- 
-    die();
-}
-$token = $_SESSION["token"];
-$grade = $_SESSION["grade"];
+$token = $_GET["token"];
+$grade = $_GET["grade"];
 $filename = $_GET['file'];
 try {
     $client = new Client([
@@ -35,8 +27,10 @@ try {
         }
     }
     echo $response->getBody();
-    
+    $_SESSION["success"] = "Fichier téléchargé avec succès";
+
 } catch (Exception $e) {
+    
     
     echo $e->getMessage();
 }

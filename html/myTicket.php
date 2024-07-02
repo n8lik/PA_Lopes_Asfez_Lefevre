@@ -8,8 +8,10 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 //Si l'utilisateur n'est pas connecté
-if (!isset($_SESSION['userId'])) {
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
     header("Location: /");
+    die();
 }
 if (isset($_GET["id"])) {
     //Récupération du ticket

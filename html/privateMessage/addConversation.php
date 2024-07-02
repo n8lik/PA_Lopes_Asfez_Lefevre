@@ -9,7 +9,12 @@ require '../vendor/autoload.php';
 use GuzzleHttp\Client;
 
 session_start();
-
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
+}
 $userId = $_SESSION['userId'];
 $id = $_GET['id'];
 $type = $_GET['type'];

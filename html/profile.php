@@ -1,11 +1,16 @@
 <?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require "includes/header.php";
 require "vendor/autoload.php";
 
 use GuzzleHttp\Client;
-
-if (!isset($_SESSION['userId'])) {
-    header('Location: login.php');
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+    die();
 }
 $idUser = $_SESSION['userId'];
 //Réception des informations de l'utilisateur
@@ -36,6 +41,7 @@ try {
             <a class="nav-item nav-link p-nav" id="Payment-tab" data-bs-toggle="tab" href="#Payment" role="tab" aria-controls="Payment" aria-selected="false">Moyens de paiement</a>
             <a class="nav-item nav-link p-nav" id="Notifications-tab" data-bs-toggle="tab" href="#Notifications" role="tab" aria-controls="Notifications" aria-selected="false">Notifications</a>
             <a class="nav-item nav-link p-nav" id="Tickets-tab" data-bs-toggle="tab" href="#Tickets" role="tab" aria-controls="Tickets" aria-selected="false">Tickets</a>
+            <a class="nav-item nav-link p-nav" id="VIP-tab" data-bs-toggle="tab" href="#VIP" role="tab" aria-controls="VIP" aria-selected="false">VIP</a>
 
         </div>
     </nav>
@@ -61,6 +67,26 @@ try {
                     echo '<div class="alert alert-danger" role="alert">' . $_SESSION['passwordUpdateError'] . '</div>';
                     unset($_SESSION['passwordUpdateError']);
                 }
+                switch ($user["grade"]) {
+                    case "1":
+                        $grade = "Free";
+                        break;
+                    case "2":
+                        $grade = "Bag Packer";
+                        break;
+                    case "3":
+                        $grade = "Explorator";
+                        break;
+                    case "4":
+                        $grade = "Bailleur";
+                        break;
+                    case "5":
+                        $grade = "Prestataire";
+                        break;
+                    case "6":
+                        $grade = "Admin";
+                        break;
+                    }
                 ?>
                 <img src="<?= $userpdp[0]; ?>" alt="Photo de profil" style="width: 200px; height: 200px; border-radius: 50%; margin-bottom: 20px;">
                 <form action="includes/updateUser" method="post" class="support-form" enctype="multipart/form-data">
@@ -70,6 +96,9 @@ try {
                     <input type="pseudo" name="pseudo" id="pseudo" class="form-control" value="<?php echo $user['pseudo'];  ?>" style="width: 80% !important; ">
                     <label for="email">Votre adresse mail</label>
                     <input type="email" name="email" id="email" class="form-control" value="<?php echo $user['email']; ?>" style="width: 80% !important; " readonly>
+                    
+                    <label for="grade">Type de compte : </label>
+                    <input type="grade" name="grade" id="grade" class="form-control" value="<?php echo $grade; ?>" style="width: 80% !important; " readonly>
                     <label for="firstname">Votre prénom</label>
                     <input type="text" name="firstname" id="firstname" class="form-control" value="<?php echo $user['firstname']; ?>" style="width: 80% !important; " required>
                     <label for="lastname">Votre nom</label>
@@ -196,6 +225,164 @@ try {
                     </tbody>
                 </table>
             </center>
+        </div>
+
+        <div class="tab-pane fade" id="VIP" role="VIP" aria-labelledby="VIP-tab">
+        <?php 
+        $userToken = $_SESSION['token'];
+        try {
+        $client = new Client([
+            'base_uri' => 'https://pcs-all.online:8000'
+        ]);
+        $response = $client->get('/usersbytoken/' . $userToken);
+        $body = json_decode($response->getBody()->getContents(), true);
+        $users = $body["users"];
+    } catch (Exception $e) {
+        $users = [];
+    }
+?>
+
+<link href = "/css/VIP.css" rel="stylesheet">
+<div class="container mt-5">
+    
+    <?php 
+    if ($users["grade"] == 1){
+        echo '<div class="alert alert-primary" role="alert">Vous êtes actuellement abonné au plan Free</div>';
+    }else if ($users["grade"] == 2){
+        echo '<div class="alert alert-primary" role="alert">Vous êtes actuellement abonné au plan Bag Packer</div>';
+    }else if ($users["grade"] == 3){
+        echo '<div class="alert alert-primary" role="alert">Vous êtes actuellement abonné au plan Explorator</div>';
+    }
+
+    try {
+        $date = new DateTime($users["vip_date"]);
+        $date->modify('+1 year');
+        $date = $date->format('d/m/Y');
+    
+    } catch (Exception $e) {
+        echo 'Erreur : ', $e->getMessage();
+    }
+    if($users["vip_status"]==2){
+        echo '<div class="alert alert-primary" role="alert">Votre abonnement a bien été arrêté. Vous pouvez en profiter jusqu\'à '. $date.' </div>';
+    }
+    
+    if (isset($_SESSION["success"])){
+        echo '<div class="alert alert-success" role="alert">'.$_SESSION["success"].'</div>';
+        unset($_SESSION["success"]);
+    } ?>
+    <?php if (isset($_SESSION["error"])){
+        echo '<div class="alert alert-danger" role="alert">'.$_SESSION["error"].'</div>';
+        unset($_SESSION["error"]);
+    } ?>
+    <div class="table-responsive">
+        <table class="table table-bordered table-custom">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>
+                        <img src="/assets/img/VIP/free.png" alt="Free" class="icon"><br>
+                        <p class="plan-title">Free</p>
+                        <p>Gratuit</p>
+                    </th>
+                    <th>
+                        <img src="/assets/img/VIP/backpacker.png" alt="Bag Packer" class="icon"><br>
+                        <p class="plan-title">Bag Packer</p>
+                        <?php if ($users["grade"] !=2){
+                                                        $priceBag = 113;?>
+                        <p>9,90€/mois ou 113€/an</p>
+                        <?php  }else if($users["grade"]==2){
+                                                        $priceBag = 102;?>
+                        <p>9,90€/mois ou 102€/an</p>
+                        <?php }?> 
+                    </th>
+                    <th>
+                        <img src="/assets/img/VIP/explorateur.png" alt="Explorator" class="icon"><br>
+                        <p class="plan-title">Explorator</p>
+                        <?php if ($users["grade"]!=3){
+                            $priceExplo = 220;?>
+                        <p>19€/mois ou 220€/an</p>
+                        <?php  }else if($users["grade"]==3){
+                            $priceExplo = 200;?>
+                        <p>19€/mois ou 200€/an</p>
+                        <?php }?> 
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Présence de publicités dans le contenu consulté</td>
+                    <td class="check-icon">✔</td>
+                    <td class="cross-icon">✘</td>
+                    <td class="cross-icon">✘</td>
+                </tr>
+                <tr>
+                    <td>Commenter, publier des avis</td>
+                    <td class="cross-icon">✘</td>
+                    <td class="check-icon">✔</td>
+                    <td class="check-icon">✔</td>
+                </tr>
+                <tr>
+                    <td>Réduction permanente de 5% sur les prestations</td>
+                    <td class="cross-icon">✘</td>
+                    <td class="check-icon">✔</td>
+                    <td class="check-icon">✔</td>
+                </tr>
+                <tr>
+                    <td>Prestations offertes</td>
+                    <td class="cross-icon">✘</td>
+                    <td class="check-icon">✔<br>1 par an dans la limite d'une prestation d'un montant inférieur à 80€</td>
+                    <td class="check-icon">✔<br>1 par semestre, sans limitation du montant</td>
+                </tr>
+                <tr>
+                    <td>Accès prioritaire à certaines prestations et aux prestations VIP</td>
+                    <td class="cross-icon">✘</td>
+                    <td class="cross-icon">✘</td>
+                    <td class="check-icon">✔</td>
+                </tr>
+                <tr>
+                    <td>Bonus renouvellement de l'abonnement</td>
+                    <td class="cross-icon">✘</td>
+                    <td class="cross-icon">✘</td>
+                    <td class="check-icon">✔<br>Réduction de 10% du montant de l'abonnement en cas de renouvellement, valable uniquement sur le tarif annuel</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        
+                    </td>
+                    <td> 
+                        <?php if ($users["grade"]==3){
+                            }else if ($users["grade"] != 2){?>
+                        <form method="POST" action="/VIP/VIPPayment">
+                            <input type="hidden" name="plan" value="1">
+                            <input type="hidden" name="price" value ="<?php echo $priceBag;?>">
+                            <button type="submit" class="btn btn-primary">Choisir Bag Packer</button>
+                        </form>
+                        <?php }else { ?>
+                            <form method="POST" action="/VIP/VIPDelete">
+                            <button type="submit" class="btn btn-danger">Supprimer l'abonnement</button>
+                        </form>
+                        <?php } ?>
+                    </td>
+                    <td>
+                        <?php if ($users["grade"]==2){
+                            }else if ($users["grade"] != 3){?>
+                        <form method="POST" action="/VIP/VIPPayment">
+                            <input type="hidden" name="plan" value="2">
+                            <input type="hidden" name="price" value ="<?php echo $priceExplo;?>">
+                            <button type="submit" class="btn btn-primary">Choisir Explorator</button>
+                        </form>
+                        <?php }else{?>
+                            <form method="POST" action="/VIP/VIPDelete">
+                            <button type="submit" class="btn btn-danger">Supprimer l'abonnement</button>
+                        </form>
+                        <?php } ?>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
         </div>
     </div>
 </div>

@@ -75,13 +75,16 @@
 								<a class="nav-link" href="/privateMessage/privateMessage">Messagerie</a>
 							</li>
 						<?php } else if (isset($_SESSION['grade']) && $_SESSION['grade'] == '5') { ?>
-								<a class="nav-link" href="/mes-prestation.php">Mes prestations</a>
+								<a class="nav-link" href="/providers/performances">Mes prestations</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="/histo-prestation.php">Historique des prestations</a>
+								<a class="nav-link" href="/providers/booking?id=<?php echo $_SESSION["userId"];?>">Historique des prestations</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="#">Factures</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="/files/files">Mes documents</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="/privateMessage/privateMessage">Messagerie</a>

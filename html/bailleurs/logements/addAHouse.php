@@ -3,13 +3,19 @@ require '../../includes/header.php';
 
 $userId = $_SESSION['userId'];
 $user = getUserById($userId);
-if (!isConnected()) {
-    $_SESSION["isConnected"] = "Vous devez être connecté pour accéder à cette page.";
-    header('Location: ../../login.php');
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
 }
-if ($user['grade'] != 4) {
+if ($user['grade']!=4){
+    $_SESSION["error"] = "Vous n'avez pas les droits pour accéder à cette page";
     header('Location: /');
 }
+if ($user["is_validated"]==0){
+    echo "<div class='container mt-5'><center><div class='alert'>Votre compte n'est pas encore validé par un administrateur, vous ne pouvez pas ajouter de logement pour le moment.</h2></div></center></div>";
+}else{
 $type = 'add';
 ?>
 
@@ -286,6 +292,6 @@ unset($_SESSION['data']);
 </script>
 <?php
 
-
+}
 
 include '../../includes/footer.php';

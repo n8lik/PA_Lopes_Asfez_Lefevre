@@ -9,9 +9,6 @@ require '../vendor/autoload.php';
 session_start();
 
 use GuzzleHttp\Client;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
 
 
 if (!isset($_SESSION["userId"])) {
@@ -69,7 +66,3 @@ try {
     die();
 } 
 
-
-
-
-?>

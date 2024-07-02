@@ -7,12 +7,12 @@ require '../vendor/autoload.php';
 session_start();
 
 use GuzzleHttp\Client;
-
-if (!isset($_SESSION["userId"])) {
-    header("Location: /login");
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
     die();
 }
-
 if (!isset($_GET["id"]) || !isset($_GET["type"])) {
     header("Location: /");
     die();

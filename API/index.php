@@ -49,6 +49,13 @@ if (isPath("users")) {
     }
 }
 
+if (isPath("VIPUser")) {
+    if (isPostMethod()) {
+        require_once __DIR__ . "/routes/users/update.php";
+        die();
+    }
+}
+
 if (isPath("usersbytoken/:id")) {
     if (isGetMethod()) {
         require_once __DIR__ . "/routes/users/getByToken.php";

@@ -1,24 +1,30 @@
 <?php
-session_start();
-require '../includes/functions/functions.php';
-require '../../vendor/autoload.php';
-
-use GuzzleHttp\Client;
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+session_start();
+require '../includes/functions/functions.php';
+require '../vendor/autoload.php';
+
+use GuzzleHttp\Client;
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
+}
 $connect = connectDB();
 $getType = $_GET["type"];
 
 
 $userId = $_SESSION['userId'];
-echo $userId;
 
 if ($getType == "delete") {
     $id = $_GET["id"];
     deletePerformance($id);
-    header("Location : performances.php");
+    header("Location: /providers/performances");
 }
+
 
 if ($getType == "add") {
     if (isset($_POST['submit'])) {
@@ -107,7 +113,7 @@ if ($getType == 'update') {
             echo "<script>window.location.href='/';</script>";
         } else {
             $_SESSION['data'] = $_POST;
-            $_SESSION["errorUpdateP"] = $errorMessage;
+            $_SESSION["errorUpdateP"] = $errorMessage; 
             header("Location: modifyAPerformance.php?id=" . $id);
         }
     }
@@ -118,7 +124,7 @@ if ($getType == 'update') {
 
 if ($getType == "addFiles") {
     $id = $_GET["id"];
-    $type = $_GET["usertype"];
+    $type = "providers";
     $user = getUserById($userId);
     $housing = getPerformanceById($id);
     $filetype= $_POST['type'];
@@ -150,12 +156,12 @@ if ($getType == "addFiles") {
                 
                 if ($body['success'] == true){
                     echo "<script>alert('Votre demande a bien été envoyée, elle sera traitée prochainement (vous pouvez retrouver vos fichiers dans la rubrique Mes Documents.');</script>";
-                echo "<script> window.location.href='houses.php';</script>";
+                echo "<script> window.location.href='/providers/performances.php';</script>";
             }
             else{
                 $errors = '<div class="alert alert-danger" role="alert">'.$body["message"].'</div>';
                 $_SESSION['errorFile'] = $errors;
-                header("Location: ../filesAdd.php?id=" . $id);}
+              header("Location: filesAdd.php?id=" . $id);}
             } catch (Exception $e) {
                 echo $e->getMessage();
                 die();

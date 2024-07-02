@@ -4,11 +4,17 @@ require '../vendor/autoload.php';
 
 use GuzzleHttp\Client;
 
-if (!isset($_SESSION['userId']) || ($_SESSION['grade'] != '1' && $_SESSION['grade'] != '2' && $_SESSION['grade'] != '3')) {
 
-    header('Location: /');
-    exit();
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+    die();
 }
+if ($_SESSION["grade"] > 3) {
+    $_SESSION['error'] = "Vous devez être un voyageur pour avoir accès à cette page";
+    header("Location: /");
+    die();
+} 
 //Requete API pour récupérer les coups de coeur
 $id = $_SESSION['userId'];
 try {

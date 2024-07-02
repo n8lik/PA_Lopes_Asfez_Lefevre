@@ -1,13 +1,13 @@
 <?php
-
-require "../../includes/header.php";
-require "../../vendor/autoload.php";
-
-use GuzzleHttp\Client;
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+require "../includes/header.php";
+require "../vendor/autoload.php";
+
+use GuzzleHttp\Client;
+
+
 //Si l'utilisateur n'est pas connecté
 
 if (!isConnected()){
@@ -245,4 +245,4 @@ else{
     </div>
     </div>';
 }
-include '../../includes/footer.php';
+include '../includes/footer.php';

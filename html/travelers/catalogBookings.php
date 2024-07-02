@@ -6,11 +6,18 @@ require '../vendor/autoload.php';
 use GuzzleHttp\Client;
 
 // Si l'utilisateur n'est pas connecté ou n'est pas du grade 1, 2 ou 3, on le redirige vers la page d'accueil
-/* if (!isset($_SESSION["userId"]) || !isset($_SESSION["grade"]) || $_SESSION["grade"] > 3) {
+
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
+}
+if ($_SESSION["grade"] > 3) {
+    $_SESSION['error'] = "Vous devez être un voyageur pour avoir accès à cette page";
     header("Location: /");
     die();
-} */
-
+} 
 // On récupère les réservations de l'utilisateur
 try {
     $client = new Client([
@@ -35,7 +42,7 @@ foreach ($bookings as $booking) {
 }
 // Si le formulaire de commentaire est envoyé
 if (isset($_POST["rate"]) && isset($_POST["comment"]) && isset($_POST["id"])) {
-    echo "test";
+    
     try {
         $client = new Client([
             'base_uri' => 'https://pcs-all.online:8000'
@@ -50,6 +57,10 @@ if (isset($_POST["rate"]) && isset($_POST["comment"]) && isset($_POST["id"])) {
             'json' => $param
         ]);
         $data = json_decode($response->getBody()->getContents(), true);
+
+        if ($data["success"]==false){
+            $_SESSION["error"] = $data["message"];
+        }
     } catch (Exception $e) {
         echo $e->getMessage();
     }
@@ -166,6 +177,12 @@ if (isset($_POST["rate"]) && isset($_POST["comment"]) && isset($_POST["id"])) {
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
+                                                            <?php if (isset($_SESSION["error"])) {?>
+                                                                <div class="alert" role="alert"> <?php
+                                                                echo $_SESSION["error"];
+                                                                unset($_SESSION["error"]);
+                                                                ?></div><?php
+                                                            } ?>
                                                             <form action="" method="post">
                                                                 <div class="mb-3">
                                                                     <label for="rate<?= $booking["id"] ?>" class="form-label">Note</label>

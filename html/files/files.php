@@ -4,7 +4,12 @@ require '../vendor/autoload.php';
 require '../includes/header.php';
 Use GuzzleHttp\Client;
 
-
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
+}
 $token = $_SESSION["token"];
 $grade = $_SESSION["grade"];
 try {
@@ -57,7 +62,7 @@ unset($_SESSION["error"]);
         
         $fileType = $parts[4];
         $fileType = htmlspecialchars($fileType);
-        if ($grade == 4)
+        if ($grade == 4){
             $nomlogement = getHousingById($idLogement)["title"];
             if($fileType == 1){
                 $fileType = "Document d'identité";
@@ -75,9 +80,10 @@ unset($_SESSION["error"]);
                 $fileType = "Règlement de copropriété";
 
             }
-        else{
-
-        $nomlogement = getPerformanceById($idLogement)["title"];
+        }else if($grade == 5){
+            
+        
+            $nomlogement = getPerformanceById($idLogement)[0]["title"];
             if($fileType == 1){
                 $fileType = "Document d'identité";
             }
@@ -91,6 +97,7 @@ unset($_SESSION["error"]);
                 $fileType = "Facture";
             }
     }
+       
         
         $fileName = end($parts);
     ?>

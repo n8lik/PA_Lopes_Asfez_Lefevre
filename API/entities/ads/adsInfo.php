@@ -21,11 +21,11 @@ function getAdsInfo ($id, $type)
     if ($type == 'housing') {
         $req = $db->prepare("SELECT * FROM housing WHERE id = :id");
         $req->execute(['id' => $id]);
-        return $req->fetch();
+        return $req->fetch(PDO::FETCH_ASSOC);
     } else if ($type == 'performance') {
         $req = $db->prepare("SELECT * FROM performances WHERE id = :id");
         $req->execute(['id' => $id]);
-        return $req->fetch();
+        return $req->fetch(PDO::FETCH_ASSOC);
     } else {
         return null;
     }

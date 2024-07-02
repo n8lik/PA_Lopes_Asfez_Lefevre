@@ -9,6 +9,13 @@ ini_set('display_startup_errors', 1);
 
 require '../vendor/autoload.php';
 require '../dompdf/autoload.inc.php';
+session_start();
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
+}
 Use GuzzleHttp\Client;
 use Dompdf\Dompdf;
 $bookingId = $_GET["id"];

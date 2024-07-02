@@ -18,8 +18,11 @@ $price_type = $performance[0]["price_type"];
 $place = $performance[0]["place"];
 $radius = $performance[0]["radius"];
 $fee = $price * 0.20;
-if(!isConnected()){
-    header('Location: ../login.php');
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
 }
 if ($user['grade']!=5){
     header('Location: /');

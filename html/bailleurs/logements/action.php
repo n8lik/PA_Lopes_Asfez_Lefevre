@@ -6,7 +6,16 @@ error_reporting(E_ALL);
 session_start();
 require '../../includes/functions/functions.php';
 require '../../vendor/autoload.php';
-
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
+}
+if ($user['grade']!=4){
+    $_SESSION["error"] = "Vous n'avez pas les droits pour accéder à cette page";
+    header('Location: /');
+}
 use GuzzleHttp\Client;
 
 $connect = connectDB();

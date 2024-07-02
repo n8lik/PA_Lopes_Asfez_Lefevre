@@ -6,7 +6,11 @@ use GuzzleHttp\Client;
 
 ini_set('display_errors', 'on');
 error_reporting(E_ALL);
-
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+    die();
+}
 //stocker 2 tableau des messages en session
 if (!isset($_SESSION["Usermessages"])) {
     $_SESSION["Usermessages"] = [];

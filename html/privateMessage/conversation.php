@@ -4,7 +4,12 @@ $pageTitle = "Conversation";
 
 require '../vendor/autoload.php';
 require '../includes/header.php';
-
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
+}
 $id = $_GET['id'];
 
 use GuzzleHttp\Client;

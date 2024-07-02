@@ -10,7 +10,12 @@ use PHPMailer\PHPMailer\Exception;
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
+}
 //####################Modification en bdd################
 $client = new Client([
     'base_uri' => 'https://pcs-all.online:8000/',

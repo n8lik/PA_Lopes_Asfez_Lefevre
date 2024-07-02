@@ -1,5 +1,11 @@
 <?php
-require "../pdf/generatePDFformail.php";
+require "generatefacture.php";
+session_start();
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+    die();
+}
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 $mail = new PHPMailer(true);
@@ -11,7 +17,7 @@ $mail = new PHPMailer(true);
         $mail->Port = 25;          // Port SMTP de Postfix
 
         // Expéditeur
-        $mail->setFrom('no-reply@pcs-all.online', 'PCS-ALL-RESERVATION');
+        $mail->setFrom('no-reply@pcs-all.online', 'PCS-ALL');
 
         // Destinataire
         $mail->addAddress($users["email"]);
@@ -19,7 +25,7 @@ $mail = new PHPMailer(true);
         // Contenu
         $mail->isHTML(true);
         $mail->CharSet = "UTF-8";
-        $mail->Subject = 'Facture de la réservation '.$bookingId;
+        $mail->Subject = 'Facture de l\'abonnement '.$plan;
         $mail->Body    = '
     <html>
     <meta charset="UTF-8">
@@ -64,7 +70,7 @@ $mail = new PHPMailer(true);
     </div>
         <div class="container">
             <h2>Bonjour,</h1>
-            <p>Veuillez trouver ci-joint le PDF que vous avez demandé.</p>
+            <p>Veuillez trouver ci-joint la facture de votre abonnement.</p>
             <p>Nous espérons que ce document répondra à vos attentes.</p>
             <p>Si vous avez des questions, n\'hésitez pas à nous contacter.</p>
             <div class="footer">
@@ -81,10 +87,7 @@ $mail = new PHPMailer(true);
         $mail->send();
 
         unlink($filePath);
-
-
-
-        die();
+        $_SESSION["success"] = "Votre abonnement a bien été pris en compte. Un email contenant la facture a été envoyé à votre adresse email.";
      
         
         
@@ -92,4 +95,5 @@ $mail = new PHPMailer(true);
     catch (Exception $e) {
         echo "L'envoi de l'email a échoué. Erreur: {$mail->ErrorInfo}";
     }
-    header("Location: /reservation/booking?id=".$housing["id"]."&type=housing");
+    
+    header("Location: /VIP/VIP");

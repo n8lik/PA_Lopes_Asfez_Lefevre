@@ -5,7 +5,12 @@ require '../includes/header.php';
 require '../vendor/autoload.php';
 
 use GuzzleHttp\Client;
-
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
+}
 try {
     $client = new Client([
         'base_uri' => 'https://pcs-all.online:8000'

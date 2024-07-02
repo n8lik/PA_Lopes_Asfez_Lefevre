@@ -10,7 +10,14 @@ require 'includes/header.php';
 		unset($_SESSION['isConnected']);
 		?>
 	</div>
-<?php } ?>
+<?php }
+if (isset($_SESSION['error'])) { ?>
+	<div class="alert alert-danger" role="alert">
+		<?php echo $_SESSION['error'];
+		unset($_SESSION['error']);
+		?>
+	</div>
+ <?php } ?>
 
 
 <div id="carouselIndexIndicators" class="carousel slide" data-bs-ride="carousel" style="margin-bottom: 4em;">

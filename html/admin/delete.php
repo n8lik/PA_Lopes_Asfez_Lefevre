@@ -1,15 +1,9 @@
 <?php
 require '../vendor/autoload.php';
 session_start() ;
-if (!isConnected()){
-    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
-    header("Location: /");
- 
-    die();
-}
 Use GuzzleHttp\Client;
-$token = $_SESSION["token"];
-$grade = $_SESSION["grade"];
+$token = $_GET["token"];
+$grade = $_GET["grade"];
 $filename = $_GET['file'];
 try {
     $client = new Client([

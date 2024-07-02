@@ -9,8 +9,11 @@ $performance = getPerformanceByOwner($userId);
 $choice = "performances";
 $type = "P";
 
-if(!isConnected()){
-    header('Location: ../../login.php');
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
 }
 if ($user['grade']!=5){
     header('Location: /');
@@ -82,13 +85,13 @@ if ($user['grade']!=5){
                             echo "Validé";
                         } ?></td>
 
-                    <td><a href="announce.php?id=<?= $performanceId ?>&type=<?=$type?>" class="btn btn-primary">Voir</a></td>
-                    <td><a href="filesAdd?id=<?= $performanceId ?>&type=<?=$type?>" class="btn btn-info">Ajouter</a></td>
+                    <td><a href="/ads?id=<?= $performanceId ?>&type=performance" class="btn btn-primary">Voir</a></td>
+                    <td><a href="filesAdd?id=<?= $performanceId ?>" class="btn btn-info">Ajouter</a></td>
                     <td>
                         <?php if ($performanceStatus==1){?>
                         <a href="modifyAPerformance?id=<?=$performanceId?>" class="btn btn-warning">Modifier</a>
                         <?php } ?>
-                        <a href="housesDelete.php?id=<?= $performanceId ?>" class="btn btn-danger">Supprimer</a>
+                        <a href="action?id=<?= $performanceId ?>&type=delete" class="btn btn-danger">Supprimer</a>
                     </td>
                 </tr>
             <?php } ?>

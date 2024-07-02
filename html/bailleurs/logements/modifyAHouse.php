@@ -15,10 +15,14 @@ $price = $house['price'];
 $contact_time = $house['contact_time'];
 
 
-if(!isConnected()){
-    header('Location: ../../login.php');
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
 }
 if ($user['grade']!=4){
+    $_SESSION["error"] = "Vous n'avez pas les droits pour accéder à cette page";
     header('Location: /');
 }
 if ($house['id_user'] != $userId) {

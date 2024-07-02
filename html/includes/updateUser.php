@@ -5,7 +5,13 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require '../vendor/autoload.php';
-
+session_start();
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
+}
 use GuzzleHttp\Client;
 
 $userId = $_SESSION["userId"];

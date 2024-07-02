@@ -4,12 +4,18 @@ require '../includes/header.php';
 $userId = $_SESSION['userId'];
 $user = getUserById($userId);
 
-if (!isConnected()) {
-    header('Location: ../login.php');
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
 }
 if ($user['grade'] != 5) {
     header('Location: /');
 }
+if ($user["is_validated"]==0){
+    echo "<div class='container mt-5'><center><div class='alert'>Votre compte n'est pas encore validé par un administrateur, vous ne pouvez pas ajouter de prestations pour le moment.</h2></div></center></div>";
+}else{
 ?>
 
 
@@ -211,7 +217,7 @@ if ($user['grade'] != 5) {
 </script>
 
 <?php
-
+}
 
 
 include '../includes/footer.php';
