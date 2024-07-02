@@ -31,6 +31,7 @@ function addAdsDisponibility($id, $type, $date) {
         }
         $req = $db->prepare("INSERT INTO disponibility (id_housing, date) VALUES (:id, :date)");
         $req->execute(['id' => $id, 'date' => $date]);
+        return $db->lastInsertId();
     } else if ($type == 'performance') {
         //Verifier que la date n'existe pas deja
         $req = $db->prepare("SELECT * FROM disponibility WHERE id_performance = :id AND date = :date");
@@ -42,6 +43,7 @@ function addAdsDisponibility($id, $type, $date) {
         }
         $req = $db->prepare("INSERT INTO disponibility (id_performance, date) VALUES (:id, :date)");
         $req->execute(['id' => $id, 'date' => $date]);
+        return $db->lastInsertId();
     } else {
         return null;
     }

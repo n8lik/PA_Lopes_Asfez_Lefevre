@@ -1,11 +1,7 @@
 <?php
 require "generatefacture.php";
 session_start();
-if (!isConnected()){
-    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
-    header("Location: /");
-    die();
-}
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 $mail = new PHPMailer(true);

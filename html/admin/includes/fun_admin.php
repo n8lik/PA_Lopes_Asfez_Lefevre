@@ -382,4 +382,50 @@ function validateAd($id, $type){
     $req->execute([$id]);
 }
 
+//##########################Support################################
+//Récuperer la table chatbot
+function getChatbotMessages(){
+    $db = connectDB();
+    $req = $db->prepare("SELECT * FROM chatbot");
+    $req->execute();
+    return $req->fetchAll();
+}
+
+//Modifier un message du chatbot
+function editChatbotMessage($id, $keyword, $response){
+    $db = connectDB();
+    $req = $db->prepare("UPDATE chatbot SET keyword = ?, chatbotresponse = ? WHERE id = ?");
+    $req->execute([$keyword, $response, $id]);
+}
+
+//Ajouter un message au chatbot
+function addChatbotMessage($keyword, $response){
+    $db = connectDB();
+    //Verifier que ça n'existe pas déjà dans la table
+    $verif= $db->prepare("SELECT COUNT(*) FROM chatbot WHERE keyword = ?");
+    $verif->execute([$keyword]);
+    $count = $verif->fetchColumn();
+    if ($count != 0){
+        return "Ce mot clé existe déjà";
+    }
+    //Sinon on l'ajoute
+    $req = $db->prepare("INSERT INTO chatbot (keyword, chatbotresponse) VALUES (?, ?)");
+    $req->execute([$keyword, $response]);
+}
+function deleteChatbotMessage($id){
+    $db = connectDB();
+    $req = $db->prepare("DELETE FROM chatbot WHERE id = ?");
+    $req->execute([$id]);
+}
+
+function searchChatbotMessages($search){
+    if (empty($search)){
+        return getChatbotMessages();
+    }
+    $db = connectDB();
+    $req = $db->prepare("SELECT * FROM chatbot WHERE keyword LIKE ? OR chatbotresponse LIKE ?");
+    $req->execute(["%".$search."%", "%".$search."%"]);
+    return $req->fetchAll();
+}
+
 ?>

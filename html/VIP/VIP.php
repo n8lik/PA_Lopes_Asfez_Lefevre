@@ -24,6 +24,7 @@
 <div class="container mt-5">
 
 <?php 
+echo $_SESSION["webhooks"];
 if ($users["grade"] == 1){
     echo '<div class="alert alert-primary" role="alert">Vous êtes actuellement abonné au plan Free</div>';
 }else if ($users["grade"] == 2){
@@ -129,32 +130,45 @@ if (isset($_SESSION["success"])){
                     
                 </td>
                 <td> 
-                    <?php if ($users["grade"]==3){
-                        }else if ($users["grade"] != 2){?>
-                    <form method="POST" action="/VIP/VIPPayment">
-                        <input type="hidden" name="plan" value="1">
-                        <input type="hidden" name="price" value ="<?php echo $priceBag;?>">
-                        <button type="submit" class="btn btn-primary">Choisir Bag Packer</button>
-                    </form>
-                    <?php }else { ?>
-                        <form method="POST" action="/VIP/VIPDelete">
-                        <button type="submit" class="btn btn-danger">Supprimer l'abonnement</button>
-                    </form>
-                    <?php } ?>
-                </td>
-                <td>
-                    <?php if ($users["grade"]==2){
-                        }else if ($users["grade"] != 3){?>
-                    <form method="POST" action="/VIP/VIPPayment">
-                        <input type="hidden" name="plan" value="2">
-                        <input type="hidden" name="price" value ="<?php echo $priceExplo;?>">
-                        <button type="submit" class="btn btn-primary">Choisir Explorator</button>
-                    </form>
-                    <?php }else{?>
-                        <form method="POST" action="/VIP/VIPDelete">
-                        <button type="submit" class="btn btn-danger">Supprimer l'abonnement</button>
-                    </form>
-                    <?php } ?>
+                <?php if ($users["grade"]==3){
+                            }else if ($users["grade"] != 2){?>
+                        <form method="POST" action="/VIP/VIPPayment">
+                            <input type="hidden" name="plan" value="1">
+                            <input type="hidden" name="price" value ="9.90">
+                            <button type="submit" class="btn btn-primary">Choisir Bag Packer Mensuel</button>
+                        </form>
+                        <br>
+                        <form method="POST" action="/VIP/VIPPayment">
+                            <input type="hidden" name="plan" value="2">
+                            <input type="hidden" name="price" value ="<?php echo $priceBag;?>">
+                            <button type="submit" class="btn btn-primary">Choisir Bag Packer Annuel</button>
+                        </form>
+                        
+                        <?php }else { ?>
+                            <form method="POST" action="/VIP/VIPDelete">
+                            <button type="submit" class="btn btn-danger">Supprimer l'abonnement</button>
+                        </form>
+                        <?php } ?>
+                    </td>
+                    <td>
+                        <?php if ($users["grade"]==2){
+                            }else if ($users["grade"] != 3){?>
+                        <form method="POST" action="/VIP/VIPPayment">
+                            <input type="hidden" name="plan" value="3">
+                            <input type="hidden" name="price" value ="19">
+                            <button type="submit" class="btn btn-primary">Choisir Explorator Mensuel</button>
+                        </form>
+                        <br>
+                        <form method="POST" action="/VIP/VIPPayment">
+                            <input type="hidden" name="plan" value="4">
+                            <input type="hidden" name="price" value ="<?php echo $priceExplo;?>">
+                            <button type="submit" class="btn btn-primary">Choisir Explorator Annuel</button>
+                        </form>
+                        <?php }else{?>
+                            <form method="POST" action="/VIP/VIPDelete">
+                            <button type="submit" class="btn btn-danger">Supprimer l'abonnement</button>
+                        </form>
+                        <?php } ?>
                 </td>
             </tr>
         </tbody>

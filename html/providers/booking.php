@@ -37,12 +37,16 @@ if (isset($_GET["id"])) {
     $response = $client->get('https://pcs-all.online:8000/getAllBookingByOwnerId/'.$id);
     $booking = json_decode($response->getBody()->getContents(), true);
     if ($booking["success"]== true){
+    var_dump($booking)["bookings"];
+// Trier les réservations par date de début et mettre celles qui sont passées dans un autre tableau)
+if ($booking["bookings"]["housing_id"] != null) {
 
-   
-// Trier les réservations par date de début et mettre celles qui sont passées dans un autre tableau
 $bookings = $booking["bookings"];
-$traveler = $booking["username"];
 
+$traveler = $booking["username"];
+} else {
+    $bookings = [];
+}
 $bookingsPassed = [];
 $bookingsFuture = [];
 
@@ -93,7 +97,7 @@ else{
                                 <div class="col-12">
                                     <div class="card" style="width: 100%; margin-bottom: 1em !important;">
                                         <div class="card-body d-flex flex-row align-items-center">
-                                        <?php if ($booking["housing_id"]!= null){
+                                        <?php if ($booking["performance_id"]!= null){
 
                                                 $type = "housing";
                                                 }
@@ -137,10 +141,10 @@ else{
                                             </div>
                                             <div class="d-flex flex-column">
                                             <?php
-                                                if ($booking["housing_id"] != null) {
+                                                if ($booking["performance_id"] != null) {
                                                     echo '
-                                            <a href="/privateMessage/addConversation?id='. $booking["housing_id"].'&type='.$type.'" class="btn btn-primary mb-2">Contacter le locataire</a>';
-                                                    echo '<a href="/ads?id=' . $booking["housing_id"] . '&type=housing" class="btn btn-primary">Voir l\'annonce</a>';
+                                            <a href="/privateMessage/addConversation?id='. $booking["performance_id"].'&type=performance" class="btn btn-primary mb-2">Contacter le locataire</a>';
+                                                    echo '<a href="/ads?id=' . $booking["performance_id"] . '&type=performance" class="btn btn-primary">Voir l\'annonce</a>';
 
                                                 } else {
                                                     echo '<a href="/ads?id=' . $booking["performance_id"] . '&type=performance" class="btn btn-primary">Voir l\'annonce</a>';
@@ -170,7 +174,7 @@ else{
                                 <div class="col-12">
                                     <div class="card" style="width: 100%; margin-bottom: 1em !important;">
                                         <div class="card-body d-flex flex-row align-items-center">
-                                        <?php if ($booking["housing_id"]!= null){
+                                        <?php if ($booking["performance_id"]!= null){
 
                                             $type = "housing";
                                         }
@@ -215,7 +219,7 @@ else{
                                             <div class="d-flex flex-column">
                                                 <a href="/privateMessage/addConversation?id=<?php echo $traveler['id']; ?>&type=<?php echo $type; ?>" class="btn btn-primary mb-2">Contacter le locataire</a>
                                                 <?php
-                                                if ($booking["housing_id"] != null) {
+                                                if ($booking["performance_id"] != null) {
                                                     echo '<a href="/ads?id=' . $booking["housing_id"] . '&type=housing" class="btn btn-primary">Voir l\'annonce</a>';
                                                 } else {
                                                     echo '<a href="/ads?id=' . $booking["performance_id"] . '&type=performance" class="btn btn-primary">Voir l\'annonce</a>';

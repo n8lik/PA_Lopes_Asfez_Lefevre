@@ -183,6 +183,9 @@ function insertPerformance($title, $description, $performance_type, $address_app
         ':place' => $place,
         ':radius' => $radius
     ]);
+
+    $lastId = $connexion->lastInsertId();
+    return $lastId;
 }
 
 function updatePerformance($id, $title, $description, $address_appointment, $city_appointment, $zip_appointment, $country_appointment, $price, $price_type, $fee, $place, $radius)

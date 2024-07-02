@@ -16,7 +16,7 @@ $house = getHousingById($id);
 if (!isConnected()) {
     header('Location: ../login.php');
 }
-if ($user['grade'] != 4) {
+if ($_SESSION['grade'] != 4) {
     header('Location: /');
 }
 if ($house['id_user'] != $userId) {

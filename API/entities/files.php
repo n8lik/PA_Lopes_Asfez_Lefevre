@@ -90,7 +90,7 @@ function uploadImageforHouse($type, $id_user, $id_ads, $file)
         while (file_exists($target_dir . $id_ads ."_". $id_user ."_". $compteur. "." . $extension)) {
             $compteur++;
         }
-        $newFileName =  $id_ads ."_". $id_user ."_". $compteur . "/"   . "." . $extension;
+        $newFileName =  $id_ads ."_". $id_user ."_". $compteur   . "." . $extension;
         $target_file = $target_dir . $newFileName;
         if ($file['error'] !== UPLOAD_ERR_OK) {
             $reponse = "Erreur de téléchargement du fichier : " . $file['error'];

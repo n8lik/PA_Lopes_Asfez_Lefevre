@@ -8,8 +8,9 @@ $body = getBody();
 
 $userId = $body["userId"];
 $vip_status = $body["vip_status"];
+$vip_type = $body["vip_type"];
 
-$data = updateVIPUser($userId, $vip_status);
+$data = updateVIPUser($userId, $vip_status, $vip_type);
 
 if (!$data){
     echo jsonResponse(

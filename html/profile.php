@@ -1,8 +1,5 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 require "includes/header.php";
 require "vendor/autoload.php";
 
@@ -41,7 +38,9 @@ try {
             <a class="nav-item nav-link p-nav" id="Payment-tab" data-bs-toggle="tab" href="#Payment" role="tab" aria-controls="Payment" aria-selected="false">Moyens de paiement</a>
             <a class="nav-item nav-link p-nav" id="Notifications-tab" data-bs-toggle="tab" href="#Notifications" role="tab" aria-controls="Notifications" aria-selected="false">Notifications</a>
             <a class="nav-item nav-link p-nav" id="Tickets-tab" data-bs-toggle="tab" href="#Tickets" role="tab" aria-controls="Tickets" aria-selected="false">Tickets</a>
-            <a class="nav-item nav-link p-nav" id="VIP-tab" data-bs-toggle="tab" href="#VIP" role="tab" aria-controls="VIP" aria-selected="false">VIP</a>
+            <?php if ($user['grade']== 1 || $user['grade']== 2 || $user['grade']== 3){
+            echo'<a class="nav-item nav-link p-nav" id="VIP-tab" data-bs-toggle="tab" href="#VIP" role="tab" aria-controls="VIP" aria-selected="false">VIP</a>';
+            }?>
 
         </div>
     </nav>
@@ -287,13 +286,9 @@ try {
                     <th>
                         <img src="/assets/img/VIP/backpacker.png" alt="Bag Packer" class="icon"><br>
                         <p class="plan-title">Bag Packer</p>
-                        <?php if ($users["grade"] !=2){
-                                                        $priceBag = 113;?>
+                        <?php $priceBag = 113;?>
                         <p>9,90€/mois ou 113€/an</p>
-                        <?php  }else if($users["grade"]==2){
-                                                        $priceBag = 102;?>
-                        <p>9,90€/mois ou 102€/an</p>
-                        <?php }?> 
+                        
                     </th>
                     <th>
                         <img src="/assets/img/VIP/explorateur.png" alt="Explorator" class="icon"><br>
@@ -355,8 +350,13 @@ try {
                             }else if ($users["grade"] != 2){?>
                         <form method="POST" action="/VIP/VIPPayment">
                             <input type="hidden" name="plan" value="1">
+                            <input type="hidden" name="price" value ="9.90">
+                            <button type="submit" class="btn btn-primary">Choisir Bag Packer Mensuel</button>
+                        </form>
+                        <form method="POST" action="/VIP/VIPPayment">
+                            <input type="hidden" name="plan" value="2">
                             <input type="hidden" name="price" value ="<?php echo $priceBag;?>">
-                            <button type="submit" class="btn btn-primary">Choisir Bag Packer</button>
+                            <button type="submit" class="btn btn-primary">Choisir Bag Packer Annuel</button>
                         </form>
                         <?php }else { ?>
                             <form method="POST" action="/VIP/VIPDelete">
@@ -368,9 +368,14 @@ try {
                         <?php if ($users["grade"]==2){
                             }else if ($users["grade"] != 3){?>
                         <form method="POST" action="/VIP/VIPPayment">
-                            <input type="hidden" name="plan" value="2">
+                            <input type="hidden" name="plan" value="3">
+                            <input type="hidden" name="price" value ="19">
+                            <button type="submit" class="btn btn-primary">Choisir Explorator Mensuel</button>
+                        </form>
+                        <form method="POST" action="/VIP/VIPPayment">
+                            <input type="hidden" name="plan" value="4">
                             <input type="hidden" name="price" value ="<?php echo $priceExplo;?>">
-                            <button type="submit" class="btn btn-primary">Choisir Explorator</button>
+                            <button type="submit" class="btn btn-primary">Choisir Explorator Annuel</button>
                         </form>
                         <?php }else{?>
                             <form method="POST" action="/VIP/VIPDelete">

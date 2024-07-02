@@ -9,3 +9,5 @@
 /html/providers/settings.php
 /gdrive
 /API/externalFiles
+/webhooks/secrets.php
+/webhooks/conf.inc.php

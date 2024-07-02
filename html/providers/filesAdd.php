@@ -12,7 +12,7 @@ if (!isConnected()){
  
     die();
 }
-if ($user['grade'] != 5) {
+if ($_SESSION['grade'] != 5) {
     header('Location: /');
 }
 

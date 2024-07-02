@@ -10,7 +10,7 @@ if (!isConnected()){
  
     die();
 }
-if ($user['grade'] != 5) {
+if ($_SESSION['grade'] != 5) {
     header('Location: /');
 }
 if ($user["is_validated"]==0){
@@ -31,7 +31,7 @@ if ($user["is_validated"]==0){
             echo $_SESSION["errorAddP"]; ?></div>
     <?php };
             $_SESSION["errorAddP"] = ""; ?>
-    <form method="POST" action="action?type=add">
+    <form method="POST" action="action?type=add" enctype="multipart/form-data">
 
         <div class="form-group">
             <label for="Title">Titre</label>
@@ -41,9 +41,12 @@ if ($user["is_validated"]==0){
         </div>
 
         <div class="form-group">
-            <label for="description">Description</label>
-            <textarea class="form-control" id="description" name="description" rows="3"  placeholder="Description de l'annonce" value="<?php if(isset($_SESSION['data']["description"])){echo $_SESSION['data']["description"];}?>" required></textarea>
-        </div>
+                <label for="Description">Description</label>
+                <textarea class="form-control" id="description" name="description" placeholder="Description entre 30 et 500 caractères de votre annonce" rows="3" oninput="updateCounter()" required><?php if (isset($_SESSION['data']["description"])) {
+                                                                                                                                                                                                            echo $_SESSION['data']["description"];
+                                                                                                                                                                                                        } ?></textarea>
+                <p>Caractères : <span id="charCount">0</span> /500</p>
+            </div>
         <div class="form-group">
             <label for="experienceType">Quel type de service proposez-vous ?</label>
             <select class="form-control" id="performance_type" name="performance_type" required>
@@ -143,7 +146,10 @@ if ($user["is_validated"]==0){
                     <option>heure</option>
                 </select>
             </div>
-
+            <div class="form-group">
+                <label for="file">Image répresentative de votre activité</label><Br>
+                <input type="file" id="file" name="file"><br>
+            </div>
 
             <div class="form-group">
                 <input type="checkbox" name="acceptation" id="acceptation" required>
@@ -157,6 +163,19 @@ if ($user["is_validated"]==0){
     </form>
 </div>
 <script>
+    function showOtherField($id, $id_showed) {
+
+        var userInput = document.getElementById($id_showed);
+        userInput.style.display = selectBox.value == $id ? 'block' : 'none';
+    }
+
+
+    function updateCounter() {
+        const textarea = document.getElementById('description');
+        const charCount = document.getElementById('charCount');
+        charCount.textContent = textarea.value.length;
+    }
+
     var selectBox = document.getElementById('performance_type');
 
     function showOtherField($id, $id_showed) {

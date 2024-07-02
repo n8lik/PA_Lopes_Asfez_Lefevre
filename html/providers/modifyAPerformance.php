@@ -24,10 +24,10 @@ if (!isConnected()){
  
     die();
 }
-if ($user['grade']!=5){
+if ($_SESSION['grade']!=5){
     header('Location: /');
 }
-if ($performance['id_user'] != $userId) {
+if ($performance[0]['id_user'] != $userId) {
     header("Location: performances.php");
 }
 ?>

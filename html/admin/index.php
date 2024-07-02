@@ -29,7 +29,7 @@ if (!isset($_SESSION['admin'])) {
         <!--Stat 4:Admin number-->
         <div class="stat-block">
             <h4><?php echo nbUserByGrade(6); ?></h4>
-            <a href="users?choice=admins"><h4>Admininstrateurs</h4></a>
+            <a href="users?choice=admins"><h4>Administrateurs</h4></a>
         </div>
         <!--Stat 5: Graphique nombre de noveaux inscrits par mois-->
         <div class="stat-block">

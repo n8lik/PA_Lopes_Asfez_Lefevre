@@ -62,6 +62,14 @@ if (isPath("usersbytoken/:id")) {
         die();
     }
 }
+##############################WEBHOOKS##############################
+
+if (isPath("webhook")){
+    if (isPostMethod()){
+        require_once __DIR__ . "/routes/users/webhook.php";
+        die();
+    }
+}
 
 //Photo de profil
 
@@ -141,6 +149,13 @@ if (isPath("housingAdsImages/:id")) {
     }
 }
 
+if (isPath("addAPerfFile")){
+    if(isPostMethod()){
+        require_once __DIR__ . "/routes/files/addAPerfFile.php";
+        die();
+    }
+
+}
 if (isPath("performanceAdsImages/:id")) {
     if (isGetMethod()) {
         require_once __DIR__ . "/routes/ads/getPerformancesAdsImagesById.php";
@@ -194,6 +209,13 @@ if (isPath("getHousingCatalogBySearch")) {
 if (isPath("getPerformanceCatalogBySearch")) {
     if (isPostMethod()) {
         require_once __DIR__ . "/routes/ads/getPerformanceCatalogBySearch.php";
+        die();
+    }
+}
+
+if (isPath("getAllAdsByOwnerId/:id")) {
+    if (isGetMethod()) {
+        require_once __DIR__ . "/routes/ads/getAllAdsByOwnerId.php";
         die();
     }
 }

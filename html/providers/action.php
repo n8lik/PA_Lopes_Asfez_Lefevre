@@ -28,6 +28,7 @@ if ($getType == "delete") {
 
 if ($getType == "add") {
     if (isset($_POST['submit'])) {
+        
         $title = $_POST['title'];
         $description = $_POST['description'];
         $address_appointment = $_POST['address_appointment'];
@@ -48,7 +49,7 @@ if ($getType == "add") {
         if (!preg_match("/^[a-zA-Z0-9 ]{3,50}$/", $title)) {
             $errorMessage .= '<div class="alert alert-danger" role="alert">Le titre doit contenir entre 3 et 50 caractères.</div>';
         }
-        if (!preg_match("/^[a-zA-Z0-9 ]{3,50}$/", $address_appointment)) {
+        if (strlen($address_appointment) < 3 || strlen($address_appointment) > 50){
             $errorMessage .= '<div class="alert alert-danger" role="alert">L\'adresse doit contenir entre 3 et 50 caractères.</div>';
         }
         if (!preg_match("/^[a-zA-Z0-9 ]{3,50}$/", $city_appointment)) {
@@ -60,15 +61,61 @@ if ($getType == "add") {
         if ($radius < 1 || $radius > 50) {
             $errorMessage .= '<div class="alert alert-danger" role="alert">Le rayon de déplacement doit être compris entre 1 et 50 km.</div>';
         }
+        
+        if (empty($_FILES['file']['name'])) {
+            $errorMessage .= '<div class="alert alert-danger" role="alert">Vous devez télécharger au moins une image de votre logement.</div>';
+        }
+
+        // vérif si c une image via l'extension (jpg jpeg ou png uniquement)
+        $allowed = ['jpg', 'jpeg', 'png'];
+        $fileExtension = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
+        if (!in_array($fileExtension, $allowed)) {
+            $errorMessage .= '<div class="alert alert-danger" role="alert">Désolé, seuls les fichiers JPG, JPEG et PNG sont autorisés.</div>';
+        }
+        //si la taille du  fichier est supérieur à 15mo alors erreur
+        if ($_FILES['file']['size'] > 15728640) {
+            $errorMessage .= '<div class="alert alert-danger" role="alert">Désolé, votre fichier est trop volumineux.</div>';
+        }
         if ($errorMessage === '') {
 
-            insertPerformance($title, $description, $performance_type, $address_appointment, $city_appointment, $zip_appointment, $country_appointment, $price, $price_type, $userId, $fee, $place, $radius);
-            echo "<script>alert('Votre demande a bien été envoyée, elle sera traitée prochainement.');</script>";
-            echo "<script>window.location.href='/';</script>";
+            $idPerf = insertPerformance($title, $description, $performance_type, $address_appointment, $city_appointment, $zip_appointment, $country_appointment, $price, $price_type, $userId, $fee, $place, $radius);
+            
+            $client = new Client(['base_uri' => 'https://pcs-all.online:8000']);
+    
+            $multipart = [
+                ['name' => 'userId', 'contents' => $userId],
+                ['name' => 'idAds', 'contents' => $idPerf],
+                [
+                    'name' => 'file',
+                    'contents' => fopen($_FILES['file']['tmp_name'], 'r'),
+                    'filename' => $_FILES['file']['name']
+                ]
+                ];
+    
+                try {
+                    // Envoyer la requête multipart
+                    $response = $client->post('https://pcs-all.online:8000/addAPerfFile', [
+                        'multipart' => $multipart
+                    ]);
+    
+                    $body = json_decode($response->getBody()->getContents(),true);
+                    var_dump($body);
+                    /* if ($body['success'] == true)
+                        echo "<script>alert('Votre demande a bien été envoyée, elle sera traitée prochainement.');</script>";
+                    echo "<script> window.location.href='houses.php';</script>"; */
+                } catch (Exception $e) {
+                    echo $e->getMessage();
+                    die();
+                }
+            
+       
         } else {
+            
 
             $_SESSION['data'] = $_POST;
             $_SESSION["errorAddP"] = $errorMessage;
+
+
             header("Location: addAPerformance.php");
         }
     }
@@ -79,6 +126,7 @@ if ($getType == 'update') {
     $userId = $_SESSION['userId'];
     $performance = getPerformanceById($id);
     if (isset($_POST['submit'])) {
+        
         $title = $_POST['title'];
         $description = $_POST['description'];
         $address_appointment = $_POST['address_appointment'];
@@ -95,7 +143,7 @@ if ($getType == 'update') {
         if (!preg_match("/^[a-zA-Z0-9 ]{3,50}$/", $title)) {
             $errorMessage .= '<div class="alert alert-danger" role="alert">Le titre doit contenir entre 3 et 50 caractères.</div>';
         }
-        if (!preg_match("/^[a-zA-Z0-9 ]{3,50}$/", $address_appointment)) {
+        if (strlen($address_appointment) < 3 || strlen($address_appointment) > 50){
             $errorMessage .= '<div class="alert alert-danger" role="alert">L\'adresse doit contenir entre 3 et 50 caractères.</div>';
         }
         if (!preg_match("/^[a-zA-Z0-9 ]{3,50}$/", $city_appointment)) {

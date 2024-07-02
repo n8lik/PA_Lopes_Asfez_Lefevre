@@ -335,8 +335,8 @@ if (isset($_GET['choice'])) {
 
 
                                                                     <div>
-                                                                        <a href="download?file=<?php echo $file; ?>&grade=<?php echo $grade;?>&token=<?php echo $token;?>" class="btn btn-success btn-sm">Télécharger</a>
-                                                                        <a href="deleteFiles.php?file=<?php echo $file; ?>" class="btn btn-danger btn-sm">Supprimer</a>
+                                                                        <a href="includes/files/download?file=<?php echo $file; ?>&grade=<?php echo $grade;?>&token=<?php echo $token;?>" class="btn btn-success btn-sm">Télécharger</a>
+                                                                        <a href="includes/files/deleteFiles.php?file=<?php echo $file; ?>" class="btn btn-danger btn-sm">Supprimer</a>
                                                                     </div>
                                                                 </li>
                                                             <?php } ?>

@@ -40,27 +40,27 @@ if (isset($_GET["id"])) {
 
    
 // Trier les réservations par date de début et mettre celles qui sont passées dans un autre tableau
-$bookings = $booking["bookings"];
-$traveler = $booking["username"];
+    $bookings = $booking["bookings"];
+    $traveler = $booking["username"];
 
-$bookingsPassed = [];
-$bookingsFuture = [];
-
-foreach ($bookings as $booking) {
-    $date = new DateTime($booking["start_date"]);
-    $now = new DateTime();
-    if ($date < $now) {
-        array_push($bookingsPassed, $booking);
-    } else {
-        array_push($bookingsFuture, $booking);
-    }
-}
-}
-else{
     $bookingsPassed = [];
     $bookingsFuture = [];
-    
-}
+
+    foreach ($bookings as $booking) {
+        $date = new DateTime($booking["start_date"]);
+        $now = new DateTime();
+        if ($date < $now) {
+            array_push($bookingsPassed, $booking);
+        } else {
+            array_push($bookingsFuture, $booking);
+        }
+    }
+    }
+    else{
+        $bookingsPassed = [];
+        $bookingsFuture = [];
+        
+    }
 // Afficher les réservations passées
 
 ?>

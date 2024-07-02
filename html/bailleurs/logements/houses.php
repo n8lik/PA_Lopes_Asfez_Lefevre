@@ -8,7 +8,7 @@ if (!isConnected()){
  
     die();
 }
-if ($user['grade']!=4){
+if ($_SESSION['grade'] != 4){
     $_SESSION["error"] = "Vous n'avez pas les droits pour accéder à cette page";
     header('Location: /');
 }
