@@ -34,7 +34,26 @@ $images = json_decode($response->getBody()->getContents(), true)['images'];
 $response = $client->get($type == 'housing' ? '/getHousingAdsInfo/' . $id : '/getPerformanceAdsInfo/' . $id);
 $ad = json_decode($response->getBody()->getContents(), true)['adsInfo'];
 
-
+$response = $client->get('/usersbytoken/' . $_SESSION['token']);
+$user = json_decode($response->getBody()->getContents(), true)['users'];
+if ($type == 'performance') {
+    if (($user['grade'] == 2 && $ad['price']<80 ) || $user['grade'] == 3) {
+        if ($user["free_perf"]==0) {
+            $message =  '<div class="alert alert-success" role="alert">Vous avez une réservation gratuite, elle sera déduite de la facture finale.</div>';
+            $ad['price'] = 0;
+            if ($user['grade'] == 2) {
+                $_SESSION["free_perf_end_date"] = date("Y-m-d H:i:s", strtotime($user["free_perf_end_date"] . " + 1 year"));
+            } else {
+                $_SESSION["free_perf_end_date"] = date("Y-m-d H:i:s", strtotime($user["free_perf_end_date"] . " + 3 month"));
+            }
+        } else if ($user["free_perf"] == 1 && $user["free_perf_end_date"] < date("Y-m-d H:i:s")) {
+            $ad['price'] = 0;
+            $message = '<div class="alert alert-success" role="alert">Vous avez une réservation gratuite, elle sera déduite de la facture finale.</div>';
+        } else {
+            $ad['price'] =  $ad['price'] * 0.95;
+        }
+    }
+}
 ?>
 <div class="terms-container">
     <div class="container" style="margin-top: 1em;">
@@ -44,7 +63,14 @@ $ad = json_decode($response->getBody()->getContents(), true)['adsInfo'];
                 <hr>
             </center>
         </div>
-        <?php if (isset($_SESSION["booking"])) {
+        <?php
+        
+
+        if (isset($message)) {
+            echo $message;
+        }
+
+        if (isset($_SESSION["booking"])) {
             if ($_SESSION["booking"] == 0) {
         ?>
                 <div class="alert alert-success" role="alert">
@@ -490,11 +516,11 @@ require '../includes/footer.php';
                                 let m2 = 0;
                                 let mur = 0;
                                 let prestation = 0;
-                                
+
                                 console.log(price_type);
                                 if (price_type == 'km') {
                                     km = document.getElementById('km').value;
-                                    totalPrice = calculateTotalPrice(hourStart, hourEnd, hourDuration, price_type, km, 0 , 0, 0)
+                                    totalPrice = calculateTotalPrice(hourStart, hourEnd, hourDuration, price_type, km, 0, 0, 0)
                                 } else if (price_type == 'm²') {
                                     m2 = document.getElementById('m2').value;
                                     totalPrice = calculateTotalPrice(hourStart, hourEnd, hourDuration, price_type, 0, m2, 0, 0);

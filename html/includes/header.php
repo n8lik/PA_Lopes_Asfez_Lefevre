@@ -38,64 +38,62 @@
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<?php if (isset($_SESSION['grade']) && $_SESSION['grade'] == '1') { ?>
 							<li class="nav-item">
-								<a class="nav-link active" aria-current="page" href="/catalog?choice=housing">Logements</a>
+								<a class="nav-link active" aria-current="page" href="/catalog?choice=housing" staticTotranslate="header_housing">Logements</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="/catalog?choice=performance">Prestations</a>
+								<a class="nav-link" href="/catalog?choice=performance" staticTotranslate="header_performance">Prestations</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="/travelers/catalogBookings">Mes reservations</a>
+								<a class="nav-link" href="/travelers/catalogBookings" staticTotranslate="header_my_reservations">Mes réservations</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="/travelers/favorites">Coups de coeur</a>
+								<a class="nav-link" href="/travelers/favorites" staticTotranslate="header_favorites">Coups de cœur</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="#">Souscription VIP</a>
+								<a class="nav-link" href="#" staticTotranslate="header_vip_subscription">Souscription VIP</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="/privateMessage/privateMessage">Messagerie</a>
+								<a class="nav-link" href="/privateMessage/privateMessage" staticTotranslate="header_messaging">Messagerie</a>
 							</li>
 						<?php } elseif (isset($_SESSION['grade']) && $_SESSION['grade'] == '4') { ?>
 							<li class="nav-item">
-								<a class="nav-link" href="/bailleurs/logements/houses">Mes logements</a>
+								<a class="nav-link" href="/bailleurs/logements/houses" staticTotranslate="header_my_houses">Mes logements</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="/bailleurs/logements/booking?id=<?php echo $_SESSION["userId"]; ?>">Historiques des reservations</a>
+								<a class="nav-link" href="/bailleurs/logements/booking?id=<?php echo $_SESSION["userId"]; ?>" staticTotranslate="header_booking_history">Historique des réservations</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="#">Mes frais</a>
+								<a class="nav-link" href="#" staticTotranslate="header_my_fees">Mes frais</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="/files/files">Mes documents</a>
+								<a class="nav-link" href="/files/files" staticTotranslate="header_my_documents">Mes documents</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="/privateMessage/privateMessage">Messagerie</a>
+								<a class="nav-link" href="/privateMessage/privateMessage" staticTotranslate="header_messaging">Messagerie</a>
 							</li>
 						<?php } else if (isset($_SESSION['grade']) && $_SESSION['grade'] == '5') { ?>
-							<a class="nav-link" href="/providers/performances">Mes prestations</a>
+							<a class="nav-link" href="/providers/performances" staticTotranslate="header_my_performances">Mes prestations</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="/providers/booking?id=<?php echo $_SESSION["userId"]; ?>">Historique des prestations</a>
+								<a class="nav-link" href="/providers/booking?id=<?php echo $_SESSION["userId"]; ?>" staticTotranslate="header_performance_history">Historique des prestations</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="#">Factures</a>
+								<a class="nav-link" href="#" staticTotranslate="header_invoices">Factures</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="/files/files">Mes documents</a>
+								<a class="nav-link" href="/files/files" staticTotranslate="header_my_documents">Mes documents</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="/privateMessage/privateMessage">Messagerie</a>
+								<a class="nav-link" href="/privateMessage/privateMessage" staticTotranslate="header_messaging">Messagerie</a>
 							</li>
-						<?php } else {
-						?>
+						<?php } else { ?>
 							<li class="nav-item">
-								<a class="nav-link active" aria-current="page" href="/catalog?choice=housing">Logements</a>
+								<a class="nav-link active" aria-current="page" href="/catalog?choice=housing" staticTotranslate="header_housing">Logements</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="/catalog?choice=performance">Prestations</a>
+								<a class="nav-link" href="/catalog?choice=performance" staticTotranslate="header_performance">Prestations</a>
 							</li>
-						<?php
-						} ?>
+						<?php } ?>
 					</ul>
 				</div>
 			</div>
@@ -126,7 +124,7 @@
 						<a href="/profile" class="btn btn-primary"><img src="/assets/img/login.png" height="20px"></a>
 					</span>
 					<span class="navbar-text">
-						<a href="/logout.php" class="btn btn-primary"><img src="/assets/img/logout.png" height="20px"> </a>
+						<a href="/logout.php" class="btn btn-primary"><img src="/assets/img/logout.png" height="20px"></a>
 					</span>
 				<?php } else { ?>
 					<span class="navbar-text">

@@ -209,6 +209,14 @@ function updatePerformance($id, $title, $description, $address_appointment, $cit
         ':validated' => 0
     ]);
 }
+
+function setFreePerfTo1WhereId($id, $end_date)
+{
+    $connexion = connectDB();
+    $queryprepared = $connexion->prepare('UPDATE user SET free_perf = 1 , free_perf_end_date=:end_date WHERE id = :id');
+    $queryprepared->execute([':id' => $id, ':end_date' => $end_date]);
+}
+
 function getCalendarByPerformanceId($id)
 {
     $db = connectDB();

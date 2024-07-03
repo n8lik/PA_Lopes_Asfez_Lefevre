@@ -1,10 +1,13 @@
 <?php
 require '../vendor/autoload.php';
+require '../includes/functions/functions.php';
+
 require 'secrets.php';
 session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
 $_SESSION["PaymentIntent"] = $_POST;
 Use GuzzleHttp\Client;
 \Stripe\Stripe::setApiKey($stripeSecretTest);
@@ -13,10 +16,6 @@ Use GuzzleHttp\Client;
 $id = $_GET["id"];
 $type = $_GET["type"];
 
-$client = new Client(['base_uri' => 'https://pcs-all.online:8000']);
-$test = ['id' => $id, 'type' => $type, 'id_dispo' => $_GET["id_dispo"] ];
-$response = $client->get($type == 'housing' ? '/housingDisponibility/' : '/performanceDisponibility/');
-$disponibility = json_decode($response->getBody()->getContents(), true);
 
 if ($type == 'performance'){
     $hourStart = $_POST['hour_start'];
@@ -63,9 +62,12 @@ foreach ($_SESSION["Erreur"] as $erreur){
  
 }
 
-  
+if (isset($_SESSION["free_perf_end_date"])){
+    setFreePerfTo1WhereId($_SESSION["userId"], $_SESSION["free_perf_end_date"]);
+    $price = 0;
+}else{
 $price = $_POST['price'] * 100;
-
+}
 $session = \Stripe\Checkout\Session::create([
     'payment_method_types' => ['card'],
     'line_items' => [[

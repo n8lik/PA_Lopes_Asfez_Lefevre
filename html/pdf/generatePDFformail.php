@@ -31,6 +31,7 @@ try {
 
 if ($type =='housing'){
 $housingId = $booking["housing_id"];
+
 try {
     $client = new Client([
         'base_uri' => 'https://pcs-all.online:8000'
@@ -43,6 +44,7 @@ try {
 }
 }
 else{
+    $housingId = $booking["performance_id"];
     try {
         $client = new Client([
             'base_uri' => 'https://pcs-all.online:8000'
@@ -67,7 +69,28 @@ try {
 
 // Initialiser Dompdf avec des options
 $dompdf = new Dompdf();
-
+if ($type == "housing"){
+    $details = '<div class="details">
+        
+                <h2>Informations sur le logement</h2>
+                <p><strong>Titre:</strong> '.$housing["title"].'</p>
+                <p><strong>Type de maison:</strong> '.$housing["type_house"].'</p>
+                <p><strong>Type de location:</strong> '.$housing["type_location"].'</p>
+                <p><strong>Nombre de pièces:</strong> '.$housing["amount_room"].'</p>
+                <p><strong>Capacité d\'accueil:</strong> '.$housing["guest_capacity"].' personnes</p>
+                <p><strong>Surface de la propriété:</strong> '.$housing["property_area"].' m²</p>
+                <p><strong>Adresse:</strong> '.$housing["address"].', '.$housing["city"].', '.$housing["postal_code"].'</p>
+            </div>';
+    } else if ($type == "performance"){
+        $details = '<div class="details">
+        
+                <h2>Informations sur la prestation</h2>
+                <p><strong>Titre:</strong> '.$housing["title"].'</p>
+                <p><strong>Type de prestation:</strong> '.$housing["performance_type"].'</p>
+                
+                <p><strong>Adresse:</strong> '.$housing["place"].'</p>
+            </div>';
+    }
 // Charger le contenu HTML
 $html = '<!DOCTYPE html>
 <html>
@@ -130,16 +153,7 @@ $html = '<!DOCTYPE html>
             <p><strong>Date de début:</strong> '.$booking["start_date"].'</p>
             <p><strong>Date de fin:</strong> '.$booking["end_date"].'</p>
         </div>
-        <div class="details">
-            <h2>Informations sur le logement</h2>
-            <p><strong>Titre:</strong> '.$housing["title"].'</p>
-            <p><strong>Type de maison:</strong> '.$housing["type_house"].'</p>
-            <p><strong>Type de location:</strong> '.$housing["type_location"].'</p>
-            <p><strong>Nombre de pièces:</strong> '.$housing["amount_room"].'</p>
-            <p><strong>Capacité d\'accueil:</strong> '.$housing["guest_capacity"].' personnes</p>
-            <p><strong>Surface de la propriété:</strong> '.$housing["property_area"].' m²</p>
-            <p><strong>Adresse:</strong> '.$housing["address"].', '.$housing["city"].', '.$housing["postal_code"].'</p>
-        </div>
+        '.$details.'
         <div class="details">
             <h2>Informations sur le client</h2>
             <p><strong>Prénom:</strong> '.$users["firstname"].'</p>

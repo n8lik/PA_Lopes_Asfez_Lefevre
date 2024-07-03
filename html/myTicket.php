@@ -96,7 +96,7 @@ if (isset($_GET["id"])) {
                         </form>
                         <form action="includes/support/tickets?id=close" method="post" class="support-form" style="text-align: center;">
                             <input type="hidden" name="ticketId" value="<?php echo $ticket["id"]; ?>">
-                            <button type="submit" class="btn btn-danger">Clore mon ticket</button>
+                            <button type="submit" class="btn btn-danger" staticTotranslate="ticket_close">Clore mon ticket</button>
                         </form>
                     <?php } ?>
                 </div>

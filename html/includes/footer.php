@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="footer-content-column">
             <h3>Assitance</h3>
             <ul>
-                <li><a href="/support?type=chatbot" staticToTranslate="footer_Chatbot">ChatBot</a></li>
+                <li><a href="/support?type=chatbot" staticToTranslate="Chatbot">ChatBot</a></li>
                 <li><a href="/support?type=ticket" staticToTranslate="footer_ContactUs">Contactez-nous</a></li>
             </ul>
         </div>

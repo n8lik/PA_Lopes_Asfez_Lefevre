@@ -2,7 +2,6 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
 require '../vendor/autoload.php';
 
 
@@ -84,7 +83,7 @@ try {
             ]
         ]);}
     $booking = json_decode($response->getBody()->getContents(), true);
-   
+    $idresa = $booking["id"];
 
     if ($booking["success"]) {
         unset($_SESSION["PaymentIntent"]);

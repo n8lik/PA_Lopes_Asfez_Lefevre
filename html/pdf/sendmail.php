@@ -1,5 +1,5 @@
 <?php
-require "../pdf/generatePDFformail.php";
+require "generatePDFformail.php";
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 $mail = new PHPMailer(true);
@@ -84,8 +84,6 @@ $mail = new PHPMailer(true);
 
 
 
-        die();
-     
         
         
     }

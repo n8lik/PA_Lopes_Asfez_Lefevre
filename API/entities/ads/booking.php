@@ -33,7 +33,47 @@ function getBookingById($id)
     $req->execute(['id' => $id]);
     return $req->fetch();
 }
+function getBookingByDate($id, $firstDay, $lastDay){
+    require_once __DIR__ . "/../../database/connection.php";
+    require_once __DIR__ . "/../ads/adsInfo.php";
 
+    $db = connectDB();
+    $req = $db->prepare("SELECT id FROM housing WHERE id_user = :id ");
+    $req->execute(['id' => $id]);
+    $housing = $req->fetchAll();
+    $req = $db->prepare("SELECT * FROM performances WHERE id_user = :id ");
+    $req->execute(['id' => $id]);
+    $performances = $req->fetchAll();
+
+
+    $firstDay = date("Y-m-d H:i:s", strtotime($firstDay));
+    $lastDay = date("Y-m-d H:i:s", strtotime($lastDay));
+    $bookings = [];
+    foreach ($housing as $house) {
+        $req = $db->prepare("SELECT * FROM booking WHERE housing_id = :id AND timestamp >= :firstDay AND timestamp <= :lastDay");
+        $req->execute([
+            'id' => $house['id'],
+            'firstDay' => $firstDay,
+            'lastDay' => $lastDay
+        ]);
+        $house = $req->fetchAll();
+        array_merge($bookings, $house);
+    }
+
+    foreach ($performances as $performance) {
+        $req = $db->prepare("SELECT * FROM booking WHERE performance_id = :id AND timestamp >= :firstDay AND timestamp <= :lastDay");
+        $req->execute([
+            'id' => $performance['id'],
+            'firstDay' => $firstDay,
+            'lastDay' => $lastDay
+        ]);
+        $performance = $req->fetchAll();
+        array_merge($bookings, $performance);
+    }
+
+    return $bookings;
+    
+}
 function addBooking($id, $type, $start_date, $end_date, $amount_people, $price, $userId, $title)
 {
     require_once __DIR__ . "/../../database/connection.php";
