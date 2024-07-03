@@ -6,10 +6,64 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 $_SESSION["PaymentIntent"] = $_POST;
-
+Use GuzzleHttp\Client;
 \Stripe\Stripe::setApiKey($stripeSecretTest);
 \Stripe\Stripe::setApiVersion("2024-04-10");
 
+$id = $_GET["id"];
+$type = $_GET["type"];
+
+$client = new Client(['base_uri' => 'https://pcs-all.online:8000']);
+$test = ['id' => $id, 'type' => $type, 'id_dispo' => $_GET["id_dispo"] ];
+$response = $client->get($type == 'housing' ? '/housingDisponibility/' : '/performanceDisponibility/');
+$disponibility = json_decode($response->getBody()->getContents(), true);
+
+if ($type == 'performance'){
+    $hourStart = $_POST['hour_start'];
+    $hourEnd = $_POST['hour_end'];
+    $hourDuration = $_POST['hour_duration'];
+
+    
+//conversion en format date de ref (janvier 1970) 
+$hourStart = date("Y-m-d H:i:s", strtotime($hourStart));
+$hourEnd = date("Y-m-d H:i:s", strtotime($hourEnd));
+
+function convertToDurationInSeconds($hours) {
+    if (!is_numeric($hours)) {
+        return false;
+    }
+
+    // Calcule la durée en secondes
+    return $hours * 3600;
+}
+
+$hourDurationInSeconds = convertToDurationInSeconds($hourDuration);
+
+
+$_SESSION["Erreur"] = [];
+$startTimestamp = strtotime($hourStart);
+$endTimestamp = strtotime($hourEnd);
+$durationInSeconds = $endTimestamp - $startTimestamp;
+
+echo $startTimestamp . " " . $endTimestamp . " " . $durationInSeconds;
+if ($endTimestamp < $startTimestamp) {
+    $_SESSION["Erreur"][0] = '<div class="alert alert-danger" role="alert" style="text-align:center !important">L\'heure de fin doit être supérieure à l\'heure de début</div>';
+} elseif ($endTimestamp == $startTimestamp) {
+    $_SESSION["Erreur"][1] = '<div class="alert alert-danger" role="alert" style="text-align:center !important">L\'heure de fin doit être différente de l\'heure de début</div>';
+} elseif ($hourDurationInSeconds > $durationInSeconds) {
+    $_SESSION["Erreur"][2] = '<div class="alert alert-danger" role="alert" style="text-align:center !important">La durée de la prestation doit être supérieure ou égale à la durée de la prestation</div>';
+}
+}
+
+
+if (isset($_SESSION["Erreur"]) && count($_SESSION["Erreur"]) > 0){
+foreach ($_SESSION["Erreur"] as $erreur){
+    echo $erreur;
+}
+ 
+}
+
+  
 $price = $_POST['price'] * 100;
 
 $session = \Stripe\Checkout\Session::create([
@@ -30,5 +84,4 @@ $session = \Stripe\Checkout\Session::create([
 ]);
 header ('Location: ' . $session->url);
 
-?>
 

@@ -135,6 +135,14 @@ if (isPath("performanceDisponibility/:id")) {
 }
 
 
+if (isPath("adsDisponibility")) {
+    if (isGetMethod()) {
+        require_once __DIR__ . "/routes/ads/getAdsDisponibility.php";
+        die();
+    }
+}
+
+
 if (isPath("addAdsDisponibility")) {
     if (isPostMethod()) {
         require_once __DIR__ . "/routes/ads/addAdsDisponibility.php";
@@ -257,7 +265,7 @@ if (isPath("addReview")) {
     }
 }
 
-if(isPath("getAllBookingByOwnerId/:id")){
+if(isPath("getAllBookingByOwnerId")){
     if(isGetMethod()){
         require_once __DIR__ . "/routes/ads/booking/getAllBookingByOwnerId.php";
         die();
@@ -358,7 +366,7 @@ if(isPath("getAssignedTicketsByUserId/:id")){
 }
 
 ##############################Chatbot##############################
-if (isPath("getChatbotAnswer")) {
+if (isPath("getChatbotAnswer/:message")) {
     if (isGetMethod()) {
         require_once __DIR__ . "/routes/support/chatbot/getChatbotAnswer.php";
         die();

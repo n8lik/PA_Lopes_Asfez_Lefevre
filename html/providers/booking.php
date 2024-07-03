@@ -34,19 +34,24 @@ if (isset($_GET["id"])) {
     $id = $_GET["id"];
     
     $client = new Client();
-    $response = $client->get('https://pcs-all.online:8000/getAllBookingByOwnerId/'.$id);
+    $test = [
+        'adsType' => 'performance',
+        'id' => $id
+    ];
+    $response = $client->get('https://pcs-all.online:8000/getAllBookingByOwnerId/', [
+        'json' => $test
+    ]);
     $booking = json_decode($response->getBody()->getContents(), true);
     if ($booking["success"]== true){
-    var_dump($booking)["bookings"];
+
+   
 // Trier les réservations par date de début et mettre celles qui sont passées dans un autre tableau)
-if ($booking["bookings"]["housing_id"] != null) {
+
 
 $bookings = $booking["bookings"];
 
 $traveler = $booking["username"];
-} else {
-    $bookings = [];
-}
+
 $bookingsPassed = [];
 $bookingsFuture = [];
 
@@ -131,8 +136,7 @@ else{
                                                     Pseudo du locataire : <?php echo $traveler["pseudo"];?>
                                                     <br>
                                                     Nom du locataire : <?php echo $traveler["firstname"] . " " . $traveler["lastname"];?>
-                                                    <br>
-                                                    Adresse : <?= $booking["address"] ?>
+                                                   
                                                     <br>
                                                     Prix : <?= $booking["price"] ?>€
                                                     <br>
@@ -208,8 +212,7 @@ else{
                                                     Pseudo du locataire : <?php echo $traveler["pseudo"];?>
                                                     <br>
                                                     Nom du locataire : <?php echo $traveler["firstname"] . " " . $traveler["lastname"];?>
-                                                    <br>
-                                                    Adresse : <?= $booking["address"] ?>
+                                                    
                                                     <br>
                                                     Prix : <?= $booking["price"] ?>€
                                                     <br>

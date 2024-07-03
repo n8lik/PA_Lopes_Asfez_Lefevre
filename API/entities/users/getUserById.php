@@ -35,7 +35,7 @@ function getUserByAdsId($adsid, $type)
     require_once __DIR__ . "/../../database/connection.php";
     $db = connectDB();
 
-    if ($type == "performances") {
+    if ($type == "performance") {
 
         $req = $db->prepare("SELECT * FROM performances WHERE id = :id");
         $req->execute(['id' => $adsid]);
@@ -43,7 +43,9 @@ function getUserByAdsId($adsid, $type)
         $req = $db->prepare("SELECT * FROM housing WHERE id = :id");
         $req->execute(['id' => $adsid]);
     }
-    return $req->fetch();
+    
+    $ads = $req->fetch();
+    return $ads;
     
 }
 

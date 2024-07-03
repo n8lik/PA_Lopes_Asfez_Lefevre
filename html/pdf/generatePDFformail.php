@@ -10,16 +10,12 @@ ini_set('display_startup_errors', 1);
 require '../vendor/autoload.php';
 require '../dompdf/autoload.inc.php';
 session_start();
-if (!isConnected()){
-    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
-    header("Location: /");
- 
-    die();
-}
+
 Use GuzzleHttp\Client;
 use Dompdf\Dompdf;
 $bookingId = $_GET["id"];
 $userToken = $_GET["user"];
+$type = $_GET["type"];
 
 
 try {
@@ -33,6 +29,7 @@ try {
     $booking = [];
 }
 
+if ($type =='housing'){
 $housingId = $booking["housing_id"];
 try {
     $client = new Client([
@@ -43,6 +40,19 @@ try {
     $housing = $data["housing"];
 } catch (Exception $e) {
     $housing = [];
+}
+}
+else{
+    try {
+        $client = new Client([
+            'base_uri' => 'https://pcs-all.online:8000'
+        ]);
+        $response = $client->get('/getPerformanceAdsInfo/' .$housingId);
+        $data = json_decode($response->getBody()->getContents(), true);
+        $housing = $data["adsInfo"];
+    } catch (Exception $e) {
+        $housing = [];
+    }
 }
 try {
     $client = new Client([

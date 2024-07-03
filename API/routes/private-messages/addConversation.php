@@ -17,6 +17,7 @@ if (empty($id) || empty($type) || empty($userId)) {
 
 $idConv = addConversation($userId, $type, $id);
 
+
 if (!$idConv) {
     jsonResponse(404, [], "Conversation not found");
 }

@@ -3,8 +3,8 @@
 session_start();
 
 
+$_SESSION["booking"] = 1;
+$id = $_SESSION["PaymentIntent"]["id"];
+$type = $_SESSION["PaymentIntent"]["type"];
 
-$_SESSION["error"] = "Une erreur est survenue pendant votre paiement, veuillez réessayer.";
-
-
-header("Location: /VIP/VIP");
+header("Location: /reservation/booking.php?id=$id&type=$type");

@@ -26,12 +26,28 @@ try {
 if (isset($_POST['new_disponibility']) && !empty($_POST['new_disponibility'])) {
     $disponibility = json_decode($_POST['new_disponibility'], true);
     foreach ($disponibility as $date) {
+        if ($type == 'performance'){
+        $hour_duration = $_POST['hour_duration'];
+        //arrondir 2 chiffres après la virgule
+        $hour_duration = round($hour_duration, 2);
+        $hour_start = $_POST['hour_start'];
+        $hour_end = $_POST['hour_end'];
+
+        if ($hour_end < $hour_start) {
+            $temp = $hour_start;
+            $hour_start = $hour_end;
+            $hour_end = $temp;
+        }
+        }
         try {
             $client = new Client(['base_uri' => 'https://pcs-all.online:8000']);
             $test = [
                 'id' => $id,
                 'type' => $type,
-                'date' => $date
+                'date' => $date,
+                'hour_start' => $hour_start,
+                'hour_end' => $hour_end,
+                'hour_duration' => $hour_duration
             ];
 
             $response = $client->post('/addAdsDisponibility', ['json' => $test]);
@@ -66,7 +82,8 @@ if ($disponibility['success'] == false && ($_SESSION['grade'] != 4 || $_SESSION[
 }
 
 // Display success and error messages
-function displayMessage($type, $sessionKey) {
+function displayMessage($type, $sessionKey)
+{
     if (isset($_SESSION[$sessionKey])) {
         echo '<div class="alert alert-' . $type . '" role="alert" style="text-align:center !important">' . $_SESSION[$sessionKey] . '</div>';
         unset($_SESSION[$sessionKey]);
@@ -246,6 +263,10 @@ try {
                                 <button type="button" class="btn btn-secondary mt-3" onclick="submitForm()">Confirmer les modifications</button>
                                 <form id="disponibilityForm" method="POST" action="">
                                     <input type="hidden" name="new_disponibility" id="newDisponibility" value="">
+                                    <input type="hidden" name="hour_start" id="hour_start" value="">
+                                    <input type="hidden" name="hour_end" id="hour_end" value="">
+                                    <input type="hidden" name="hour_duration" id="hour_duration" value="">
+
                                 </form>
                             </div>
                             <div class="modal-footer">
@@ -254,6 +275,7 @@ try {
                         </div>
                     </div>
                 </div>
+                
             <?php } else { ?>
                 <div class="row">
                     <div class="col-md-12 button-container">
@@ -297,8 +319,16 @@ try {
                     } ?>
                 </div>
                 <div class="col-md-6">
-                    <button type="button" class="btn">Partager</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="popover" data-bs-html="true" data-bs-content='
+        <div class="d-flex flex-column">
+            <a href="https://twitter.com/intent/tweet?url=https://pcs-all.online/ads.php?id=<?php echo $content['id']; ?>&type=<?php echo $type; ?>" target="_blank" class="btn btn-secondary mb-2">Twitter</a>
+            <a href="https://www.linkedin.com/shareArticle?url=https://pcs-all.online/ads.php?id=<?php echo $content['id']; ?>&type=<?php echo $type; ?>" target="_blank" class="btn btn-secondary mb-2">LinkedIn</a>
+            <a href="mailto:?subject=Regardez cette annonce&body=https://pcs-all.online/ads.php?id=<?php echo $content['id']; ?>&type=<?php echo $type; ?>" class="btn btn-secondary">Email</a>
+        </div>'>
+                        Partager
+                    </button>
                 </div>
+
             </div>
         </div>
     </div>
@@ -308,12 +338,21 @@ try {
 
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css">
+
+    
 <script>
-    var newDisponibility = []; // Déclaration globale
-    var calendar; // Déclarez la variable du calendrier globalement
+    var newDisponibility = [];
+    var hour_start;
+    var hour_end;
+    var hour_duration;
+    var calendar; 
 
     function submitForm() {
         document.getElementById('newDisponibility').value = JSON.stringify(newDisponibility);
+        
+        
+       
+        console.log (document.getElementById('hour_start').value + ' ' + document.getElementById('hour_end').value + ' ' + document.getElementById('hour_duration').value);
         document.getElementById('disponibilityForm').submit();
     }
 
@@ -322,7 +361,7 @@ try {
         console.log('Disponibility:', disponibility); // Vérifier le contenu
 
         var events = [];
-
+        var type = '<?php echo $type; ?>';
         if (disponibility && Array.isArray(disponibility)) {
             disponibility.forEach(element => {
                 if (element.is_booked == 1) {
@@ -356,8 +395,36 @@ try {
                 dateClick: function(info) {
                     var index = newDisponibility.indexOf(info.dateStr);
                     if (index === -1) {
-                        newDisponibility.push(info.dateStr);
-                        info.dayEl.classList.add('selected-date');
+                        if (type == 'performance') {
+                            var hour_start = prompt('Heure de début (format 24h):');
+                            var hour_end = prompt('Heure de fin (format 24h):');
+                            var hour_duration = prompt('Durée de la performance (en minutes):');
+                            if (hour_start && hour_end && hour_duration) {
+                                // push la date d'aujourd'hui et les heures de début en datetime de fin datetime et hour_duration en int
+                                newDisponibility.push(info.dateStr);
+                                info.dayEl.classList.add('selected-date');
+                                //hour_start en format Y/m/d H:i:s
+                                hour_start = info.dateStr + ' ' + hour_start + ':00'+':00';
+                                //hour_end en format Y/m/d H:i:s
+                                hour_end = info.dateStr + ' ' + hour_end + ':00'+':00';
+                                //hour_duration en heure 
+                                hour_duration = parseInt(hour_duration) / 60;
+
+                                document.getElementById('hour_start').value = hour_start;
+                                document.getElementById('hour_end').value = hour_end;
+                                document.getElementById('hour_duration').value = hour_duration;
+
+                                
+
+                              
+
+
+                                
+                            }
+                        } else {
+                            newDisponibility.push(info.dateStr);
+                            info.dayEl.classList.add('selected-date');
+                        }
                     } else {
                         newDisponibility.splice(index, 1);
                         info.dayEl.classList.remove('selected-date');
@@ -376,6 +443,7 @@ try {
         }
     });
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -396,6 +464,14 @@ try {
                     })
                     .catch(error => console.error('Erreur:', error));
             });
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+        var popoverList = popoverTriggerList.map(function(popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl);
         });
     });
 </script>

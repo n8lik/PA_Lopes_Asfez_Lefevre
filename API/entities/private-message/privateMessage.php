@@ -4,13 +4,13 @@
 require_once __DIR__ . "/../../database/connection.php";
 require_once __DIR__ . "/../../entities/users/getUserById.php";
 require_once __DIR__ . "/../../entities/ads/house.php";
-
+require_once __DIR__ . "/../../entities/ads/adsInfo.php";
 
 function getAllConversationWhereFromUserIdToUserIdAdsId($userId, $touser, $adsid, $type)
 {
     $db = connectDB();
 
-    $column = ($type == "performances") ? "performance_id" : "housing_id";
+    $column = ($type == "performance") ? "performance_id" : "housing_id";
 
     $req = $db->prepare("SELECT * FROM private_message WHERE from_user_id = :from_user_id AND to_user_id = :to_user_id AND $column = :adsid");
     $req->execute(['from_user_id' => $userId, 'to_user_id' => $touser, 'adsid' => $adsid]);
@@ -23,27 +23,31 @@ function addConversation($userId, $type, $adsid)
     $to_user_id = getUserByAdsId($adsid, $type)['id_user'];
 
     $allconv = getAllConversationWhereFromUserIdToUserIdAdsId($userId, $to_user_id, $adsid, $type);
-    $ad = getHousingById($adsid);['title'];
+    
+    $ad = getAdsInfo($adsid, $type)['title'];
 
+    
     if ($allconv) {
         $id = $allconv['id_conv'];
     } else {
         $id = bin2hex(random_bytes(32));
+    }
 
         $content = "Bonjour, je suis intéressé par votre annonce $ad, pouvez-vous me donner plus d'informations ?";
         $db = connectDB();
 
-        if ($type == "performances") {
+        if ($type == "performance") {
             $req = $db->prepare("INSERT INTO private_message (content, id_conv, from_user_id, to_user_id, performance_id) VALUES (:content, :id, :from_user_id, :to_user_id, :adsid)");
         } elseif ($type == "housing") {
             $req = $db->prepare("INSERT INTO private_message (content, id_conv, from_user_id, to_user_id, housing_id) VALUES (:content, :id, :from_user_id, :to_user_id, :adsid)");
         }
 
         $req->execute(['content'=>$content, 'id' => $id, 'from_user_id' => $userId, 'to_user_id' => $to_user_id, 'adsid' => $adsid]);
+        return $id;
     }
 
-    return $id;
-}
+    
+
 
 function getPrivateMessageById($id)
 {

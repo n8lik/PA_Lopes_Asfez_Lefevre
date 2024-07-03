@@ -36,29 +36,82 @@ function getPerformanceCatalogByType($type)
     $req->execute(['type' => $type]);
     return $req->fetchAll();
 }
-
 function getHousingCatalogBySearch($destination, $arrivalDate, $departureDate, $travelers)
 {
     require_once __DIR__ . "/../../database/connection.php";
+    $response = getAllCatalogByChoice('housing');
+    // Filtrer par destination
     if ($destination != null) {
         $destination = explode(",", $destination);
         $destination = $destination[0];
-        $db = connectDB();
-        $req = $db->prepare("SELECT * FROM housing WHERE city = :destination AND is_validated = 1");
-        $req->execute(['destination' => $destination]);
-        return $req->fetchAll();
+        $tmp_response = [];
+        foreach ($response as $key => $value) {
+            if (strpos($value['city'], $destination) !== false || strpos($value['country'], $destination) !== false) {
+                array_push($tmp_response, $value);
+            }
+        }
+        $response = $tmp_response;
     }
 
-    return [];
+    // Filtrer par nombre de voyageurs
+    if ($travelers != null) {
+        $tmp_response = [];
+        foreach ($response as $key => $value) {
+            if ($value['guest_capacity'] >= $travelers) {
+                array_push($tmp_response, $value);
+            }
+        }
+        $response = $tmp_response;
+    }
+
+    // Filtrer par disponibilité
+    if ($arrivalDate != null && $departureDate != null) {
+        $tmp_response = [];
+        $db = connectDB();
+        foreach ($response as $key => $value) {
+            $req = $db->prepare("SELECT * FROM disponibility WHERE id_housing = :id AND date >= :arrivalDate AND is_booked = 0 AND date <= :departureDate");
+            $req->execute(['id' => $value['id'], 'arrivalDate' => $arrivalDate, 'departureDate' => $departureDate]);
+            $result = $req->fetchAll();
+            if (count($result) > 0) {
+                array_push($tmp_response, $value);
+            }
+        }
+        $response = $tmp_response;
+    }
+
+    return $response;
 }
+
 
 function getPerformanceCatalogBySearch($date, $type)
 {
     require_once __DIR__ . "/../../database/connection.php";
-    $db = connectDB();
-    $req = $db->prepare("SELECT * FROM performances WHERE date = :date AND type = :type AND is_validated = 1");
-    $req->execute(['date' => $date, 'type' => $type]);
-    return $req->fetchAll();
+    $response = getAllCatalogByChoice('performance');
+
+    // Filtrer par type
+    if ($type != null) {
+        $tmp_response = [];
+        foreach ($response as $key => $value) {
+            if ($value['performance_type'] == $type || $value['title']==$type) {
+                array_push($tmp_response, $value);
+            }
+        }
+        $response = $tmp_response;
+    }
+    if ($date != null) {
+        $tmp_response = [];
+        $db = connectDB();
+        foreach ($response as $key => $value) {
+            $req = $db->prepare("SELECT * FROM disponibility WHERE id_performance = :id AND date = :date AND is_booked = 0");
+            $req->execute(['id' => $value['id'], 'date' => $date]);
+            $result = $req->fetchAll();
+            if (count($result) > 0) {
+                array_push($tmp_response, $value);
+            }
+        }
+        $response = $tmp_response;
+    }
+    return $response;
 }
 
 

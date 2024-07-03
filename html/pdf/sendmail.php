@@ -92,4 +92,4 @@ $mail = new PHPMailer(true);
     catch (Exception $e) {
         echo "L'envoi de l'email a échoué. Erreur: {$mail->ErrorInfo}";
     }
-    header("Location: /reservation/booking?id=".$housing["id"]."&type=housing");
+    header("Location: /reservation/booking?id=".$housing["id"]."&type=$type");

@@ -6,11 +6,7 @@ use GuzzleHttp\Client;
 
 ini_set('display_errors', 'on');
 error_reporting(E_ALL);
-if (!isConnected()){
-    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
-    header("Location: /");
-    die();
-}
+
 //stocker 2 tableau des messages en session
 if (!isset($_SESSION["Usermessages"])) {
     $_SESSION["Usermessages"] = [];
@@ -42,7 +38,6 @@ if (isset($_POST['message'])) {
         $response = $client->get('/getChatbotAnswer/' . $message);
         $chatbotResponse = json_decode($response->getBody()->getContents(), true);
         array_push($_SESSION["Chatmessages"], $chatbotResponse['message']);
-        echo $chatbotResponse;
     } catch (Exception $e) {
         echo '<div class="alert alert-danger" role="alert">Erreur lors de la récupération des informations</div>';
     }

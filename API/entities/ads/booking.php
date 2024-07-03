@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 function isbooked($id, $type, $start_date, $end_date)
 {
@@ -13,21 +16,15 @@ function isbooked($id, $type, $start_date, $end_date)
             'start_date' => $start_date,
             'end_date' => $end_date
         ]);
-    } else {
+    } else if ($type = "performance") {
 
-        $db = connectDB();
-        $req = $db->prepare("UPDATE disponibility SET is_booked = 1 WHERE id_performances = :id AND date >= :start_date AND date <= :end_date");
-
-        $req->execute([
-            'id' => $id,
-            'start_date' => $start_date,
-            'end_date' => $end_date
-        ]);
+       
     }
 }
 
 
-function getBookingById($id){
+function getBookingById($id)
+{
     require_once __DIR__ . "/../../database/connection.php";
 
     $db = connectDB();
@@ -44,19 +41,31 @@ function addBooking($id, $type, $start_date, $end_date, $amount_people, $price, 
     $db = connectDB();
 
     if ($type == "performance") {
-        $req = $db->prepare("INSERT INTO booking (performance_id,  start_date, end_date, amount_people, price, user_id, title) VALUES (:id, :start_date, :end_date, :amount_people, :price, :user_id, :title)");
+        $req = $db->prepare("INSERT INTO booking (performance_id,  start_date, end_date,  price, user_id, title) VALUES (:id, :start_date, :end_date,  :price, :user_id, :title)");
         $req->execute([
             'id' => $id,
             'start_date' => $start_date,
             'end_date' => $end_date,
-            'amount_people' => $amount_people,
             'price' => $price,
             'user_id' => $userId,
             'title' => $title
         ]);
-        isbooked($id, $type, $start_date, $end_date);
+        $lastId = $db->lastInsertId();
+
+        $start_date_reformat = date("Y-m-d", strtotime($start_date));
+        
+        $req = $db->prepare("UPDATE disponibility SET is_booked =:is_booked WHERE id_performance = :id AND date = :date AND hour_start >= :hour_start AND hour_end <= :hour_end");
+        $req->execute([
+            'is_booked' => 1,
+            'id' => $id,
+            'date' => $start_date_reformat,
+            'hour_start' => $start_date,
+            'hour_end' => $end_date
+        ]);
+        
+        return $lastId;
     } else if ($type == "housing") {
-        $req = $db->prepare("INSERT INTO booking (housing_id, start_date, end_date, amount_people, price, user_id, title) VALUES (:id,  :start_date, :end_date, :amount_people, :price, :user_id, :title)");
+        $req = $db->prepare("INSERT INTO booking (housing_id, start_date, end_date, amount_people, price, user_id, title, ) VALUES (:id,  :start_date, :end_date, :amount_people, :price, :user_id, :title, )");
         $req->execute([
             'id' => $id,
             'start_date' => $start_date,
@@ -71,8 +80,6 @@ function addBooking($id, $type, $start_date, $end_date, $amount_people, $price, 
 
         $lastId = $db->lastInsertId();
         return $lastId;
-
-        
     }
 }
 
@@ -93,32 +100,26 @@ function getBookingByUserId($userId, $type)
         foreach ($bookings as $key => $booking) {
             if ($booking["housing_id"] != null) {
 
-                if (!getAdsImages($booking["housing_id"], "housing")){
+                if (!getAdsImages($booking["housing_id"], "housing")) {
                     $bookings[$key]["image"] = NULL;
-                
-                }
-                else{
-                $bookings[$key]["image"] = getAdsImages($booking["housing_id"], "housing")[0];
-                $bookings[$key]["address"] = getAdsAddress($booking["housing_id"], "housing");
+                } else {
+                    $bookings[$key]["image"] = getAdsImages($booking["housing_id"], "housing")[0];
+                    $bookings[$key]["address"] = getAdsAddress($booking["housing_id"], "housing");
                 }
             } else if ($booking["performance_id"] != null) {
 
-                if (!getAdsImages($booking["performance_id"], "performance")){
+                if (!getAdsImages($booking["performance_id"], "performance")) {
                     $bookings[$key]["image"] = NULL;
-                
+                } else {
+                    $bookings[$key]["image"] = getAdsImages($booking["performance_id"], "performance")[0];
+                    $bookings[$key]["address"] = getAdsAddress($booking["performance_id"], "performance");
                 }
-                else{
-                $bookings[$key]["image"] = getAdsImages($booking["performance_id"], "performance")[0];
-                $bookings[$key]["address"] = getAdsAddress($booking["performance_id"], "performance");
-                }
-       
             }
         }
 
 
         return $bookings;
-    
-    } 
+    }
 }
 function addReview($rate, $comment, $id)
 {
@@ -135,26 +136,37 @@ function addReview($rate, $comment, $id)
     return "ok";
 }
 
-function getAllBookingByOwnerId($id){
+function getAllBookingByOwnerId($id, $type)
+{
     require_once __DIR__ . "/../../database/connection.php";
     require_once __DIR__ . "/../ads/adsInfo.php";
-    
-    $db = connectDB();
-    $req = $db->prepare("SELECT * FROM booking b JOIN housing h ON b.housing_id = h.id WHERE h.id_user = :id");
-    $req->execute(['id' => $id]);
-    $bookings = $req->fetchALL();
-    foreach ($bookings as $key => $booking) {
-        if (!getAdsImages($booking["housing_id"], "housing")){
-            $bookings[$key]["image"] = NULL;
-        
+    if ($type == "housing") {
+        $db = connectDB();
+        $req = $db->prepare("SELECT * FROM booking b JOIN housing h ON b.housing_id = h.id WHERE h.id_user = :id");
+        $req->execute(['id' => $id]);
+        $bookings = $req->fetchALL();
+        foreach ($bookings as $key => $booking) {
+            if (!getAdsImages($booking["housing_id"], "housing")) {
+                $bookings[$key]["image"] = NULL;
+            } else {
+                $bookings[$key]["image"] = getAdsImages($booking["housing_id"], "housing")[0];
+                $bookings[$key]["address"] = getAdsAddress($booking["housing_id"], "housing");
+            }
         }
-        else{
-        $bookings[$key]["image"] = getAdsImages($booking["housing_id"], "housing")[0];
-        $bookings[$key]["address"] = getAdsAddress($booking["housing_id"], "housing");
+    } else if ($type == "performance") {
+        $db = connectDB();
+        $req = $db->prepare("SELECT * FROM booking b JOIN performances p ON b.performance_id = p.id WHERE p.id_user = :id");
+        $req->execute(['id' => $id]);
+        $bookings = $req->fetchALL();
+        foreach ($bookings as $key => $booking) {
+            if (!getAdsImages($booking["performance_id"], "performance")) {
+                $bookings[$key]["image"] = NULL;
+            } else {
+                $bookings[$key]["image"] = getAdsImages($booking["performance_id"], "performance")[0];
+                $bookings[$key]["address"] = getAdsAddress($booking["performance_id"], "performance");
+            }
+        }
     }
 
-}
     return $bookings;
-} 
-
-
+}

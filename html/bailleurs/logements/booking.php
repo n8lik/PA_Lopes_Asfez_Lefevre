@@ -34,7 +34,13 @@ if (isset($_GET["id"])) {
     $id = $_GET["id"];
     
     $client = new Client();
-    $response = $client->get('https://pcs-all.online:8000/getAllBookingByOwnerId/'.$id);
+    $test = [
+        'adsType' => 'housing',
+        'id' => $id
+    ];
+    $response = $client->get('https://pcs-all.online:8000/getAllBookingByOwnerId/', [
+        'json' => $test
+    ]);
     $booking = json_decode($response->getBody()->getContents(), true);
     if ($booking["success"]== true){
 

@@ -73,7 +73,7 @@ if (isset($_GET['choice'])) {
                 <div class="row" style=" background-color: #34656D;border-radius:1em; padding:0.5em;">
                     <div class="col-12">
                         <form class="d-flex" action="catalog?choice=housing" method="POST">
-                            <input name="destination" id="destinationInput" class="form-control me-2" type="text" placeholder="Destination" aria-label="Search" required>
+                            <input name="destination" id="destinationInput" class="form-control me-2" type="text" placeholder="Destination" aria-label="Search">
                             <input name="arrivalDate" class="form-control me-2" type="date" placeholder="Date d'arrivée" aria-label="Search">
                             <input name="departureDate" class="form-control me-2" type="date" placeholder="Date de départ" aria-label="Search">
                             <input name="travelers" class="form-control me-2" type="number" placeholder="Nombre de voyageurs" aria-label="Search" min="1" max="10">
@@ -95,8 +95,8 @@ if (isset($_GET['choice'])) {
 
             break;
         case 'performance':
-            if (isset($_POST['activity'])) {
-                $activity = $_POST['activity'];
+            if (isset($_POST['type'])) {
+                $activity = $_POST['type'];
                 $date = $_POST['date'];
                 //Requete API en POST pour récupérer le catalogue
                 $client = new Client([

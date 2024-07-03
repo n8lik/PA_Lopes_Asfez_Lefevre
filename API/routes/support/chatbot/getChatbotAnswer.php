@@ -7,7 +7,6 @@ require_once __DIR__ . "/../../../libraries/parameters.php";
 $parameters = getParametersForRoute("/getChatbotAnswer/:message");
 $message = $parameters["message"];
 
-echo "cc";
 
 if (empty($message)) {
     echo(jsonResponse(404, [], [
@@ -19,7 +18,7 @@ if (empty($message)) {
 
 $answer=getChatbotAnswer($message);
 
-if (empty($ticket)) {
+if (empty($answer)) {
     echo(jsonResponse(404, [], [
         "success" => false,
         "message" => "No answer found"
