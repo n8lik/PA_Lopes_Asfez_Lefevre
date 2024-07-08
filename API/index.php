@@ -1,8 +1,4 @@
 <?php
-
-ini_set("display_errors", 1);
-error_reporting(E_ALL);
-
 //On inclut les fichiers nécessaires
 require_once __DIR__ . "/libraries/path.php";
 require_once __DIR__ . "/libraries/method.php";
@@ -62,6 +58,20 @@ if (isPath("usersbytoken/:id")) {
         die();
     }
 }
+
+if (isPath("getAdminBySearch/:search")) {
+    if (isGetMethod()) {
+        require_once __DIR__ . "/routes/users/getAdminBySearch.php";
+        die();
+    }
+}
+
+if (isPath("getAllAdmins")) {
+    if (isGetMethod()) {
+        require_once __DIR__ . "/routes/users/getAllAdmins.php";
+        die();
+    }
+}
 ##############################WEBHOOKS##############################
 
 if (isPath("webhook")){
@@ -116,6 +126,7 @@ if (isPath("housingDisponibility/:id")) {
         require_once __DIR__ . "/routes/ads/getHousingDisponibilityById.php";
         die();
     }
+}
 
 if(isPath("housing/:id")){
     if(isGetMethod()){
@@ -173,7 +184,7 @@ if (isPath("performanceAdsImages/:id")) {
 if (isPath("getHousingAdsInfo/:id")) {
     if (isGetMethod()) {
         require_once __DIR__ . "/routes/ads/getHousingAdsInfoById.php";
-        die();
+        die(); 
     }
 }
 
@@ -182,6 +193,14 @@ if (isPath("getPerformanceAdsInfo/:id")) {
         require_once __DIR__ . "/routes/ads/getPerformanceAdsInfoById.php";
         die();
     }
+}
+
+if(isPath("test")){
+    if(isPostMethod()){
+        require_once __DIR__ . "/routes/ads/test.php";
+        die();
+    }
+
 }
 
 if (isPath("getAllCatalogByChoice/:type")) {
@@ -243,7 +262,6 @@ if (isPath("getComments")) {
 }
 #############################Booking##############################
 
-}
 if (isPath("getBookingByDate")){
     if(isPostMethod()){
         require_once __DIR__ . "/routes/ads/booking/getBookingByDate.php";
@@ -282,6 +300,13 @@ if(isPath("getAllBookingByOwnerId")){
 if(isPath("booking/:id")){
     if(isGetMethod()){
         require_once __DIR__ . "/routes/ads/booking/getBookingById.php";
+        die();
+    }
+}
+
+if(isPath("cancelBooking")){
+    if(isPostMethod()){
+        require_once __DIR__ . "/routes/ads/booking/cancelBooking.php";
         die();
     }
 }
@@ -367,6 +392,22 @@ if (isPath("getTicketsByStatus/:status")) {
 if(isPath("getAssignedTicketsByUserId/:id")){
     if(isGetMethod()){
         require_once __DIR__ . "/routes/support/tickets/getAssignedTicketsByUserId.php";
+        die();
+    }
+}
+
+
+if (isPath('assignTicketToAdmin')) {
+    if (isPostMethod()) {
+        require_once __DIR__ . "/routes/support/tickets/assignTicketToAdmin.php";
+        die();
+    }
+}
+
+    
+if (isPath('unassignTicketToAdmin')) {
+    if (isPostMethod()) {
+        require_once __DIR__ . "/routes/support/tickets/unassignTicketToAdmin.php";
         die();
     }
 }
@@ -463,10 +504,10 @@ if(isPath("updatePassword")){
 }
 
 
-
-if(isPath("test")){
+###############AndroidApp####################
+if(isPath("loginAndroid")){
     if(isPostMethod()){
-        require_once __DIR__ . "/routes/test.php";
+        require_once __DIR__ . "/routes/androidApp/loginApp.php";
         die();
     }
 }

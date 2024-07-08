@@ -1,8 +1,8 @@
 <?php
 require "../vendor/autoload.php";
+require "functions/functions.php";
 
 use GuzzleHttp\Client;
-var_dump($_POST);
 session_start();
 if (!isConnected()){
     $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";

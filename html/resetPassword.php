@@ -8,10 +8,6 @@ if (!isset($_GET['email']) || !isset($_GET['token'])) {
     echo "manque qqch";
 }
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 $client = new Client([
     'base_uri' => 'https://pcs-all.online:8000'
 ]);

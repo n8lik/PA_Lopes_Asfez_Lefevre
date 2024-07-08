@@ -4,8 +4,6 @@ require 'vendor/autoload.php';
 use GuzzleHttp\Client;
 
 ini_set('display_errors', 'on');
-error_reporting(E_ALL);
-
 //stocker 2 tableau des messages en session
 if (!isset($_SESSION["Usermessages"])) {
     $_SESSION["Usermessages"] = [];

@@ -7,17 +7,17 @@ use GuzzleHttp\Client;
 
 // Si l'utilisateur n'est pas connecté ou n'est pas du grade 1, 2 ou 3, on le redirige vers la page d'accueil
 
-if (!isConnected()){
+if (!isConnected()) {
     $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
     header("Location: /");
- 
+
     die();
 }
 if ($_SESSION["grade"] > 3) {
     $_SESSION['error'] = "Vous devez être un voyageur pour avoir accès à cette page";
     header("Location: /");
     die();
-} 
+}
 // On récupère les réservations de l'utilisateur
 try {
     $client = new Client([
@@ -30,6 +30,7 @@ try {
     $bookings = [];
 }
 
+
 // Trier les réservations par date de début et mettre celles qui sont passées dans un autre tableau
 $bookingsPassed = [];
 $bookingsFuture = [];
@@ -39,10 +40,38 @@ foreach ($bookings as $booking) {
     } else {
         $bookingsFuture[] = $booking;
     }
+if (isset($booking["housing_id"])){
+    try {
+        $client = new Client([
+            'base_uri' => 'https://pcs-all.online:8000'
+        ]);
+        $response = $client->get('/getHousingAdsInfo/' . $booking["housing_id"]);
+        $data = json_decode($response->getBody()->getContents(), true);
+        $ads = $data["adsInfo"];
+        $type = "housing";
+    } catch (Exception $e) {
+        $ads = null;
+    }
+
+}
+else {
+    try {
+        $client = new Client([
+            'base_uri' => 'https://pcs-all.online:8000'
+        ]);
+        $response = $client->get('/getPerformanceAdsInfo/' . $booking["performance_id"]);
+        $data = json_decode($response->getBody()->getContents(), true);
+        $ads = $data["adsInfo"];
+        $type = "performance";
+    } catch (Exception $e) {
+        $ads = null;
+    }
+}
 }
 // Si le formulaire de commentaire est envoyé
 if (isset($_POST["rate"]) && isset($_POST["comment"]) && isset($_POST["id"])) {
-    
+    var_dump($_POST);
+
     try {
         $client = new Client([
             'base_uri' => 'https://pcs-all.online:8000'
@@ -58,12 +87,15 @@ if (isset($_POST["rate"]) && isset($_POST["comment"]) && isset($_POST["id"])) {
         ]);
         $data = json_decode($response->getBody()->getContents(), true);
 
-        if ($data["success"]==false){
+        if ($data["success"] == false) {
             $_SESSION["error"] = $data["message"];
         }
     } catch (Exception $e) {
         echo $e->getMessage();
     }
+
+    var_dump($data);
+
 
     //Unsset le post
     unset($_POST);
@@ -73,17 +105,29 @@ if (isset($_POST["rate"]) && isset($_POST["comment"]) && isset($_POST["id"])) {
 
 <div class="container" style="margin-top: 1em;">
     <div class="row">
-        <h2>Vos réservations</h2>
+        <h2 staticToTranslate="header_my_reservations">Mes réservations</h2>
     </div>
 </div>
+
+<?php if (isset($_SESSION["success"])) { ?>
+    <div class="alert alert-success" role="alert">
+        <?= $_SESSION["success"] ?>
+    </div>
+    <?php unset($_SESSION["success"]);
+} if (isset($_SESSION["error"])) { ?>
+    <div class="alert alert-danger" role="alert">
+        <?= $_SESSION["error"] ?>
+    </div>
+    <?php unset($_SESSION["error"]);
+} ?>
 
 <div class="container" style="margin-top: 2em;">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button style="color:black !important" class="nav-link active" id="future-tab" data-bs-toggle="tab" data-bs-target="#future" type="button" role="tab" aria-controls="future" aria-selected="true">Futures</button>
+            <button style="color:black !important" class="nav-link active" id="future-tab" data-bs-toggle="tab" data-bs-target="#future" type="button" role="tab" aria-controls="future" aria-selected="true" staticToTranslate="futur">Futures</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button style="color:black !important" class="nav-link" id="passed-tab" data-bs-toggle="tab" data-bs-target="#passed" type="button" role="tab" aria-controls="passed" aria-selected="false">Passées</button>
+            <button style="color:black !important" class="nav-link" id="passed-tab" data-bs-toggle="tab" data-bs-target="#passed" type="button" role="tab" aria-controls="passed" aria-selected="false" staticToTranslate="past">Passées</button>
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
@@ -92,7 +136,7 @@ if (isset($_POST["rate"]) && isset($_POST["comment"]) && isset($_POST["id"])) {
                 <div class="row">
                     <?php if (empty($bookingsFuture)) { ?>
                         <div class="col-12">
-                            <h2>Aucune réservation future trouvée</h2>
+                            <h2 staticToTranslate="no_results">Aucune réservation future trouvée</h2>
                         </div>
                     <?php } else { ?>
                         <?php foreach ($bookingsFuture as $booking) { ?>
@@ -100,12 +144,11 @@ if (isset($_POST["rate"]) && isset($_POST["comment"]) && isset($_POST["id"])) {
                                 <div class="col-12">
                                     <div class="card" style="width: 100%; margin-bottom: 1em !important;">
                                         <div class="card-body d-flex flex-row align-items-center">
-                                            <?php if (isset($booking["image"])){?>
-                                            <img src="<?= $booking["image"] ?>" class="img-fluid" alt="Photo de <?= $booking["title"] ?>" style="max-width: 20%; margin-right: 1em;">
-                                            <?php } else
-                                            {
-                                                echo '<img src="x" class="img-fluid" alt="Photo de '.$booking["title"].'" style="max-width: 20%; margin-right: 1em;">';
-                                            }?>
+                                            <?php if (isset($booking["image"])) { ?>
+                                                <img src="<?= $booking["image"] ?>" class="img-fluid" alt="Photo de <?= $booking["title"] ?>" style="max-width: 20%; margin-right: 1em;">
+                                            <?php } else {
+                                                echo '<img src="x" class="img-fluid" alt="Photo de ' . $booking["title"] . '" style="max-width: 20%; margin-right: 1em;">';
+                                            } ?>
                                             <div class="flex-grow-1">
                                                 <h5 class="card-title"><strong> <?= $booking["title"] ?></strong></h5>
                                                 <p class="card-text">Du
@@ -130,13 +173,13 @@ if (isset($_POST["rate"]) && isset($_POST["comment"]) && isset($_POST["id"])) {
                                                 </p>
                                             </div>
                                             <div class="d-flex flex-column">
-                                                <a href="#" class="btn btn-primary mb-2">Contacter le propriétaire</a>
-                                                <a href="#" class="btn btn-danger mb-2">Annuler la réservation</a>
+                                                <a href="/privateMessage/addConversation?id=<?php echo $ads['id_user']; ?>&type=<?php echo $type; ?>" class="btn btn-primary mb-2"><span staticToTranslate="contact_landlord">Contacter le propriétaire </span></a>
+                                                <a href="cancelBooking?id=<?php echo $booking['id']; ?>&type=<?php echo $type; ?>" class="btn btn-danger mb-2"><span staticToTranslate="cancel_booking">Annuler la réservation</span></a>
                                                 <?php
                                                 if ($booking["housing_id"] != null) {
-                                                    echo '<a href="/ads?id=' . $booking["housing_id"] . '&type=housing" class="btn btn-primary">Voir l\'annonce</a>';
+                                                    echo '<a href="/ads?id=' . $booking["housing_id"] . '&type=housing" class="btn btn-primary"><span staticToTranslate="see_ads">Voir l\'annonce</span></a>';
                                                 } else {
-                                                    echo '<a href="/ads?id=' . $booking["performance_id"] . '&type=performance" class="btn btn-primary">Voir l\'annonce</a>';
+                                                    echo '<a href="/ads?id=' . $booking["performance_id"] . '&type=performance" class="btn btn-primary"><span staticToTranslate="see_ads">Voir l\'annonce</span></a>';
                                                 }
                                                 ?>
                                             </div>
@@ -156,7 +199,7 @@ if (isset($_POST["rate"]) && isset($_POST["comment"]) && isset($_POST["id"])) {
                 <div class="row">
                     <?php if (empty($bookingsPassed)) { ?>
                         <div class="col-12">
-                            <h2>Aucune réservation passée trouvée</h2>
+                            <h2 staticToTranslate="no_results">Aucune réservation passée trouvée</h2>
                         </div>
                     <?php } else { ?>
                         <?php foreach ($bookingsPassed as $booking) { ?>
@@ -177,12 +220,12 @@ if (isset($_POST["rate"]) && isset($_POST["comment"]) && isset($_POST["id"])) {
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <?php if (isset($_SESSION["error"])) {?>
+                                                            <?php if (isset($_SESSION["error"])) { ?>
                                                                 <div class="alert" role="alert"> <?php
-                                                                echo $_SESSION["error"];
-                                                                unset($_SESSION["error"]);
-                                                                ?></div><?php
-                                                            } ?>
+                                                                                                    echo $_SESSION["error"];
+                                                                                                    unset($_SESSION["error"]);
+                                                                                                    ?></div><?php
+                                                                    } ?>
                                                             <form action="" method="post">
                                                                 <div class="mb-3">
                                                                     <label for="rate<?= $booking["id"] ?>" class="form-label">Note</label>
@@ -199,17 +242,17 @@ if (isset($_POST["rate"]) && isset($_POST["comment"]) && isset($_POST["id"])) {
                                                     </div>
                                                 </div>
                                             </div>
-                                        <?php } 
+                                        <?php }
                                         if ($booking["housing_id"] != null) {
-                                                    echo '<a href="/ads?id=' . $booking["housing_id"] . '&type=housing" class="btn btn-primary">Voir l\'annonce</a>';
-                                                } else {
-                                                    echo '<a href="/ads?id=' . $booking["performance_id"] . '&type=performance" class="btn btn-primary">Voir l\'annonce</a>';
-                                                }
-
-                                                $token = $_SESSION["token"];
-                                                ?>
-                                                <a href="/pdf/generatePDF.php?id=<?= $booking["id"] ?>&user=<?php echo $token;?>" class="btn btn-primary">Télécharger la facture <i class="fas fa-download"></i></a>
-                                         </div>       
+                                            echo '<a href="/ads?id=' . $booking["housing_id"] . '&type=housing" class="btn btn-primary">Voir l\'annonce</a>';
+                                        } else {
+                                            echo '<a href="/ads?id=' . $booking["performance_id"] . '&type=performance" class="btn btn-primary">Voir l\'annonce</a>';
+                                        }
+                                        $type = $booking["housing_id"] != null ? "housing" : "performance";
+                                        $token = $_SESSION["token"];
+                                        ?>
+                                        <a href="/pdf/generatePDF.php?id=<?= $booking["id"] ?>&user=<?php echo $token; ?>&type=<?= $type ?>" class="btn btn-primary"><span staticToTranslate="download_invoice">Télécharger la facture </span><i class="fas fa-download"></i></a>
+                                    </div>
                                 </div>
                             </div>
                         <?php }; ?>

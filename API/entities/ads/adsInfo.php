@@ -46,7 +46,7 @@ function getAdsAddress($id, $type)
         $req = $db->prepare("SELECT * FROM performances WHERE id = :id");
         $req->execute(['id' => $id]);
         $performance = $req->fetch();
-        return $performance["address_appointment"] . " " . $performance["city_appointment"] . " " . $performance["zip_code_appointment"];
+        return $performance["address_appointment"] . " " . $performance["city_appointment"] . " " . $performance["zip_appointment"];
     } else {
         return null;
     }

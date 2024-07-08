@@ -2,10 +2,7 @@
 
 
 //DEBUG
-error_reporting(E_ALL);
-
 ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
 session_start();
 require '../includes/functions/functions.php';
 if (!isConnected()){
@@ -77,7 +74,18 @@ if ($plan == 1) {
 
 }
 
-
+else if ($plan == 5){
+    $plan = "Bailleur annuel";
+    $details = "
+        <ul>
+            <li>Prix : 100€ /an</li>
+            <li>Créer une annonce</li>
+            <li>Louer son logement</li>
+            <li>Avoir son logement géré par PCS</li>
+            <li>L'abonnement sera actif de ". date('d/m/Y') ." à ". date('d/m/Y', strtotime('+1 year')) ."</li>
+        </ul>
+";
+}
 
 try {
     $client = new Client([

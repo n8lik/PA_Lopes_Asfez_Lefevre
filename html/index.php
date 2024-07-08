@@ -5,7 +5,10 @@ require 'includes/cookies.php';
 ?>
 <link rel="stylesheet" href="/css/index.css">
 
-<?php if (isset($_SESSION['isConnected'])) { ?>
+<?php 
+
+
+if (isset($_SESSION['isConnected'])) { ?>
 	<div class="alert alert-danger" role="alert">
 		<?php echo $_SESSION['isConnected'];
 		unset($_SESSION['isConnected']);

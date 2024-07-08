@@ -41,28 +41,32 @@ function updatePassword($userId, $newPassword)
 function updateVIPuser($userId, $vip_status,$vip_type){
     require_once __DIR__ . "/../../database/connection.php";
     $db = connectDB();
-    if ($vip_status == 5){
+    if ($vip_status == 6){
         $grade = 1;
         $querypreprared = $db->prepare("UPDATE user SET vip_status = :vip_status, vip_type = :vip_type WHERE id = :userId");
         $querypreprared->execute([
-            'vip_status' => 2,
+            'vip_status' => 3,
             'vip_type' => $vip_type,
             'userId' => $userId
         ]);
         return 1;
     }
+    $date = new DateTime();
+    $date = $date->format('Y-m-d H:i:s');
     {
     if ($vip_status == 1 || $vip_status == 2){
         $grade = 2;
     }
     if ($vip_status == 3 || $vip_status == 4){
         $grade = 3;
+    } if ($vip_status == 5){
+        $grade = 4;
     }
     $querypreprared = $db->prepare("UPDATE user SET grade=:grade, vip_status = :vip_status, vip_date =:vip_date,vip_type = :vip_type WHERE id = :userId");
     $querypreprared->execute([
         'grade' => $grade,
         'vip_status' => 1,
-        'vip_date' => date('Y-m-d H:i:s'),
+        'vip_date' => $date,
         'vip_type' => $vip_type,
         'userId' => $userId
     ]);

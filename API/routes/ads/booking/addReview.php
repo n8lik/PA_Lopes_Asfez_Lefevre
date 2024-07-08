@@ -13,18 +13,6 @@ $rate = $body["rate"];
 $comment = $body["comment"];
 $id = $body["id"];
 
-$userId = getBookingById($id)["userId"];
-
-$user = getUserById($userId);
-
-if ($user['vip_status'] == 0) {
-    echo jsonResponse(200, [], [
-        "success" => false,
-        "message" => "L'utilisateur n'est pas VIP"
-    ]);
-    die();
-}
-
 $review = addReview($rate, $comment, $id);
 
 if (empty($review)) {

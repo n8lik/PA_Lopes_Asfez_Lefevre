@@ -1,6 +1,5 @@
 <?php
 ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
 error_reporting(E_ALL); 
 
 require '../vendor/autoload.php';
@@ -24,6 +23,9 @@ if ($plan == 2 || $plan == 4){
     $vip_type = 1;
 } else if ($plan == 1 || $plan == 3){
     $vip_type = 0;
+}
+else if ($plan == 5){
+    $vip_type = 2;
 }
 
 

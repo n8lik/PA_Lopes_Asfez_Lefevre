@@ -127,7 +127,37 @@ function getAssignedTicketsByUserId($userId)
     $conn = connectDB();
     $req = $conn->prepare("SELECT * FROM ticket WHERE tech_id = :id AND status = 1 AND answer_id IS NULL");
     $req->execute(['id' => $userId]);
-    return $req->fetchAll();
+
+    $tickets = $req->fetchAll();
+    foreach ($tickets as $key => $ticket) {
+        $tickets[$key]["subject"] = getSubjectById($ticket["subject"]);
+        $tickets[$key]["status"] = getStatusById($ticket["status"]);
+    }
+    return $tickets;
+}
+
+function assignTicketToAdmin($ticketId, $adminId)
+{
+    require_once __DIR__ . "/../database/connection.php";
+    $db = connectDB();
+    $req = $db->prepare("UPDATE ticket SET tech_id = :tech_id, status = 1 WHERE id = :id");
+    $req->execute(['tech_id' => $adminId, 'id' => $ticketId]);
+    //De même où answer_id= ticketid
+    $req=$db->prepare("UPDATE ticket SET tech_id = :tech_id, status = 1 WHERE answer_id = :id");
+    $req->execute(['tech_id' => $adminId, 'id' => $ticketId]);
+    return "ok";
+}
+
+function unassignTicketToAdmin($ticketId)
+{
+    require_once __DIR__ . "/../database/connection.php";
+    $db = connectDB();
+    $req = $db->prepare("UPDATE ticket SET tech_id = NULL, status = 0 WHERE id = :id");
+    $req->execute(['id' => $ticketId]);
+
+    $req = $db->prepare("UPDATE ticket SET tech_id = NULL, status = 0 WHERE answer_id = :id");
+    $req->execute(['id' => $ticketId]);
+    return "ok";
 }
 
 

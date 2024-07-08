@@ -1,9 +1,13 @@
-<?php session_start(); ?>
+<?php 
+
+
+session_start(); ?>
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="google-adsense-account" content="ca-pub-4803308252176773">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="icon" href="/assets/logos/darkLogo.png" type="image/x-icon">
 	<title>
@@ -23,9 +27,14 @@
 	<script src="/includes/theme.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
+		<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4803308252176773" crossorigin="anonymous"></script><!--  -->
+	
+
 	<link rel="stylesheet" href="/css/variables.css">
 	<link rel="stylesheet" href="/css/base.css">
 </head>
+<?php
+?>
 
 <body class="body">
 	<header class="header">
@@ -36,9 +45,11 @@
 				</a>
 				<div class="collapse navbar-collapse" id="navbarText">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-						<?php if (isset($_SESSION['grade']) && $_SESSION['grade'] == '1') { ?>
+						<?php if (isset($_SESSION['grade']) && $_SESSION['grade'] <= 3) { ?>
 							<li class="nav-item">
 								<a class="nav-link active" aria-current="page" href="/catalog?choice=housing" staticTotranslate="header_housing">Logements</a>
+								
+
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="/catalog?choice=performance" staticTotranslate="header_performance">Prestations</a>
@@ -50,7 +61,7 @@
 								<a class="nav-link" href="/travelers/favorites" staticTotranslate="header_favorites">Coups de cœur</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="#" staticTotranslate="header_vip_subscription">Souscription VIP</a>
+								<a class="nav-link" href="/VIP/VIP" staticTotranslate="header_vip_subscription">Souscription VIP</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="/privateMessage/privateMessage" staticTotranslate="header_messaging">Messagerie</a>
@@ -64,6 +75,9 @@
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="#" staticTotranslate="header_my_fees">Mes frais</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="/VIP/VIP" staticTotranslate="header_vip_subscription">Souscription VIP</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="/files/files" staticTotranslate="header_my_documents">Mes documents</a>
@@ -137,20 +151,55 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 	<?php
 	require '/var/www/html/includes/functions/functions.php';
+
+	if (!isset($_COOKIE['acceptCookies'])) {
+		require '/var/www/html/includes/cookies.php';
+	}
 	?>
 
 	<?php
-	if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['lang'])) {
+	if (isset($_POST['lang'])) {
 		$lang = $_POST['lang'];
-		if (isset($_COOKIE['acceptCookies']) && $_COOKIE['acceptCookies']) {
+		if (isset($_COOKIE['acceptCookies']) && $_COOKIE['acceptCookies'] == 'true') {
 			setcookie('language', $lang, time() + (365 * 24 * 60 * 60), '/'); // 1 year
 		} else {
 			$_SESSION['language'] = $lang;
 		}
-		header("Location: " . $_SERVER['PHP_SELF']);
-		exit();
+		unset($_POST['lang']);
 	}
 
 	$lang = isset($_COOKIE['language']) ? $_COOKIE['language'] : (isset($_SESSION['language']) ? $_SESSION['language'] : 'fr');
-	echo "<script>document.addEventListener('DOMContentLoaded', () => { changeLanguage('$lang'); });</script>";
 	?>
+
+	<script>
+		function changeLanguage(lang) {
+			if (getCookie('acceptCookies') === 'true') {
+				document.cookie = `language=${lang}; path=/; max-age=31536000`; // Store for 1 year
+			}
+			applyTranslations(lang);
+		}
+
+		function applyTranslations(lang) {
+			fetch(`/includes/lang/${lang}.json`)
+				.then(response => response.json())
+				.then(translations => {
+					document.querySelectorAll('[staticToTranslate]').forEach(element => {
+						const key = element.getAttribute('staticToTranslate');
+						if (translations[key]) {
+							element.textContent = translations[key];
+						}
+					});
+				});
+		}
+
+		function getCookie(name) {
+			const value = `; ${document.cookie}`;
+			const parts = value.split(`; ${name}=`);
+			if (parts.length === 2) return parts.pop().split(';').shift();
+		}
+
+		document.addEventListener('DOMContentLoaded', () => {
+			const lang = getCookie('language') || 'fr';
+			changeLanguage(lang);
+		});
+	</script>

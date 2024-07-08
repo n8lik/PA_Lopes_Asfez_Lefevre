@@ -1,44 +1,55 @@
 <?php
+ob_start(); // Start output buffering
 
-
-//DEBUG
 require '../vendor/autoload.php';
 require '../dompdf/autoload.inc.php';
 session_start();
 
-Use GuzzleHttp\Client;
+use GuzzleHttp\Client;
 use Dompdf\Dompdf;
+
 $bookingId = $_GET["id"];
 $userToken = $_GET["user"];
-
 
 try {
     $client = new Client([
         'base_uri' => 'https://pcs-all.online:8000'
     ]);
-    $response = $client->get('/booking/' .$bookingId);
+    $response = $client->get('/booking/' . $bookingId);
     $data = json_decode($response->getBody()->getContents(), true);
     $booking = $data["booking"];
-    var_dump($booking);
 } catch (Exception $e) {
     $booking = [];
 }
 
-if ($type == "housing"){
-$housingId = $booking["housing_id"];
-} else {
+if (isset($booking["housing_id"])) {
+    $housingId = $booking["housing_id"];
+
+    try {
+        $client = new Client([
+            'base_uri' => 'https://pcs-all.online:8000'
+        ]);
+        $response = $client->get('/housing/' . $housingId);
+        $data = json_decode($response->getBody()->getContents(), true);
+        $housing = $data["housing"];
+    } catch (Exception $e) {
+        $housing = [];
+    }
+} else if (isset($booking["performance_id"])) {
     $housingId = $booking["performance_id"];
+
+    try {
+        $client = new Client([
+            'base_uri' => 'https://pcs-all.online:8000'
+        ]);
+        $response = $client->get('/getPerformanceAdsInfo/' . $housingId);
+        $data = json_decode($response->getBody()->getContents(), true);
+        $housing = $data["performance"];
+    } catch (Exception $e) {
+        $housing = [];
+    }
 }
-try {
-    $client = new Client([
-        'base_uri' => 'https://pcs-all.online:8000'
-    ]);
-    $response = $client->get('/housing/' .$housingId);
-    $data = json_decode($response->getBody()->getContents(), true);
-    $housing = $data["housing"];
-} catch (Exception $e) {
-    $housing = [];
-}
+
 try {
     $client = new Client([
         'base_uri' => 'https://pcs-all.online:8000'
@@ -50,38 +61,35 @@ try {
     $users = [];
 }
 
-// Initialiser Dompdf avec des options
+// Initialize Dompdf
 $dompdf = new Dompdf();
 
-if ($type == "housing"){
-$details = '<div class="details">
-    
-            <h2>Informations sur le logement</h2>
-            <p><strong>Titre:</strong> '.$housing["title"].'</p>
-            <p><strong>Type de maison:</strong> '.$housing["type_house"].'</p>
-            <p><strong>Type de location:</strong> '.$housing["type_location"].'</p>
-            <p><strong>Nombre de pièces:</strong> '.$housing["amount_room"].'</p>
-            <p><strong>Capacité d\'accueil:</strong> '.$housing["guest_capacity"].' personnes</p>
-            <p><strong>Surface de la propriété:</strong> '.$housing["property_area"].' m²</p>
-            <p><strong>Adresse:</strong> '.$housing["address"].', '.$housing["city"].', '.$housing["postal_code"].'</p>
-        </div>';
-} else if ($type == "performance"){
+if (isset($booking["housing_id"])) {
     $details = '<div class="details">
-    
+            <h2>Informations sur le logement</h2>
+            <p><strong>Titre:</strong> ' . $housing["title"] . '</p>
+            <p><strong>Type de maison:</strong> ' . $housing["type_house"] . '</p>
+            <p><strong>Type de location:</strong> ' . $housing["type_location"] . '</p>
+            <p><strong>Nombre de pièces:</strong> ' . $housing["amount_room"] . '</p>
+            <p><strong>Capacité d\'accueil:</strong> ' . $housing["guest_capacity"] . ' personnes</p>
+            <p><strong>Surface de la propriété:</strong> ' . $housing["property_area"] . ' m²</p>
+            <p><strong>Adresse:</strong> ' . $housing["address"] . ', ' . $housing["city"] . ', ' . $housing["postal_code"] . '</p>
+        </div>';
+} else if (isset($booking["performance_id"])) {
+    $details = '<div class="details">
             <h2>Informations sur la prestation</h2>
-            <p><strong>Titre:</strong> '.$housing["title"].'</p>
-            <p><strong>Type de prestation:</strong> '.$housing["performance_type"].'</p>
-            
-            <p><strong>Adresse:</strong> '.$housing["place"].'</p>
+            <p><strong>Titre:</strong> ' . $housing["title"] . '</p>
+            <p><strong>Type de prestation:</strong> ' . $housing["performance_type"] . '</p>
+            <p><strong>Adresse:</strong> ' . $housing["place"] . '</p>
         </div>';
 }
 
-// Charger le contenu HTML
+// Load HTML content
 $html = '<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Facture de la réservation '.$bookingId.'</title>
+    <title>Facture de la réservation ' . $bookingId . '</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -130,21 +138,21 @@ $html = '<!DOCTYPE html>
 </head>
 <body>
     <div class="container">
-        <h1>Facture de la réservation '.$bookingId.'</h1>
+        <h1>Facture de la réservation ' . $bookingId . '</h1>
         <div class="details">
             <h2>Informations sur la réservation</h2>
-            <p><strong>ID de la réservation:</strong> '.$bookingId.'</p>
-            <p><strong>Prix:</strong> '.$booking["price"].' €</p>
-            <p><strong>Date de début:</strong> '.$booking["start_date"].'</p>
-            <p><strong>Date de fin:</strong> '.$booking["end_date"].'</p>
+            <p><strong>ID de la réservation:</strong> ' . $bookingId . '</p>
+            <p><strong>Prix:</strong> ' . $booking["price"] . ' €</p>
+            <p><strong>Date de début:</strong> ' . $booking["start_date"] . '</p>
+            <p><strong>Date de fin:</strong> ' . $booking["end_date"] . '</p>
         </div>
-        '.$details.'
+        ' . $details . '
         <div class="details">
             <h2>Informations sur le client</h2>
-            <p><strong>Prénom:</strong> '.$users["firstname"].'</p>
-            <p><strong>Nom:</strong> '.$users["lastname"].'</p>
-            <p><strong>Email:</strong> '.$users["email"].'</p>
-            <p><strong>Numéro de téléphone:</strong> '.$users["phone_number"].'</p>
+            <p><strong>Prénom:</strong> ' . $users["firstname"] . '</p>
+            <p><strong>Nom:</strong> ' . $users["lastname"] . '</p>
+            <p><strong>Email:</strong> ' . $users["email"] . '</p>
+            <p><strong>Numéro de téléphone:</strong> ' . $users["phone_number"] . '</p>
         </div>
         <div class="footer">
             <p>Merci pour votre réservation.</p>
@@ -154,10 +162,18 @@ $html = '<!DOCTYPE html>
 </html>
 ';
 
+// Load HTML into Dompdf
 $dompdf->loadHtml($html);
 
+// Set paper size and orientation
 $dompdf->setPaper('A4', 'portrait');
 
+// Render the HTML as PDF
 $dompdf->render();
 
-$dompdf->stream("facture_booking_".$bookingId."_user_".$users["pseudo"].".pdf", array("Attachment" => true));
+// Clear the output buffer
+ob_end_clean();
+
+// Output the generated PDF to Browser
+$dompdf->stream("facture_booking_" . $bookingId . "_user_" . $users["pseudo"] . ".pdf", array("Attachment" => true));
+?>

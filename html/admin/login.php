@@ -2,9 +2,7 @@
 <?php require '/var/www/html/admin/includes/admin_header.php'; 
 session_start(); // Démarrer la session au début
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+
 
 ?>
 

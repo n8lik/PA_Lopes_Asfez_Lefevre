@@ -76,6 +76,7 @@
                                 <ul class="dropdown-menu dropdown-menu-dark">
                                     <li><a class="dropdown-item" href="support?choice=chatbot">Chatbot</a></li>
                                     <li><a class="dropdown-item" href="support?choice=tickets">Tickets</a></li>
+                                    <li><a class="dropdown-item" href="support?choice=lang">Gérer les langues</a></li>
                                 </ul>
                             </li>
                         </ul>

@@ -1,18 +1,15 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 require '../vendor/autoload.php';
 require '../includes/functions/functions.php';
 require '../reservation/secrets.php';
 use GuzzleHttp\Client;
 session_start();
-/* if (!isConnected()){
+if (!isConnected()){
     $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
     header("Location: /");
     die();
-} */
+}
 $userToken = $_SESSION["token"];
 try {
     $client = new Client([
@@ -220,5 +217,47 @@ if ($_POST['plan'] == 4) {
 
 }
 
+if ($_POST['plan'] == 5) {
+    $plan = 'Abonnement Bailleurs Annuel';
+    \Stripe\Stripe::setApiKey($stripeSecretTest);
+    $product_id = 'prod_QRANTf4fKhSaOt';	
+    try {
+        // Récupérer les prix associés au produit
+        $prices = \Stripe\Price::all([
+            'product' => $product_id,
+            'active' => true,
+            'type' => 'recurring',
+    ]);
+    
+        // Vérifier si des prix existent pour ce produit
+        if (empty($prices->data)) {
+            throw new Exception("Aucun prix trouvé pour le produit ID : $product_id");
+        }
+    
+        // Utiliser le premier prix trouvé
+        $price_id = $prices->data[0]->id;
+    
+        // Créez une session de paiement
+        $session = \Stripe\Checkout\Session::create([
+            'payment_method_types' => ['card'],
+            'line_items' => [[
+                
+                'price' => $price_id,
+                'quantity' => 1,
+            ]],
+            
+            'client_reference_id' => $userToken,
+            'mode' => 'subscription',
+            'success_url' => 'https://pcs-all.online/VIP/success',
+            'cancel_url' => 'https://pcs-all.online/VIP/cancel',
+        ]);
+    
+        header ("Location: " . $session->url);
+        
+    } catch (Exception $e) {
+        echo 'Erreur : ' . $e->getMessage();
+    }
+
+}
 
 

@@ -13,6 +13,12 @@ if ($_SESSION['grade']!=4){
     $_SESSION["error"] = "Vous n'avez pas les droits pour accéder à cette page";
     header('Location: /');
 }
+
+if ($_SESSION['vip_status']!=1){
+    $_SESSION["error"] = "Vous devez être abonné pour accéder à cette page";
+    header('Location: /VIP/VIP');
+}
+
 if ($user["is_validated"]==0){
     echo "<div class='container mt-5'><center><div class='alert'>Votre compte n'est pas encore validé par un administrateur, vous ne pouvez pas ajouter de logement pour le moment.</h2></div></center></div>";
 }else{

@@ -1,8 +1,6 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+
 require '../vendor/autoload.php';
 
 require '../reservation/secrets.php';
@@ -36,7 +34,7 @@ try {
     $client = new Client(['base_uri' => 'https://pcs-all.online:8000']);
     $response = $client->post('/VIPUser', [
         'json' => [
-            'vip_status' => 5,
+            'vip_status' => 6,
             'userId' => $_SESSION["userId"],
             'vip_type' => null
         ]

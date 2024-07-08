@@ -2,8 +2,6 @@
 //ce fichier est un include sous l'appel du header.
 //Afficher la page de demande de cookies sous forme de modale
 ?>
-
-<!-- Modal -->
 <div class="modal fade" id="cookieModal" tabindex="-1" aria-labelledby="cookieModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -15,7 +13,7 @@
                 <p>Ce site utilise des cookies pour vous offrir une meilleure expérience utilisateur. En poursuivant votre navigation sur ce site, vous acceptez l'utilisation de cookies.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Refuser</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="refuseCookies">Refuser</button>
                 <button type="button" class="btn btn-primary" id="acceptCookies">Accepter</button>
             </div>
         </div>
@@ -29,7 +27,7 @@
     // On récupère la modale
     const cookieModal = new bootstrap.Modal(document.getElementById('cookieModal'));
 
-    // On vérifie si le cookie a déjà été accepté
+    // On vérifie si le cookie existe
     if (!document.cookie.split(';').some((item) => item.trim().startsWith('acceptCookies='))) {
         // Si le cookie n'a pas été accepté, on affiche la modale
         cookieModal.show();
@@ -39,6 +37,17 @@
     acceptCookiesButton.addEventListener('click', () => {
         // On crée un cookie d'acceptation des cookies valable 1 an
         document.cookie = 'acceptCookies=true; max-age=' + 60 * 60 * 24 * 365;
+        // On ferme la modale
+        cookieModal.hide();
+    });
+
+    // On récupère le bouton de refus des cookies
+    refuseCookiesButton = document.getElementById('refuseCookies');
+
+    // On ajoute un écouteur d'événement sur le bouton de refus des cookies
+    refuseCookiesButton.addEventListener('click', () => {
+        // On crée un cookie de refus des cookies valable 1 an
+        document.cookie = 'acceptCookies=false; max-age=' + 60 * 60 * 24 * 365;
         // On ferme la modale
         cookieModal.hide();
     });

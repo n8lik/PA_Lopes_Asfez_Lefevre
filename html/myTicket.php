@@ -4,9 +4,7 @@ require "vendor/autoload.php";
 
 use GuzzleHttp\Client;
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+
 //Si l'utilisateur n'est pas connecté
 if (!isConnected()){
     $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
@@ -91,7 +89,7 @@ if (isset($_GET["id"])) {
                                 <textarea class="form-control" id="message" name="message" style="height:20% !important;" required></textarea>
                                 <input type="hidden" name="ticketId" value="<?php echo $ticket["id"]; ?>">
                                 <input type="hidden" name="subject" value="<?php echo $ticket["subject"]; ?>">
-                                <button type="submit" class="btn btn-primary">Répondre</button>
+                                <button type="submit" class="btn btn-primary" staticTotranslate="answer" >Répondre</button>
                             </div>
                         </form>
                         <form action="includes/support/tickets?id=close" method="post" class="support-form" style="text-align: center;">

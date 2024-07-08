@@ -1,7 +1,5 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+
 
 function isbooked($id, $type, $start_date, $end_date)
 {
@@ -123,7 +121,20 @@ function addBooking($id, $type, $start_date, $end_date, $amount_people, $price, 
     }
 }
 
+function cancelBooking($id, $type) { 
+    require_once __DIR__ . "/../../database/connection.php";
+    $db = connectDB();
+    if ($type == "housing") {
+        $req = $db->prepare("DELETE FROM booking WHERE housing_id = :id");
+        $req->execute(['id' => $id]);
+        return "ok";
+    } else if ($type == "performance") {
+        $req = $db->prepare("DELETE FROM booking WHERE performance_id = :id");
+        $req->execute(['id' => $id]);
+        return "ok";
+    }
 
+}
 function getBookingByUserId($userId, $type)
 {
     require_once __DIR__ . "/../../database/connection.php";

@@ -1,10 +1,8 @@
 <?php
 
-
 $pageTitle = "Réservation";
 require '../includes/header.php';
 require '../vendor/autoload.php';
-session_start();
 
 use GuzzleHttp\Client;
 
@@ -37,8 +35,8 @@ $ad = json_decode($response->getBody()->getContents(), true)['adsInfo'];
 $response = $client->get('/usersbytoken/' . $_SESSION['token']);
 $user = json_decode($response->getBody()->getContents(), true)['users'];
 if ($type == 'performance') {
-    if (($user['grade'] == 2 && $ad['price']<80 ) || $user['grade'] == 3) {
-        if ($user["free_perf"]==0) {
+    if (($user['grade'] == 2 && $ad['price'] < 80) || $user['grade'] == 3) {
+        if ($user["free_perf"] == 0) {
             $message =  '<div class="alert alert-success" role="alert">Vous avez une réservation gratuite, elle sera déduite de la facture finale.</div>';
             $ad['price'] = 0;
             if ($user['grade'] == 2) {
@@ -54,17 +52,22 @@ if ($type == 'performance') {
         }
     }
 }
+if (!isset($ad['price_type'])){
+    $ad['price_type'] = 0;
+
+}
 ?>
+
 <div class="terms-container">
     <div class="container" style="margin-top: 1em;">
         <div class="row">
             <center>
-                <h1><strong>Réservation</strong></h1>
+                <h1><strong staticToTranslate="booking">Réservation</strong></h1>
                 <hr>
             </center>
         </div>
         <?php
-        
+
 
         if (isset($message)) {
             echo $message;
@@ -73,14 +76,14 @@ if ($type == 'performance') {
         if (isset($_SESSION["booking"])) {
             if ($_SESSION["booking"] == 0) {
         ?>
-                <div class="alert alert-success" role="alert">
+                <div class="alert alert-success" role="alert" staticToTranslate="booking_success">
                     Votre réservation a été effectuée avec succès. Vous recevrez votre facture par mail sous peu.
                 </div>
             <?php
                 unset($_SESSION["booking"]);
             } else {
             ?>
-                <div class="alert alert-danger" role="alert">
+                <div class="alert alert-danger" role="alert" staticToTranslate="booking_error">
                     Une erreur est survenue lors de la réservation.
                 </div>
             <?php
@@ -94,9 +97,13 @@ if ($type == 'performance') {
             unset($_SESSION["Erreur"]);
         }
         if (!isset($disponibility)) {
-            echo '<div class="alert alert-danger" role="alert">Aucune disponibilité n\'est renseignée pour cette annonce.</div>';
-        } else {
             ?>
+            <div class="alert alert-danger" role="alert" staticToTranslate="booking_no_disponibility">
+                Aucune disponibilité n'est renseignée pour cette annonce.
+            </div>
+        <?php
+        } else {
+        ?>
             <div class="row" style="height: 40vh;">
                 <div class="col-8" style="height: 100%;">
                     <div class="row" style="height: 100%;">
@@ -132,22 +139,29 @@ if ($type == 'performance') {
                     <br>
                     <h2><?php echo $ad['title']; ?></h2>
                     <?php if ($type == 'housing') { ?>
-                        <p> L'adresse exacte vous sera communiquée après la réservation.</p>
+                        <p staticToTranslate="booking_address"> L'adresse exacte vous sera communiquée après la réservation.</p>
                     <?php } else {
                         // on passes $ad['radius'] à 2 chiffres derrière la virgule 
                         $ad['radius'] = number_format($ad['radius'], 2, ',', ' ');
                     ?>
-                        <p>Lieu d'action <?php echo $ad['city_appointment']; ?>, <?php echo $ad['country_appointment']; ?> dans un rayon de : <?php echo $ad['radius']; ?> km</p>
+                        <div>
+                            <p staticToTranslate="action_place" style="display: inline;">
+                                Lieu d'action: </p><span><?php echo " " . $ad['city_appointment'] . ", " . $ad['country_appointment']; ?></span>
+
+                            <p staticToTranslate="action_radius" style="display: inline;">
+                                dans un rayon de </p> <span><?php echo $ad['radius'] . " km"; ?></span>
+
+                        </div>
                     <?php } ?>
                 </div>
                 <div class="col-4" style="text-align: right;">
                     <?php if ($type == 'housing') { ?>
 
-                        <p> Selectionnez les dates de votre séjour</p>
-                        <p><?php echo $ad['price']; ?> €/nuit</p>
+                        <p staticToTranslate="select_time"> Selectionnez les dates de votre séjour</p>
+                        <p><?php echo $ad['price']; ?> €/<span staticToTranslate="night">nuit</span></p>
 
                     <?php } else { ?>
-                        <p>Selectionnez la date de votre événement</p>
+                        <p staticToTranslate="select_time_event">Selectionnez la date de votre événement</p>
                         <p><?php echo $ad['price'] . "€/" . $ad["price_type"]; ?></p>
                     <?php } ?>
                 </div>
@@ -155,20 +169,20 @@ if ($type == 'performance') {
                 <div class="row">
                     <?php if ($type == 'housing') { ?>
                         <div class="col-8">
-                            <?php echo $ad['guest_capacity']; ?> personnes - <?php echo $ad['property_area']; ?> m² - <?php echo $ad['amount_room']; ?> chambres
+                            <?php echo $ad['guest_capacity']; ?> <span staticToTranslate="person">personnes </span> - <?php echo $ad['property_area']; ?> m² - <?php echo $ad['amount_room']; ?> <span staticToTranslate="romms"> chambres </span>
                             <br>
-                            <p><strong>Description:</strong> <?php echo $ad['description']; ?></p>
+                            <p><strong staticToTranslate="Description">Description:</strong> <?php echo $ad['description']; ?></p>
                         </div>
                         <div class="col-4">
-                            <p>Date de début: <strong id="start-date"></strong>
+                            <p><span staticToTranslate="starting_date">Date de début:</span> <strong id="start-date"></strong>
                                 <br>
-                                Date de fin: <strong id="end-date"></strong>
+                                <span staticToTranslate="ending_date">Date de fin: </span><strong id="end-date"></strong>
                                 <br>
-                                Total: <strong id="total-price"></strong>
+                                <span staticToTranslate="total_price">Total: </span><strong id="total-price"></strong>
                             </p>
                             <!-- Formulaire de paiement -->
                             <form id="payment-form" method="POST" action="payment">
-                                <label for="amount_people">Nombre de personnes</label>
+                                <label for="amount_people"><span staticToTranslate="nb_persons">Nombre de personnes </span></label>
                                 <input type="hidden" name="id" value="<?php echo $id; ?>" required>
                                 <input type="hidden" name="type" value="<?php echo $type; ?>">
                                 <input type="number" name="amount_people">
@@ -180,7 +194,7 @@ if ($type == 'performance') {
                                 <div id="card-element"></div>
 
                                 <div id="card-errors" role="alert"></div>
-                                <button id="submit">Payer</button>
+                                <button id="submit" staticToTranslate="pay">Payer</button>
                             </form>
                         </div>
                     <?php } else if ($type == 'performance') { ?>
@@ -190,15 +204,15 @@ if ($type == 'performance') {
                             <p><strong>Description:</strong> <?php echo $ad['description']; ?></p>
                         </div>
                         <div class="col-4">
-                            <p>Date de la réservation: <strong id="start-date"></strong>
+                            <p><span staticToTranslate="reservation_date">Date de la réservation:</span> <strong id="start-date"></strong>
                                 <br>
 
-                            <p>Heure de début: <strong id="hour_start_display"></strong>
+                            <p><span staticToTranslate="starting_date">Heure de début: </span><strong id="hour_start_display"></strong>
                                 <br>
-                                Heure de fin: <strong id="hour_end_display"></strong>
+                                <span staticToTranslate="ending_date">Heure de fin: </span><strong id="hour_end_display"></strong>
                                 <br>
 
-                                Total: <strong id="total-price"></strong>
+                                <span staticToTranslate="total_price">Total: </span> <strong id="total-price"></strong>
                             </p>
 
                             <div class="modal fade" id="addAvailabilityModal" tabindex="-1" aria-labelledby="addAvailabilityModalLabel" aria-hidden="true">
@@ -295,29 +309,29 @@ require '../includes/footer.php';
     //hour start et end en format Y-M-D H:i:s
 
 
+    type = "<?php echo $type; ?>";
+    if (type == 'housing') {
+        function isDateBetween(start, end) {
+            let available = new Set();
+            for (let d = new Date(start); d <= new Date(end); d.setDate(d.getDate() + 1)) {
+                if (availableDates.has(d.toISOString().split('T')[0])) {
+                    console.log('day: ' + d.toISOString().split('T')[0]);
+                    available.add(1);
+                } else {
+                    available.add(0);
 
-    function isDateBetween(start, end) {
-        let available = new Set();
-        for (let d = new Date(start); d <= new Date(end); d.setDate(d.getDate() + 1)) {
-            if (availableDates.has(d.toISOString().split('T')[0])) {
-                console.log('day: ' + d.toISOString().split('T')[0]);
-                available.add(1);
-            } else {
-                available.add(0);
+                }
 
             }
 
+            if (available.has(0)) {
+                file = 0;
+            } else {
+                file = 1;
+            }
+            return file;
         }
 
-        if (available.has(0)) {
-            file = 0;
-        } else {
-            file = 1;
-        }
-        return file;
-    }
-    type = "<?php echo $type; ?>";
-    if (type == 'housing') {
         // Ajoutez des événements pour toutes les dates de disponibilité
 
         for (let i = 0; i < disponibility.length; i++) {
@@ -393,7 +407,7 @@ require '../includes/footer.php';
             let nights = (end - start) / (1000 * 60 * 60 * 24);
             return nights * pricePerNight;
         }
-    } else {
+    } else if(type == 'performance') {
         function submitForm(hourStart, hourEnd, hourDuration) {
             document.getElementById('hour_start_input').value = hourStart;
             document.getElementById('hour_end_input').value = hourEnd;
@@ -469,7 +483,8 @@ require '../includes/footer.php';
                         hourEnd.setAttribute('placeholder', 'Heure de fin');
                         document.getElementById('hour-end').appendChild(hourEnd);
 
-                        let price_type = <?php echo json_encode($ad['price_type']); ?>;
+                        let price_type = <?php echo $ad['price_type']; ?>;
+                       
 
                         function createInputField(id, placeholder, containerId, readonly) {
                             let inputField = document.createElement('input');

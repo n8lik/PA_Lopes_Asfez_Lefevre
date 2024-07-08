@@ -18,7 +18,6 @@ function getAllCatalogByChoice($type)
     }
 }
 
-
 function getHousingCatalogByType($type)
 {
     require_once __DIR__ . "/../../database/connection.php";

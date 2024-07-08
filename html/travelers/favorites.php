@@ -31,7 +31,7 @@ try {
 ?>
 <div class="container" style="margin-top: 1em;">
     <div class="row">
-        <h2> Vos coups de coeur</h2>
+        <h2 staticToTranslate="header_favorites"> Vos coups de coeur</h2>
     </div>
 </div>
 <?php
@@ -40,7 +40,7 @@ if (empty($likes)) {
     echo '<div class="container" style="margin: 2em;">';
     echo '<div class="row">';
     echo '<div class="col-12">';
-    echo '<h2> Aucun coup de coeur trouvé</h2>';
+    echo '<h2 staticToTranslate="no_results"> Aucun coup de coeur trouvé</h2>';
     echo '</div>';
     echo '</div>';
     echo '</div>';
@@ -109,10 +109,10 @@ if (empty($likes)) {
     <div class="container" style="margin-top: 2em;">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button style="color:black !important" class="nav-link active" id="housing-tab" data-bs-toggle="tab" data-bs-target="#housing" type="button" role="tab" aria-controls="housing" aria-selected="true">Logements</button>
+                <button style="color:black !important" class="nav-link active" id="housing-tab" data-bs-toggle="tab" data-bs-target="#housing" type="button" role="tab" aria-controls="housing" aria-selected="true" staticToTranslate="header_housing">Logements</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button style="color:black !important" class="nav-link" id="performance-tab" data-bs-toggle="tab" data-bs-target="#performance" type="button" role="tab" aria-controls="performance" aria-selected="false">Prestations</button>
+                <button style="color:black !important" class="nav-link" id="performance-tab" data-bs-toggle="tab" data-bs-target="#performance" type="button" role="tab" aria-controls="performance" aria-selected="false" staticToTranslate="header_performance">Prestations</button>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
@@ -125,7 +125,7 @@ if (empty($likes)) {
                             echo '<div class="container" style="margin: 2em;">';
                             echo '<div class="row">';
                             echo '<div class="col-12">';
-                            echo '<h2> Aucun logement trouvé</h2>';
+                            echo '<h2 staticToTranslate="no_results"> Aucun logement trouvé</h2>';
                             echo '</div>';
                             echo '</div>';
                             echo '</div>';
@@ -137,7 +137,7 @@ if (empty($likes)) {
                             <img src="' . $item['image'] . '" class="card-img-top" alt="Image of ' . $item['title'] . '">
                         <div class="card-body" >
                             <h5 class="card-title">' . $item['title'] . '</h5>
-                            <a href="/ads.php?id=' . $item['id'] . '&type=housing" class="btn btn-primary">Voir plus</a>
+                            <a href="/ads.php?id=' . $item['id'] . '&type=housing" class="btn btn-primary"><span staticToTranslate="see_more">Voir plus</span></a>
                             </div>
                         </div>';
                                 echo '</div>';
@@ -156,7 +156,7 @@ if (empty($likes)) {
                             echo '<div class="container" style="margin: 2em;">';
                             echo '<div class="row">';
                             echo '<div class="col-12">';
-                            echo '<h2> Aucune prestation trouvée</h2>';
+                            echo '<h2 staticToTranslate="no_results"> Aucune prestation trouvée</h2>';
                             echo '</div>';
                             echo '</div>';
                             echo '</div>';
@@ -168,7 +168,7 @@ if (empty($likes)) {
                                     <img src="' . $item['image'] . '" class="card-img-top" alt="Image of ' . $item['title'] . '">s
                                 <div class="card-body" >
                                     <h5 class="card-title">' . $item['title'] . '</h5>
-                                    <a href="/ads.php?id=' . $item['id'] . '&type=performance" class="btn btn-primary">Voir plus</a>
+                                    <a href="/ads.php?id=' . $item['id'] . '&type=performance" class="btn btn-primary"><span staticToTranslate="see_more">Voir plus</span></a>
                                     </div>
                                 </div>';
                                 echo '</div>';
