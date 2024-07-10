@@ -60,6 +60,14 @@ try {
                 }
                 ?>
                 <?php
+                if (isset($_SESSION['ribUpdateOk'])) {
+                    echo '<div class="alert alert-success" role="alert">' . $_SESSION['ribUpdateOk'] . '</div>';
+                    unset($_SESSION['ribUpdateOk']);
+                } elseif (isset($_SESSION['ribUpdateError'])) {
+                    echo '<div class="alert alert-danger" role="alert">' . $_SESSION['ribUpdateError'] . '</div>';
+                    unset($_SESSION['ribUpdateError']);
+                }
+
                 if (isset($_SESSION['passwordUpdateOk'])) {
                     echo '<div class="alert alert-success" role="alert">' . $_SESSION['passwordUpdateOk'] . '</div>';
                     unset($_SESSION['passwordUpdateOk']);
@@ -170,6 +178,18 @@ try {
             <center>
                 <h2 style="margin-top:1em" staticTotranslate="profile_payment_title">Moyen de paiement</h2>
             </center>
+
+            <?php if ($user['grade']  > 3) {
+            ?>
+                <!-- fomrlaire pour rentrer un RIB -->
+                <form action="includes/updateUser" method="post" class="support-form">
+                    <label for="rib" staticTotranslate="profile_rib">RIB</label>
+                    <input type="text" name="rib" id="rib" class="form-control" style="width: 80% !important;" required>
+                    <button type="submit" name="submit-rib" class="btn btn-primary" style="margin-top:1em" staticTotranslate="profile_update">Modifier</button>
+                </form>
+
+            <?php
+            } ?>
         </div>
 
 
@@ -440,8 +460,8 @@ try {
     <?php } ?>
     </div>
 </div>
-</div>
 
+</div></div>
 
 
 

@@ -48,6 +48,7 @@ if (isset($_GET['choice'])) {
                             ]
                         ]);
                         $averageRate = json_decode($response->getBody()->getContents(), true)['average'];
+                        
                     } catch (Exception $e) {
                         echo $e->getMessage();
                         die();

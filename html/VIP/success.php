@@ -21,6 +21,7 @@ $token = $_SESSION["token"];
 
 if ($plan == 2 || $plan == 4){
     $vip_type = 1;
+    
 } else if ($plan == 1 || $plan == 3){
     $vip_type = 0;
 }

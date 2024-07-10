@@ -428,4 +428,17 @@ function searchChatbotMessages($search){
     return $req->fetchAll();
 }
 
-?>
+function totalNbLandlordsAndProviders(){
+    $db = connectDB();
+    $req = $db->prepare("SELECT COUNT(*) FROM user WHERE grade = 4 OR grade = 5");
+    $req->execute();
+    return $req->fetchColumn();
+}
+
+
+function getAllLandlordsAndProviders(){
+    $db = connectDB();
+    $req = $db->prepare("SELECT * FROM user WHERE grade = 4 OR grade = 5");
+    $req->execute();
+    return $req->fetchAll();
+}

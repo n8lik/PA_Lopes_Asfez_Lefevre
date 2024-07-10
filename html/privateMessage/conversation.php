@@ -96,8 +96,6 @@ if (isset($_POST["submit"])) {
         </div>
     </form>
 </div>
-<script>
-
-
-
-</script>
+<?php 
+unset($_POST);
+require '../includes/footer.php'; ?>

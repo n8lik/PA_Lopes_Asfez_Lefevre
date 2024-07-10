@@ -1,7 +1,10 @@
 <?php
-session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 require '../vendor/autoload.php';
+require 'functions/functions.php';
 session_start();
 if (!isConnected()){
     $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
@@ -13,7 +16,29 @@ use GuzzleHttp\Client;
 
 $userId = $_SESSION["userId"];
 
-var_dump($_FILES);
+
+if(isset($_POST["submit-rib"])){
+    $client = new Client([
+        'base_uri' => 'https://pcs-all.online:8000'
+    ]);
+    $test = [
+        'userId' => $userId,
+        'rib' => $_POST['rib']
+    ];
+
+    $response = $client->post('/updateRib', [
+        'json' => $test
+    ]);
+
+    $body = json_decode($response->getBody()->getContents(), true);
+    if ($body["success"]== true) {
+        $_SESSION['ribUpdateOk'] = $body["message"];
+    } else {
+        $_SESSION['ribUpdateError'] =  $body["message"];
+    }
+    header('Location: ../profile.php');
+
+}
 
 if (isset($_POST['submit'])) {
 

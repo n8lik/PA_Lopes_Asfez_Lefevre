@@ -78,6 +78,15 @@
                                     <li><a class="dropdown-item" href="support?choice=tickets">Tickets</a></li>
                                     <li><a class="dropdown-item" href="support?choice=lang">Gérer les langues</a></li>
                                 </ul>
+                            </li><li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Factures
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark">
+                                    <li><a class="dropdown-item" href="facture?choice=all">Toutes les factures</a></li>
+                                    <li><a class="dropdown-item" href="facture?choice=topay">Factures à payer</a></li>
+                                    <li><a class="dropdown-item" href="facture?choice=paid">Factures payées</a></li>
+                                </ul>
                             </li>
                         </ul>
                     </div>

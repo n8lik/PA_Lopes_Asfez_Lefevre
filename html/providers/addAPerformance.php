@@ -140,10 +140,7 @@ if ($user["is_validated"]==0){
                     <option id="paysagisteField" name="paysagisteField" style="display:none;">prestation</option>
                     <option id="cleaningField" name="cleaningField" style="display:none;">prestation</option>
                     <option id="wallField" name="wallField" style="display:none;">mur</option>
-
-
-
-                    <option>heure</option>
+                    <option id="hour" name ="heure" value="heure">heure</option>
                 </select>
             </div>
             <div class="form-group">

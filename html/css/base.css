@@ -338,15 +338,15 @@ footer {
 /*####################Calendar####################*/
 .fc .unavailable-date {
     background-color: red !important;
-    opacity: 0.5; /* Ajustez l'opacité si nécessaire */
+    opacity: 0.5;  
 }
 .fc .available-date {
     background-color: green !important;
-    opacity: 0.5; /* Ajustez l'opacité si nécessaire */
+    opacity: 0.5;  
 }
 .fc .booked-date {
     background-color: blue !important;
-    opacity: 0.5; /* Ajustez l'opacité si nécessaire */
+    opacity: 0.5;  
 }
 .fc .fc-daygrid-day-frame {
     color: black !important;

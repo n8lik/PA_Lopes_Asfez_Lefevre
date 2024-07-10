@@ -23,7 +23,6 @@ try {
     $users = [];
 }
 
-// pour chaque users on vérifie si le vip_status est égale à 1 ou 2 et que vip_date était ya un an alors on change le vip_status à 0 et on met vip_date à null
 
 foreach ($users as $user) {
     if ($user["vip_status"] == 1 || $user["vip_status"] == 2 && $user["vip_type"] == 1){
