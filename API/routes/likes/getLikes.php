@@ -1,6 +1,7 @@
 <?php
 
 
+
 require_once __DIR__ . "/../../libraries/response.php";
 require_once __DIR__ . "/../../libraries/body.php";
 require_once __DIR__ . "/../../entities/ads/catalog.php";

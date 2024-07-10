@@ -18,11 +18,10 @@ function connectDB()
 // vérification si l'utilisateur est connecté
 function isConnected()
 {
-    if (isset($_SESSION['email'])) {
+    if (isset($_SESSION['userId'])) {
         return true;
     } else {
         return false;
-        header("https://pcs-all.online/login");
     }
 }
 
@@ -64,21 +63,10 @@ function price_calcul($type)
 // fonction insertion BDD form location
 
 
-function insertHousing($title, $experienceType, $id_user, $propertyAddress, $propertyCity, $propertyZip, $propertyCountry, $fee,$propertyType, $rentalType, $bedroomCount, $guestCapacity, $propertyArea, $price, $contactPhone, $time)
+
+
+function updateHousing($id, $title, $type_location, $amountRoom, $experienceType, $guestCapacity, $propertyArea, $contactPhone, $time)
 {
-    $db = connectDB();
-
-    $queryprepare = $db->prepare("INSERT INTO housing (title, id_user, management_type, address, city, postal_code, country, fee, type_house, type_location, amount_room, guest_capacity, property_area, price, contact_phone, contact_time) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-
-
-    try {
-        $queryprepare->execute([$title, $id_user, $experienceType, $propertyAddress, $propertyCity, $propertyZip, $propertyCountry, $fee, $propertyType, $rentalType, $bedroomCount, $guestCapacity, $propertyArea, $price, $contactPhone, $time]);
-    } catch (PDOException $e) {
-        print("Erreur lors de l'exécution de la requête : " . $e->getMessage());
-    }
-}
-
-function updateHousing($id, $title, $type_location, $amountRoom, $experienceType, $guestCapacity, $propertyArea, $contactPhone, $time){
     $db = connectDB();
     $queryprepare = $db->prepare("UPDATE housing SET title = :title, type_location = :type_location, amount_room = :amount_room, management_type = :experienceType, guest_capacity = :guestCapacity, property_area = :propertyArea, contact_phone = :contactPhone, contact_time = :time, is_validated = :validated WHERE id = :id");
     $queryprepare->execute(['title' => $title, 'type_location' => $type_location, 'amount_room' => $amountRoom, 'experienceType' => $experienceType, 'guestCapacity' => $guestCapacity, 'propertyArea' => $propertyArea, 'contactPhone' => $contactPhone, 'time' => $time, 'id' => $id, 'validated' => 0]);
@@ -135,48 +123,48 @@ function getCalendarByHousingId($id)
 }
 
 
-function searchingBar($search,$choice){
+function searchingBar($search, $choice)
+{
     $db = connectDB();
-    switch($choice){
+    switch ($choice) {
         case "all":
             $req = $db->prepare("SELECT * FROM user WHERE pseudo LIKE ? OR firstname LIKE ? OR lastname LIKE ? OR email LIKE ?");
-            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            $req->execute(["%" . $search . "%", "%" . $search . "%", "%" . $search . "%", "%" . $search . "%"]);
             return $req->fetchAll();
         case "travelers":
             $req = $db->prepare("SELECT * FROM user WHERE (grade = 1 OR grade = 2 OR grade = 3) AND (pseudo LIKE ? OR firstname LIKE ? OR lastname LIKE ? OR email LIKE ?)");
-            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            $req->execute(["%" . $search . "%", "%" . $search . "%", "%" . $search . "%", "%" . $search . "%"]);
             return $req->fetchAll();
         case "landlords":
             $req = $db->prepare("SELECT * FROM user WHERE grade = 4 AND (pseudo LIKE ? OR firstname LIKE ? OR lastname LIKE ? OR email LIKE ?)");
-            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            $req->execute(["%" . $search . "%", "%" . $search . "%", "%" . $search . "%", "%" . $search . "%"]);
             return $req->fetchAll();
         case "providers":
             $req = $db->prepare("SELECT * FROM user WHERE grade = 5 AND (pseudo LIKE ? OR firstname LIKE ? OR lastname LIKE ? OR email LIKE ?)");
-            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            $req->execute(["%" . $search . "%", "%" . $search . "%", "%" . $search . "%", "%" . $search . "%"]);
             return $req->fetchAll();
         case "housing":
             $req = $db->prepare("SELECT * FROM housing WHERE title LIKE ? OR city LIKE ? OR type_house LIKE ? or price LIKE ? or creation_date LIKE ?");
-            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            $req->execute(["%" . $search . "%", "%" . $search . "%", "%" . $search . "%", "%" . $search . "%", "%" . $search . "%"]);
             return $req->fetchAll();
         case "performances":
             $req = $db->prepare("SELECT * FROM performances WHERE title LIKE ? OR place LIKE ? OR performance_type LIKE ? or price LIKE ?");
-            $req->execute(["%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"]);
+            $req->execute(["%" . $search . "%", "%" . $search . "%", "%" . $search . "%", "%" . $search . "%"]);
             return $req->fetchAll();
-        
-            
     }
 }
 
-function deleteHousingById($id){
+function deleteHousingById($id)
+{
     $db = connectDB();
     $req = $db->prepare("DELETE FROM housing WHERE id = :id");
     $req->execute(['id' => $id]);
-
 }
 
 /*#########################Prestataire#########################*/
 
-function insertPerformance($title, $description, $performance_type, $address_appointment, $city_appointment, $zip_appointment, $country_appointment, $price, $price_type, $userId, $fee,$place,$radius){
+function insertPerformance($title, $description, $performance_type, $address_appointment, $city_appointment, $zip_appointment, $country_appointment, $price, $price_type, $userId, $fee, $place, $radius)
+{
     $connexion = connectDB();
     $queryprepared = $connexion->prepare('INSERT INTO performances (title, description, performance_type, address_appointment, city_appointment, zip_appointment, country_appointment, price, price_type, id_user, fee, place, radius) VALUES (:title, :description, :performance_type, :address_appointment, :city_appointment, :zip_appointment, :country_appointment, :price, :price_type, :user_id, :fee, :place, :radius)');
 
@@ -196,9 +184,12 @@ function insertPerformance($title, $description, $performance_type, $address_app
         ':radius' => $radius
     ]);
 
+    $lastId = $connexion->lastInsertId();
+    return $lastId;
 }
 
-function updatePerformance($id,$title,$description,$address_appointment,$city_appointment,$zip_appointment,$country_appointment,$price,$price_type,$fee,$place,$radius){
+function updatePerformance($id, $title, $description, $address_appointment, $city_appointment, $zip_appointment, $country_appointment, $price, $price_type, $fee, $place, $radius)
+{
     $connexion = connectDB();
     $queryprepared = $connexion->prepare('UPDATE performances SET title = :title, description = :description, address_appointment = :address_appointment, city_appointment = :city_appointment, zip_appointment = :zip_appointment, country_appointment = :country_appointment, price = :price, price_type = :price_type, fee = :fee, place = :place, radius = :radius, is_validated = :validated  WHERE id = :id');
 
@@ -218,6 +209,14 @@ function updatePerformance($id,$title,$description,$address_appointment,$city_ap
         ':validated' => 0
     ]);
 }
+
+function setFreePerfTo1WhereId($id, $end_date)
+{
+    $connexion = connectDB();
+    $queryprepared = $connexion->prepare('UPDATE user SET free_perf = 1 , free_perf_end_date=:end_date WHERE id = :id');
+    $queryprepared->execute([':id' => $id, ':end_date' => $end_date]);
+}
+
 function getCalendarByPerformanceId($id)
 {
     $db = connectDB();
@@ -241,15 +240,14 @@ function getPerformanceByOwner($id)
     $req = $conn->prepare("SELECT * FROM performances WHERE id_user = :id");
     $req->execute(['id' => $id]);
     return $req->fetchAll();
-
 }
 
 
-function deletePerformance($id){
+function deletePerformance($id)
+{
     $db = connectDB();
     $req = $db->prepare("DELETE FROM performances WHERE id = :id");
     $req->execute(['id' => $id]);
-
 }
 
 ####################MIKE#########################
@@ -259,7 +257,6 @@ function getPerformanceByIdUser($id)
     $req = $conn->prepare("SELECT * FROM prestations WHERE id_user = :id");
     $req->execute(['id' => $id]);
     return $req->fetchAll();
-
 }
 function getPerformanceByIdUserAndIdPerf($id_user, $id_perf)
 {
@@ -268,11 +265,11 @@ function getPerformanceByIdUserAndIdPerf($id_user, $id_perf)
     $req->execute(['id_user' => $id_user, 'id_perf' => $id_perf]);
     return $req->fetch();
 }
-function deletePerformanceById($id){
+function deletePerformanceById($id)
+{
     $db = connectDB();
     $req = $db->prepare("DELETE FROM prestations WHERE id = :id");
     $req->execute(['id' => $id]);
-
 }
 function getRdvByIdNotFini($id)
 {
@@ -281,31 +278,31 @@ function getRdvByIdNotFini($id)
     $req->execute(['id' => $id]);
     return $req->fetchAll();
 
-    $conn = null;
 }
 
-function accepterPrestation($id){
+function accepterPrestation($id)
+{
     $conn = connectDB();
     $req = $conn->prepare("UPDATE rendez_vous SET status = 'en cours' WHERE id_rdv = :id");
     $req->execute(['id' => $id]);
     $conn = null;
-
 }
-function refuserPrestation($id){
+function refuserPrestation($id)
+{
     $conn = connectDB();
     $req = $conn->prepare("UPDATE rendez_vous SET status = 'refuse' WHERE id_rdv = :id");
     $req->execute(['id' => $id]);
     $conn = null;
-
 }
-function finirPrestation($id){
+function finirPrestation($id)
+{
     $conn = connectDB();
     $req = $conn->prepare("UPDATE rendez_vous SET status = 'fini' WHERE id_rdv = :id");
     $req->execute(['id' => $id]);
     $conn = null;
-
 }
-function getRdvByIdClientNotFini($id){
+function getRdvByIdClientNotFini($id)
+{
 
     $conn = connectDB();
 
@@ -313,9 +310,9 @@ function getRdvByIdClientNotFini($id){
     $req->execute(['id' => $id]);
     return $req->fetchAll();
 
-    $conn = null;
 }
-function getRdvByIdClientFini($id){
+function getRdvByIdClientFini($id)
+{
 
     $conn = connectDB();
 
@@ -323,9 +320,9 @@ function getRdvByIdClientFini($id){
     $req->execute(['id' => $id]);
     return $req->fetchAll();
 
-    $conn = null;
 }
-function getRdvByIdClientNotFiniAndEnCours($id){
+function getRdvByIdClientNotFiniAndEnCours($id)
+{
 
     $conn = connectDB();
 
@@ -333,9 +330,7 @@ function getRdvByIdClientNotFiniAndEnCours($id){
     $req->execute(['id' => $id]);
     return $req->fetchAll();
 
-    $conn = null;
 }
-
 function selectAppointmentHisto()
 {
     $conn = connectDB();
@@ -347,7 +342,6 @@ function selectAppointmentHisto()
     $req->execute(['id_user' => $id_user]);
     return $req->fetchAll();
 
-    $conn = null;
 }
 function listPerformance()
 {
@@ -356,57 +350,61 @@ function listPerformance()
     $req->execute();
     return $req->fetchAll();
 
-    $conn = null;
 }
 
 
 ########################Angélique - Tickets ############################
-function getTicketsByUserId($id){
+function getTicketsByUserId($id)
+{
     $conn = connectDB();
     $req = $conn->prepare("SELECT * FROM ticket WHERE id_user = :id AND type = 0");
     $req->execute(['id' => $id]);
     return $req->fetchAll();
 }
 
-function getTicketStatus($nb){
-    switch ($nb){
+function getTicketStatus($nb)
+{
+    switch ($nb) {
         case "0":
             return "En attente";
-            break;
+           
         case "1":
             return "En cours";
-            break;
+            
         case "2":
             return "Résolu";
-            break;
+            
     }
 }
 
-function getTicketSubject($sub){
-    switch ($sub){
+function getTicketSubject($sub)
+{
+    switch ($sub) {
         case "1":
             return "Problème de connexion";
-            break;
+            
         case "2":
             return "Problème de paiement";
-            break;
+            
         case "3":
             return "Problème de réservation";
-            break;
+            
         case "4":
             return "Autre";
-            break;
+            
     }
 }
 
-function getTicketById($id){
+function getTicketById($id)
+{
     $conn = connectDB();
     $req = $conn->prepare("SELECT * FROM ticket WHERE id = :id");
     $req->execute(['id' => $id]);
     return $req->fetch();
 }
 
-function getTicketAnswers($id){
+function getTicketAnswers($id)
+{
     $conn = connectDB();
     $req = $conn->prepare("SELECT * FROM ticket WHERE answer_id = :id");
     $req->execute(['id' => $id]);
@@ -428,7 +426,6 @@ function getCatalogByType($choice, $type)
                 $req->execute(['type' => $type]);
                 return $req->fetchAll();
             }
-            break;
         case 'performance':
             if ($type == 'all') {
                 $req = $db->prepare("SELECT * FROM performances WHERE is_validated = 1");
@@ -439,7 +436,6 @@ function getCatalogByType($choice, $type)
                 $req->execute(['type' => $type]);
                 return $req->fetchAll();
             }
-            break;
     }
 }
 

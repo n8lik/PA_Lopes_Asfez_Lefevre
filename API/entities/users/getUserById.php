@@ -35,7 +35,7 @@ function getUserByAdsId($adsid, $type)
     require_once __DIR__ . "/../../database/connection.php";
     $db = connectDB();
 
-    if ($type == "performances") {
+    if ($type == "performance") {
 
         $req = $db->prepare("SELECT * FROM performances WHERE id = :id");
         $req->execute(['id' => $adsid]);
@@ -43,6 +43,39 @@ function getUserByAdsId($adsid, $type)
         $req = $db->prepare("SELECT * FROM housing WHERE id = :id");
         $req->execute(['id' => $adsid]);
     }
-    return $req->fetch();
     
+    $ads = $req->fetch();
+    return $ads;
+    
+}
+
+function getUserByToken($token)
+{
+    require_once __DIR__ . "/../../database/connection.php";
+    $db = connectDB();
+    $req = $db->prepare("SELECT * FROM user WHERE token = :token");
+    $req->execute(['token' => $token]);
+
+    return $req->fetch();
+}
+
+function getAdminBySearch($search)
+{
+    require_once __DIR__ . "/../../database/connection.php";
+    $search = strtolower($search);
+    $db = connectDB();
+    $req = $db->prepare("SELECT * FROM user WHERE pseudo OR firstname OR lastname LIKE :search AND grade = '6'");
+    $req->execute(['search' => '%' . $search . '%']);
+
+    return $req->fetchAll();
+}
+
+function getAllAdmins()
+{
+    require_once __DIR__ . "/../../database/connection.php";
+    $db = connectDB();
+    $req = $db->prepare("SELECT * FROM user WHERE grade = '6'");
+    $req->execute();
+
+    return $req->fetchAll();
 }

@@ -2,6 +2,8 @@
 <?php require '/var/www/html/admin/includes/admin_header.php'; 
 session_start(); // Démarrer la session au début
 
+
+
 ?>
 
     <div class="container mt-5">

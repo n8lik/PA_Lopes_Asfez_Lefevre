@@ -1,17 +1,27 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 require '../../includes/header.php';
 
 $userId = $_SESSION['userId'];
 $user = getUserById($userId);
-if (!isConnected()) {
-    header('Location: ../../login.php');
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
 }
-if ($user['grade']!=4){
+if ($_SESSION['grade']!=4){
+    $_SESSION["error"] = "Vous n'avez pas les droits pour accéder à cette page";
     header('Location: /');
 }
+
+if ($_SESSION['vip_status']!=1){
+    $_SESSION["error"] = "Vous devez être abonné pour accéder à cette page";
+    header('Location: /VIP/VIP');
+}
+
+if ($user["is_validated"]==0){
+    echo "<div class='container mt-5'><center><div class='alert'>Votre compte n'est pas encore validé par un administrateur, vous ne pouvez pas ajouter de logement pour le moment.</h2></div></center></div>";
+}else{
 $type = 'add';
 ?>
 
@@ -27,12 +37,20 @@ $type = 'add';
         <div><?php echo $_SESSION["errorAdd"]; ?></div>
     <?php };
     $_SESSION["errorAdd"] = ''; ?>
-    <form method="POST" action="action?type=<?= $type ?>">
+    <form method="POST" action="action?type=<?= $type ?>" enctype="multipart/form-data">
 
         <div class="form-group">
             <label for="Title">Titre</label>
-            <input type="text" class="form-control" id="title" name="title" placeholder="Titre de l'annonce"  value="<?php if(isset($_SESSION['data']["title"])){echo $_SESSION['data']["title"];}?>" required>
-
+            <input type="text" class="form-control" id="title" name="title" placeholder="Titre de l'annonce" value="<?php if (isset($_SESSION['data']["title"])) {
+                                                                                                                        echo $_SESSION['data']["title"];
+                                                                                                                    } ?>" required>
+            <div class="form-group">
+                <label for="Description">Description</label>
+                <textarea class="form-control" id="description" name="description" placeholder="Description entre 30 et 500 caractères de votre annonce" rows="3" oninput="updateCounter()" required><?php if (isset($_SESSION['data']["description"])) {
+                                                                                                                                                                                                            echo $_SESSION['data']["description"];
+                                                                                                                                                                                                        } ?></textarea>
+                <p>Caractères : <span id="charCount">0</span> /500</p>
+            </div>
 
         </div>
         <div class="form-group">
@@ -51,14 +69,20 @@ $type = 'add';
 
 
             <div class="form-group col-md-4">
-                <input type="text" class="form-control" id="propertyAddress" name="propertyAddress" placeholder="Adresse" value="<?php if(isset($_SESSION['data']["propertyAddress"])){echo $_SESSION['data']["propertyAddress"];}?>"  required>
+                <input type="text" class="form-control" id="propertyAddress" name="propertyAddress" placeholder="Adresse" value="<?php if (isset($_SESSION['data']["propertyAddress"])) {
+                                                                                                                                        echo $_SESSION['data']["propertyAddress"];
+                                                                                                                                    } ?>" required>
             </div>
 
             <div class="form-group col-md-4">
-                <input type="text" class="form-control" id="propertyCity" name="propertyCity" placeholder="Ville" value="<?php if(isset($_SESSION['data']["propertyCity"])){echo $_SESSION['data']["propertyCity"];}?>"  required>
+                <input type="text" class="form-control" id="propertyCity" name="propertyCity" placeholder="Ville" value="<?php if (isset($_SESSION['data']["propertyCity"])) {
+                                                                                                                                echo $_SESSION['data']["propertyCity"];
+                                                                                                                            } ?>" required>
             </div>
             <div class="form-group col-md-4">
-                <input type="text" class="form-control" id="propertyZip" name="propertyZip" placeholder="Code postal" value="<?php if(isset($_SESSION['data']["propertyZip"])){echo $_SESSION['data']["propertyZip"];}?>"  required>
+                <input type="text" class="form-control" id="propertyZip" name="propertyZip" placeholder="Code postal" value="<?php if (isset($_SESSION['data']["propertyZip"])) {
+                                                                                                                                    echo $_SESSION['data']["propertyZip"];
+                                                                                                                                } ?>" required>
             </div>
         </div>
 
@@ -130,26 +154,36 @@ $type = 'add';
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="bedroomCount">Nombre de chambres</label>
-                <input type="number" class="form-control" name="bedroomCount" id="bedroomCount"  value="<?php if(isset($_SESSION['data']["bedroomCount"])){echo $_SESSION['data']["bedroomCount"];}?>"  required>
+                <input type="number" class="form-control" name="bedroomCount" id="bedroomCount" value="<?php if (isset($_SESSION['data']["bedroomCount"])) {
+                                                                                                            echo $_SESSION['data']["bedroomCount"];
+                                                                                                        } ?>" required>
             </div>
             <div class="form-group col-md-6">
                 <label for="guestCapacity">Capacité d'accueil</label>
-                <input type="number" class="form-control" name="guestCapacity" id="guestCapacity"   value="<?php if(isset($_SESSION['data']["guestCapacity"])){echo $_SESSION['data']["guestCapacity"];}?>" required>
+                <input type="number" class="form-control" name="guestCapacity" id="guestCapacity" value="<?php if (isset($_SESSION['data']["guestCapacity"])) {
+                                                                                                                echo $_SESSION['data']["guestCapacity"];
+                                                                                                            } ?>" required>
             </div>
         </div>
 
         <div class="form-group">
             <label for="propertyArea">Surface en m²</label>
-            <input type="number" class="form-control" name="propertyArea" id="propertyArea" value="<?php if(isset($_SESSION['data']["propertyArea"])){echo $_SESSION['data']["propertyArea"];}?>"  required>
+            <input type="number" class="form-control" name="propertyArea" id="propertyArea" value="<?php if (isset($_SESSION['data']["propertyArea"])) {
+                                                                                                        echo $_SESSION['data']["propertyArea"];
+                                                                                                    } ?>" required>
         </div>
         <div class="form-group">
             <label for="price">Prix à la nuit (en €)</label>
-            <input type="number" class="form-control" id="price" name="price" value="<?php if(isset($_SESSION['data']["price"])){echo $_SESSION['data']["price"];};?>"  required>
+            <input type="number" class="form-control" id="price" name="price" value="<?php if (isset($_SESSION['data']["price"])) {
+                                                                                            echo $_SESSION['data']["price"];
+                                                                                        }; ?>" required>
         </div>
 
         <div class="form-group">
             <label for="contactPhone">Téléphone</label>
-            <input type="tel" class="form-control" id="contactPhone" name="contactPhone" value="<?php if(isset($_SESSION['data']["contactPhone"])){echo $_SESSION['data']["contactPhone"];}?>"  required>
+            <input type="tel" class="form-control" id="contactPhone" name="contactPhone" value="<?php if (isset($_SESSION['data']["contactPhone"])) {
+                                                                                                    echo $_SESSION['data']["contactPhone"];
+                                                                                                } ?>" required>
         </div>
 
         <div class="form-check-inline">
@@ -169,17 +203,64 @@ $type = 'add';
             <input type="hidden" name="timeSlot3_hidden" value="0">
             <label class="form-check-label" for="timeSlot3">Après 18h00</label>
         </div>
-
+        <Br><Br>
         <div>
             <div class="form-group">
-                <label for="file">Image du logement</label>
-                <input type="file" id="file" name="file"><br><br>
+                <label for="file">Image du logement</label><Br>
+                <input type="file" id="file" name="file"><br>
             </div>
-            <input type="submit" value="Publier" name="submit">
 
 
         </div>
-
+        <div class="form-group">
+            <label for="moreOptions">Plus d'options</label>
+            <div id="moreOptions">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" name="wifi" id="wifi">
+                    <label class="form-check-label" for="wifi">WiFi</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" name="piscine" id="piscine">
+                    <label class="form-check-label" for="piscine">Piscine</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" name="tele" id="tele">
+                    <label class="form-check-label" for="tele">Télé</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" name="four" id="four">
+                    <label class="form-check-label" for="four">Four</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" name="cuisineEquipee" id="cuisineEquipee">
+                    <label class="form-check-label" for="cuisineEquipee">Cuisine équipée</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" name="laveLinge" id="laveLinge">
+                    <label class="form-check-label" for="laveLinge">Lave-linge</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" name="parking" id="parking">
+                    <label class="form-check-label" for="parking">Parking</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" name="climatisation" id="climatisation">
+                    <label class="form-check-label" for="climatisation">Climatisation</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" name="cheminee" id="cheminee">
+                    <label class="form-check-label" for="cheminee">Cheminée</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" name="detecteurFumee" id="detecteurFumee">
+                    <label class="form-check-label" for="detecteurFumee">Détecteur de fumée</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" name="salleSport" id="salleSport">
+                    <label class="form-check-label" for="salleSport">Salle de sport</label>
+                </div>
+            </div>
+        </div>
         <div class="form-group">
             <input type="checkbox" name="acceptation" id="acceptation" required>
             <label for="acceptation">J'accepte la déclaration de confidentialité et les conditions générales d'utilisation</label>
@@ -189,6 +270,10 @@ $type = 'add';
         <button type="submit" class="btn btn-primary" name="submit">Envoyer</button>
     </form>
 </div>
+<?php
+
+unset($_SESSION['data']);
+?> 
 <script>
     function showOtherField($id, $id_showed) {
 
@@ -203,9 +288,16 @@ $type = 'add';
     selectBox.addEventListener('change', function() {
         showOtherField('otherLocation', 'otherFieldL');
     });
+
+    function updateCounter() {
+        const textarea = document.getElementById('description');
+        const charCount = document.getElementById('charCount');
+        charCount.textContent = textarea.value.length;
+    }
+</script>
 </script>
 <?php
 
-
+}
 
 include '../../includes/footer.php';

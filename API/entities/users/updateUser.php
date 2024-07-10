@@ -1,40 +1,88 @@
 <?php
 
-function updateUser(string $id, $columns): void
+function updateUser($pseudo, $firstname, $lastname, $phone, $extension, $userId)
 {
     //On se connecte à la base de données
     require_once __DIR__ . "/../../database/connection.php";
 
-    //On vérifie que l'on a bien des colonnes à mettre à jour
-    if (count($columns) === 0) {return;}
-
-    //On initialise un tableau vide, on définit les colonnes qui seront modifiées et on définit un tableau contenant les informations de l'utilisateur
-    $tab = [];
-    $changeColumns = ["email", "password", "token"];
-    $idToChar = ["id" => htmlspecialchars($id)];
-
-    //On parcourt les colonnes à modifier
-    foreach ($columns as $columnName => $columnValue) {
-        //Si la colonne n'est pas autorisée on passe à la suivante
-        if (!in_array($columnName, $changeColumns)) {continue;}
-
-        //On ajoute la colonne à modifier dans le tableau
-        $tab[] = "$columnName = :$columnName";
-
-        //Si la colonne est le mot de passe on le hash
-        if ($columnName === "password") {
-            $idToChar[$columnName] = password_hash($columnValue, PASSWORD_BCRYPT);
-        } else {
-            $idToChar[$columnName] = htmlspecialchars($columnValue);
-        }
-    }
-
-    //On prépare la requête
-    $pdo = getDatabaseConnection();
-    $query = "UPDATE users SET " . implode(", ", $tab) . " WHERE id = :id";
-    $updateUser = $pdo->prepare($query);
-
-    //On exécute la requête
-    $updateUser->execute($idToChar);
+    $db = connectDB();
+    $querypreprared = $db->prepare("UPDATE user SET pseudo = :pseudo, firstname = :firstname, lastname = :lastname, phone_number = :phone, extension = :extension WHERE id = :userId");
+    $querypreprared->execute([
+        'pseudo' => $pseudo,
+        'firstname' => $firstname,
+        'lastname' => $lastname,
+        'phone' => $phone,
+        'extension' => $extension,
+        'userId' => $userId
+    ]);
+    
+    return 1;
+    
 }
 
+function updatePassword($userId, $newPassword)
+{
+    //On se connecte à la base de données
+    require_once __DIR__ . "/../../database/connection.php";
+    $newPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+    $db = connectDB();
+    $querypreprared = $db->prepare("UPDATE user SET password = :newPassword WHERE id = :userId");
+    $querypreprared->execute([
+        'newPassword' => $newPassword,
+        'userId' => $userId
+    ]);
+
+    return 1;
+    
+    
+}
+
+function updateVIPuser($userId, $vip_status,$vip_type){
+    require_once __DIR__ . "/../../database/connection.php";
+    $db = connectDB();
+    if ($vip_status == 6){
+        $grade = 1;
+        $querypreprared = $db->prepare("UPDATE user SET vip_status = :vip_status, vip_type = :vip_type WHERE id = :userId");
+        $querypreprared->execute([
+            'vip_status' => 3,
+            'vip_type' => $vip_type,
+            'userId' => $userId
+        ]);
+        return 1;
+    }
+    $date = new DateTime();
+    $date = $date->format('Y-m-d H:i:s');
+    {
+    if ($vip_status == 1 || $vip_status == 2){
+        $grade = 2;
+    }
+    if ($vip_status == 3 || $vip_status == 4){
+        $grade = 3;
+    } if ($vip_status == 5){
+        $grade = 4;
+    }
+    $querypreprared = $db->prepare("UPDATE user SET grade=:grade, vip_status = :vip_status, vip_date =:vip_date,vip_type = :vip_type WHERE id = :userId");
+    $querypreprared->execute([
+        'grade' => $grade,
+        'vip_status' => 1,
+        'vip_date' => $date,
+        'vip_type' => $vip_type,
+        'userId' => $userId
+    ]);
+
+    return 1;
+}
+}
+
+function updateSubId($userToken, $subId){
+    require_once __DIR__ . "/../../database/connection.php";
+    $db = connectDB();
+    $querypreprared = $db->prepare("UPDATE user SET sub_id = :subId WHERE token = :userToken");
+    $querypreprared->execute([
+        'subId' => $subId,
+        'userToken' => $userToken
+    ]);
+
+    return 1;
+}

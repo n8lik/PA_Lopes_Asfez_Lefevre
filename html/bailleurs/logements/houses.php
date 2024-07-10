@@ -2,15 +2,20 @@
 
 <?php require "../../includes/header.php";
 
-if(!isConnected()){
-    header('Location: ../../login.php');
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
+}
+if ($_SESSION['grade'] != 4){
+    $_SESSION["error"] = "Vous n'avez pas les droits pour accéder à cette page";
+    header('Location: /');
 }
 $userId = $_SESSION['userId'];
 $user = getUserById($userId);
 
-if ($user['grade']!=4){
-    header('Location: /');
-}
+
 $house = getHousingByOwner($userId);
 $choice = "housing";
 
@@ -78,7 +83,7 @@ $choice = "housing";
                         } else {
                             echo "Validé";
                         } ?></td>
-                    <td><center><a href="announce.php?id=<?= $houseId ?>" class="btn btn-outline-secondary">Voir</a></center></td>
+                    <td><center><a href="/ads.php?id=<?= $houseId ?>&type=housing" class="btn btn-outline-secondary">Voir</a></center></td>
                     <td>
                         <a href="../filesAdd.php?id=<?= $houseId ?>" class="btn btn-outline-success">Ajout de Document</a>
                     </td>

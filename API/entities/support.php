@@ -89,3 +89,92 @@ function changeStatusTicket($ticketId, $status)
     $req->execute(['status' => $status, 'id' => $ticketId]);
     return "ok";
 }
+
+function getTicketsByStatus($status)
+{
+    require_once __DIR__ . "/../database/connection.php";
+    $conn = connectDB();
+    if ($status == "new") {
+        $status = 0;
+    } else if ($status == "assigned") {
+        $status = 1;
+    } else if ($status == "closed") {
+        $status = 2;
+    }else if ($status == "all") {
+        $req = $conn->prepare("SELECT * FROM ticket WHERE answer_id IS NULL");
+        $req->execute();
+        return $req->fetchAll();
+    }else{
+        return "error";
+    }
+
+    $req = $conn->prepare("SELECT * FROM ticket WHERE status = :status AND answer_id IS NULL");
+    $req->execute(['status' => $status]);
+    $res = $req->fetchAll();
+
+    foreach ($res as $key => $ticket) {
+        $res[$key]["subject"] = getSubjectById($ticket["subject"]);
+        $res[$key]["status"] = getStatusById($ticket["status"]);
+    }
+
+    return $res;
+    
+}
+
+function getAssignedTicketsByUserId($userId)
+{
+    require_once __DIR__ . "/../database/connection.php";
+    $conn = connectDB();
+    $req = $conn->prepare("SELECT * FROM ticket WHERE tech_id = :id AND status = 1 AND answer_id IS NULL");
+    $req->execute(['id' => $userId]);
+
+    $tickets = $req->fetchAll();
+    foreach ($tickets as $key => $ticket) {
+        $tickets[$key]["subject"] = getSubjectById($ticket["subject"]);
+        $tickets[$key]["status"] = getStatusById($ticket["status"]);
+    }
+    return $tickets;
+}
+
+function assignTicketToAdmin($ticketId, $adminId)
+{
+    require_once __DIR__ . "/../database/connection.php";
+    $db = connectDB();
+    $req = $db->prepare("UPDATE ticket SET tech_id = :tech_id, status = 1 WHERE id = :id");
+    $req->execute(['tech_id' => $adminId, 'id' => $ticketId]);
+    //De même où answer_id= ticketid
+    $req=$db->prepare("UPDATE ticket SET tech_id = :tech_id, status = 1 WHERE answer_id = :id");
+    $req->execute(['tech_id' => $adminId, 'id' => $ticketId]);
+    return "ok";
+}
+
+function unassignTicketToAdmin($ticketId)
+{
+    require_once __DIR__ . "/../database/connection.php";
+    $db = connectDB();
+    $req = $db->prepare("UPDATE ticket SET tech_id = NULL, status = 0 WHERE id = :id");
+    $req->execute(['id' => $ticketId]);
+
+    $req = $db->prepare("UPDATE ticket SET tech_id = NULL, status = 0 WHERE answer_id = :id");
+    $req->execute(['id' => $ticketId]);
+    return "ok";
+}
+
+
+#######################Chatbot#######################
+function getChatbotAnswer($message)
+{
+    require_once __DIR__ . "/../database/connection.php";
+    //selectionner tous les mots clés et réponses de la table chatbot
+    $conn = connectDB();
+    $req = $conn->prepare("SELECT * FROM chatbot");
+    $req->execute();
+    $chatbot = $req->fetchAll();
+
+    foreach ($chatbot as $key => $value) {
+        if (strpos($message, $value["keyword"]) !== false) {
+            return $value["chatbotresponse"];
+        }
+    }
+    return "Je n'ai pas compris votre demande";
+}

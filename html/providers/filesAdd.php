@@ -3,27 +3,35 @@ require "../includes/header.php";
 $id = $_GET["id"];
 $userId = $_SESSION['userId'];
 $user = getUserById($userId);
-$performance = getPerformanceById($id);
+$performance = getPerformanceById($id)[0];
 
-if (!isConnected()) {
-    header('Location: ../login.php');
+
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
 }
-if ($user['grade'] != 5) {
+if ($_SESSION['grade'] != 5) {
     header('Location: /');
 }
 
 if ($performance['id_user'] != $userId) {
-    header("Location: logements/houses.php");
+    
+    echo $performance['id_user'].'test';
+    echo $userId;
+     header("Location: /providers/performances.php");
 }
 ?>
 
 <div class="container border-form mt-5">
-    <form method="post" action="../bailleurs/logements/action?= $id ?>&usertype=provider" enctype="multipart/form-data">
+    <form method="post" action="/providers/action?id=<?php echo $id; ?>&type=addFiles" enctype="multipart/form-data">
 
 
         <?php if (!empty($_SESSION['errorFile'])) {
 
             echo $_SESSION['errorFile'];
+            unset ($_SESSION['errorFile']);
         }
         $_SESSION['errorFile'] = ''; ?>
         <div class="alert alert-primary" role="alert">

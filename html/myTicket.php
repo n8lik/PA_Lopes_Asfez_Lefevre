@@ -4,12 +4,12 @@ require "vendor/autoload.php";
 
 use GuzzleHttp\Client;
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+
 //Si l'utilisateur n'est pas connecté
-if (!isset($_SESSION['userId'])) {
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
     header("Location: /");
+    die();
 }
 if (isset($_GET["id"])) {
     //Récupération du ticket
@@ -18,9 +18,13 @@ if (isset($_GET["id"])) {
     $ticket = json_decode($response->getBody()->getContents(), true)['ticket'];
 
     //Récupération des réponses
-    $client = new Client();
-    $response = $client->get('https://pcs-all.online:8000/getTicketAnswers/' . $_GET["id"]);
-    $answers = json_decode($response->getBody()->getContents(), true)['answers'];
+    try {
+        $response = $client->get('https://pcs-all.online:8000/getTicketAnswers/' . $_GET["id"]);
+        $answers = json_decode($response->getBody()->getContents(), true)['answers'];
+    } catch (Exception $e) {
+        $answers = [];
+    }
+
 
     $id = $_GET["id"];
     //Si le ticket n'existe pas
@@ -85,12 +89,12 @@ if (isset($_GET["id"])) {
                                 <textarea class="form-control" id="message" name="message" style="height:20% !important;" required></textarea>
                                 <input type="hidden" name="ticketId" value="<?php echo $ticket["id"]; ?>">
                                 <input type="hidden" name="subject" value="<?php echo $ticket["subject"]; ?>">
-                                <button type="submit" class="btn btn-primary">Répondre</button>
+                                <button type="submit" class="btn btn-primary" staticTotranslate="answer" >Répondre</button>
                             </div>
                         </form>
                         <form action="includes/support/tickets?id=close" method="post" class="support-form" style="text-align: center;">
                             <input type="hidden" name="ticketId" value="<?php echo $ticket["id"]; ?>">
-                            <button type="submit" class="btn btn-danger">Clore mon ticket</button>
+                            <button type="submit" class="btn btn-danger" staticTotranslate="ticket_close">Clore mon ticket</button>
                         </form>
                     <?php } ?>
                 </div>

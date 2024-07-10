@@ -187,6 +187,98 @@ footer {
     color: var(--text-color);
     margin-top: 2%;
 }
+
+.chatbot-container {
+    max-width: 80%;
+    margin: 50px auto;
+    font-family: Arial, sans-serif;
+}
+
+.chatbot {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 80vh; 
+}
+
+.chatbot-header {
+    background-color: var(--pcs-blue);
+    color: white;
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    text-align: center;
+}
+
+.chatbot-body {
+    padding: 10px;
+    flex: 1; 
+    overflow-y: auto;
+    background-color: var(--background-color);
+}
+
+.chatbot-message,
+.user-message {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.chatbot-message {
+    justify-content: flex-start;
+}
+
+.user-message {
+    justify-content: flex-end;
+}
+
+.chatbot-message p,
+.user-message p {
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 70%;
+}
+
+.chatbot-message p {
+    background-color: var(--pcs-blue);
+    color: white;
+    border-top-left-radius: 0;
+}
+
+.user-message p {
+    background-color: #e9ecef;
+    color: #333;
+    border-top-right-radius: 0;
+}
+
+.chatbot-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.chatbot-input input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.chatbot-input button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chatbot-input button:hover {
+    background-color: #0056b3;
+}
+
 /* ##############################PROFILE################################# */
 .p-nav{
     color:#BEA57D !important;
@@ -243,6 +335,50 @@ footer {
     width: 90%;
 }
 
+/*####################Calendar####################*/
+.fc .unavailable-date {
+    background-color: red !important;
+    opacity: 0.5;  
+}
+.fc .available-date {
+    background-color: green !important;
+    opacity: 0.5;  
+}
+.fc .booked-date {
+    background-color: blue !important;
+    opacity: 0.5;  
+}
+.fc .fc-daygrid-day-frame {
+    color: black !important;
+}
+
+/*###############################################   BOUTON  ###############################################*/
+.btn-secondary {
+    background-color: var(--pcs-blue) !important;
+    border: none;
+    color: white;
+    padding: 0.5em 1em;
+    font-family: 'Montserrat', sans-serif   !important;
+}
+
+.btn-secondary:hover {
+    background-color: white !important;
+    color: var(--pcs-blue) !important;
+    border: 1px solid var(--pcs-blue) !important;
+}
+
+.btn-outline-secondary {
+    background-color: white !important;
+    border: 1px solid var(--pcs-blue) !important;
+    color: var(--pcs-blue) !important;
+    padding: 0.5em 1em;
+    font-family: 'Montserrat', sans-serif   !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--pcs-blue) !important;
+    color: white !important;
+}
 
 /*Foonts*/
 @font-face {
@@ -259,6 +395,15 @@ footer {
     font-style: normal;
 }
 
+/*###############################################   THEME SOMBRE  ###############################################*/
+.card {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.container {
+    background-color: var(--background-color) !important;
+}
 
 /*###############################################   RESPONSIVE  ###############################################*/
 @media screen and (max-width: 768px) {

@@ -1,9 +1,7 @@
 <?php
 
 require '../vendor/autoload.php';
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+
 
 session_start();
 
@@ -19,52 +17,81 @@ if (!isset($_SESSION["PaymentIntent"])) {
     header("Location: /");
     die();
 }
-
-
+$token = $_SESSION["token"];
 $userId = $_SESSION["userId"];
 $paymentIntent = $_SESSION["PaymentIntent"];
 $id = $paymentIntent["id"];
 $type = $paymentIntent["type"];
 $price = $paymentIntent["price"];
-$start_date = $paymentIntent["date_start"];
-$end_date = $paymentIntent["date_end"];
-$amount_people = $paymentIntent["amount_people"];
+$s_date = $paymentIntent["s-date"]; 
+$hour_start = $paymentIntent["hour_start"];
+$hour_end = $paymentIntent["hour_end"]; 
 
 
+if ($type == "performance") {
+    $start_date_string = $s_date . ' ' . $hour_start;
+    $start_date = date("Y-m-d H:i:s", strtotime($start_date_string));
+
+} else {
+    $start_date = $paymentIntent["s-date"];
+}
+if ($type == "performance") {
+    $end_date_string = $s_date . ' ' . $hour_end;
+    $end_date = date("Y-m-d H:i:s", strtotime($end_date_string));
+
+}  else {
+    $end_date = $paymentIntent["e-date"];
+}
+if ($type == "performance") {
+    $amount_people = null;
+} else {
+    $amount_people = $paymentIntent["amount_people"];
+}
+
+$title = $paymentIntent["title"];
+
+echo $id . " " . $type . " " . $price . " " . $start_date . " " . $end_date . " " . $amount_people . " " . $title . " " . $userId;
+   
 try {
-    $client = new Client([
-        'base_uri' => 'https://pcs-all.online:8000'
-    ]);
-    $test = [
-        'userId' => $userId,
-        'id' => $id,
-        'type' => $type,
-        'price' => $price,
-        'start_date' => $start_date,
-        'end_date' => $end_date,
-        'amount_people' => $amount_people
-    ];
+    $client = new Client(['base_uri' => 'https://pcs-all.online:8000']);
+    if ($type == "performance") {
+    $response = $client->post('/addBooking', [
+        'json' => [
+            'title' => $title,
+            'id' => $id,
+            'type' => $type,
+            'price' => $price,
+            's_date' => $start_date,
+            'e_date' => $end_date,
+            'userId' => $userId
+        ]
+    ]);}
+    else if ($type == "housing") {
+        
+        $response = $client->post('/addBooking', [
+            'json' => [
+                'title' => $title,
+                'id' => $id,
+                'type' => $type,
+                'price' => $price,
+                's_date' => $start_date,
+                'e_date' => $end_date,
+                'amount_people' => $amount_people,
+                'userId' => $userId
+            ]
+        ]);}
+    $booking = json_decode($response->getBody()->getContents(), true);
+    $idresa = $booking["id"];
 
-    $response = $client->post('/booking', [
-        'json' => $test
-
-    ]);
-
-    $body = json_decode($response->getBody()->getContents(), true);
-
-    if ($body['success'] == true) {
-?>
-        <script>
-            alert("Votre réservation a bien été prise en compte. Vous allez être redirigé vers la page d'accueil.");
-            window.location.replace("https://pcs-all.online/");
-        </script>
-<?
+    if ($booking["success"]) {
+        unset($_SESSION["PaymentIntent"]);
+        $_SESSION["booking"] = 0;
+        header('location: /pdf/sendmail?id=' . $idresa . '&user=' . $token . '&type=' . $type);
     } else {
-        echo "Erreur lors de la réservation";
+        unset($_SESSION["PaymentIntent"]);
+        $_SESSION["booking"] = 1;
     }
 } catch (Exception $e) {
-
     echo $e->getMessage();
     die();
 }
-?>

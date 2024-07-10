@@ -2,7 +2,12 @@
 
 
 require "../includes/header.php";
-
+if (!isConnected()){
+    $_SESSION['isConnected'] = "Vous devez être connecté pour accéder à cette page";
+    header("Location: /");
+ 
+    die();
+}
 $id = $_GET["id"];
 $userId = $_SESSION['userId'];
 $user = getUserById($userId);
@@ -11,7 +16,7 @@ $house = getHousingById($id);
 if (!isConnected()) {
     header('Location: ../login.php');
 }
-if ($user['grade'] != 4) {
+if ($_SESSION['grade'] != 4) {
     header('Location: /');
 }
 if ($house['id_user'] != $userId) {

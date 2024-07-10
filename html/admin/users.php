@@ -1,8 +1,11 @@
 <?php
+/* ini_set('display_errors', 1);
+error_reporting(E_ALL); */
 require 'includes/admin_header.php';
 require 'includes/fun_admin.php';
+require '/var/www/html/vendor/autoload.php';
+use GuzzleHttp\Client;
 //Verifier la connexion
-session_start();
 if (!isset($_SESSION['admin'])) {
     header('Location: login.php');
 }
@@ -227,10 +230,128 @@ if (isset($_GET['choice'])) {
                                 <td><?php echo getGrade($user['grade']); ?></td>
                                 <td><?php echo getUserStatus($user['id']); ?></td>
                                 <td>
+                                    <button type="button" class="btn btn-outline-primary"data-bs-toggle="modal" data-bs-target="#modalFiles<?php echo $user['id']; ?>">Voir les fichiers</button>
                                     <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modal<?php echo $user['id']; ?>">
                                         Voir
                                     </button>
+                                    
+                                    <?php $token = $user["token"];
+                                        $grade = $user["grade"];
+                                        $files = []; 
+                                        try {
+                                            $client = new Client([
+                                                'base_uri' => 'https://pcs-all.online:8000'
+                                            ]);
+                                            $test = [
+                                                'token' => $token,
+                                                'grade' => $grade
+                                            ];
+                                            $response = $client->get('/files', [
+                                                'json' => $test
+                                            ]);
 
+                                            $body = json_decode($response->getBody()->getContents(), true);
+                                        
+                                            if (isset($body['success']) && $body['success'] === true) {
+                                                $files = $body['files'];
+                                                
+                                            } 
+                                        } catch (Exception $e) {
+                                            $files = [];
+                                            echo $e->getMessage();
+                                        }?>
+                                        
+                                    <div class="modal fade" id="modalFiles<?php echo $user['id']; ?>" tabindex="-1" aria-labelledby="modalFilesLabel<?php echo $user['id']; ?>" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="modalFilesLabel<?php echo $user['id']; ?>">Fichiers de <?php echo $user['pseudo']; ?></h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <?php if ($files) { ?>
+                                                        <ul class="list-group">
+                                                            <?php foreach ($files as $file) { 
+                                                                $parts = explode('/', $file);
+                                                                $idLogement = $parts[3];
+                                                                $fileType = $parts[4];
+                                                                $fileType = htmlspecialchars($fileType);
+
+                                                                if ($grade == 4){
+                                                                    $nomlogement = getAdsById($idLogement, "housing")["title"];
+                                                                    if($fileType == 1){
+                                                                        $fileType = "Document d'identité";
+                                                                    }
+                                                                    else if($fileType == 2){
+                                                                        $fileType = "Bail";
+                                                                    }
+                                                                    else if($fileType == 3){
+                                                                        $fileType = "Contrat de location";
+                                                                    }
+                                                                    else if($fileType == 4){
+                                                                        $fileType = "Diagnostic de performance énergétique";
+                                                                    }
+                                                                    else if($fileType == 5){
+                                                                        $fileType = "Règlement de copropriété";
+                        
+                                                                    }
+                                                                }else{
+
+                                                                $nomlogement = getAdsById($idLogement, "performance")["title"];
+                                                                    if($fileType == 1){
+                                                                        $fileType = "Document d'identité";
+                                                                    }
+                                                                    else if($fileType == 2){
+                                                                        $fileType = "Licence d'activité";
+                                                                    }
+                                                                    else if($fileType == 3){
+                                                                        $fileType = "Carte professionnelle";
+                                                                    }
+                                                                    else if($fileType == 4){
+                                                                        $fileType = "Facture";
+                                                                    }
+                                                                    }
+
+                                                                ?>
+                                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                                <?php if ($_SESSION["error"]){    ?>
+                                                                <div class="alert" role="alert"> <?php echo $_SESSION["error"]; ?> </div>
+                                                                <?php
+                                                                unset($_SESSION["error"]);
+                                                                }
+                                                                if ($_SESSION["success"]){    ?>
+                                                                <div class="alert" role="alert"> <?php echo $_SESSION["success"]; ?> </div>
+                                                                <?php
+                                                                unset($_SESSION["success"]);
+                                                                }
+                                                                ?>
+
+                                                                    <?php echo "Logement n°".$idLogement; 
+                                                                        echo " - ".$nomlogement;
+                                                                        echo " - ".$fileType;
+                                                                    ?>
+        
+
+
+                                                                    <div>
+                                                                        <a href="includes/files/download?file=<?php echo $file; ?>&grade=<?php echo $grade;?>&token=<?php echo $token;?>" class="btn btn-success btn-sm">Télécharger</a>
+                                                                        <a href="includes/files/deleteFiles.php?file=<?php echo $file; ?>" class="btn btn-danger btn-sm">Supprimer</a>
+                                                                    </div>
+                                                                </li>
+                                                            <?php } ?>
+                                                        </ul>
+                                                    <?php } else { ?>
+                                                        <div class="alert alert-warning" role="alert">Aucun fichier trouvé.</div>
+                                                    <?php } ?>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    
                                     <div class="modal fade" id="modal<?php echo $user['id']; ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
